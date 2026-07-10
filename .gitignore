@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# Environments
+.env
+.venv/
+venv/
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Fitted lens artifacts and checkpoints
+*.pt
+*.pth
+lenses/
+
+# Project data
+*.jstudio.json
+
+# System metadata
+.DS_Store
+Thumbs.db
