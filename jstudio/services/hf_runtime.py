@@ -139,13 +139,13 @@ class ModelRuntime(Protocol):
         max_concepts: int = 200,
     ) -> tuple[ConceptActivation, ...]: ...
 
-    def stream(self, prompt: str, *, max_new_tokens: int): ...
+    def stream(self, prompt: str, *, max_new_tokens: int, history: tuple = ()): ...
 
     def close(self) -> None: ...
 
 
 class HFModelRuntime:
-    """One BF16 causal decoder loaded on the primary ROCm device."""
+    """One BF16 causal decoder loaded on the primary CUDA or ROCm device."""
 
     def __init__(
         self,
@@ -158,8 +158,10 @@ class HFModelRuntime:
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
-        if not torch.cuda.is_available() or torch.version.hip is None:
-            raise RuntimeError("A ROCm PyTorch device is required for the local model")
+        if not torch.cuda.is_available():
+            raise RuntimeError(
+                "A CUDA or ROCm PyTorch device is required for the local model"
+            )
         self._torch = torch
         self.coordinator = GPUCoordinator()
         self.model_id = model_id
@@ -204,7 +206,8 @@ class HFModelRuntime:
                 self.lens_path = candidate_path
                 break
         self.layer_count = self.lens_model.n_layers
-        self.device = f"ROCm 0 · {torch.cuda.get_device_name(0)}"
+        backend = "ROCm" if torch.version.hip else "CUDA"
+        self.device = f"{backend} 0 · {torch.cuda.get_device_name(0)}"
         self.precision = "BF16"
         self.lens_id = None
         self.calibrated = False
@@ -309,7 +312,7 @@ class HFModelRuntime:
             self.lens_path = path
             self._update_lens_identity()
 
-    def _formatted_prompt(self, prompt: str) -> str:
+    def _formatted_prompt(self, prompt: str, history: tuple = ()) -> str:
         messages = [
             {
                 "role": "system",
@@ -318,8 +321,9 @@ class HFModelRuntime:
                     "Do not emit <think> blocks or hidden reasoning."
                 ),
             },
-            {"role": "user", "content": prompt},
         ]
+        messages.extend({"role": role, "content": content} for role, content in history)
+        messages.append({"role": "user", "content": prompt})
         try:
             return self.tokenizer.apply_chat_template(
                 messages,
@@ -404,9 +408,11 @@ class HFModelRuntime:
             for rank, (term, (score, layer, position)) in enumerate(ranked)
         )
 
-    def stream(self, prompt: str, *, max_new_tokens: int | None = None):
+    def stream(
+        self, prompt: str, *, max_new_tokens: int | None = None, history: tuple = ()
+    ):
         torch = self._torch
-        text = self._formatted_prompt(prompt)
+        text = self._formatted_prompt(prompt, history)
         encoded = self.tokenizer(text, return_tensors="pt")
         input_ids = encoded.input_ids.to(self.model.device)
         past_key_values = None
@@ -538,7 +544,7 @@ class HFModelRuntime:
         def probe(editor) -> str:
             with torch.inference_mode(), editor:
                 out = self.model.generate(
-                    input_ids, max_new_tokens=10, do_sample=False,
+                    input_ids, max_new_tokens=16, do_sample=False,
                     pad_token_id=self.tokenizer.eos_token_id,
                 )
             return self.tokenizer.decode(
@@ -548,6 +554,26 @@ class HFModelRuntime:
         def coherent(text: str) -> bool:
             words = text.split()
             return bool(words) and len(set(words)) / len(words) >= 0.5
+
+        def build(layer: int, alpha: float, delta):
+            trace = InterventionTrace(
+                operation="inject", target_ids=tuple(target_ids), source_ids=(),
+                experimental=len(target_ids) > 1, selected_layer=layer,
+                selected_positions=(-1,), selected_scale=alpha,
+                normalized_cost=0.0, baseline_scores={}, after_scores={},
+                baseline_top_ids=(), after_top_ids=(), search_points=(),
+                warnings=("j-space generation steering",),
+            )
+            result = InterventionResult(
+                True, trace, delta.detach().cpu(),
+                f"steered generation toward {target_term!r} "
+                f"(L{layer}, strength {alpha:.2f})",
+            )
+            editor = ActivationEditor(self.lens_model.layers, [
+                ResidualEdit(layer=layer, positions=(-1,), delta=delta,
+                             max_applications=None)
+            ])
+            return editor, result
 
         directions: dict[int, tuple[torch.Tensor, float]] = {}
         for layer in candidates:
@@ -563,8 +589,10 @@ class HFModelRuntime:
             norm = float(rec.activations[layer][0, -1].norm())
             directions[layer] = (direction, norm)
 
-        # Prefer the gentlest strength that works, to protect coherence.
+        # Prefer the gentlest strength that weaves the concept into a full
+        # sentence, keeping a one-word steer only as a fallback.
         needle = target_term.strip().lower()
+        fallback = None
         for alpha in alphas:
             for layer in candidates:
                 direction, norm = directions[layer]
@@ -573,25 +601,14 @@ class HFModelRuntime:
                     layer=layer, positions=(-1,), delta=delta, max_applications=None
                 )
                 text = probe(ActivationEditor(self.lens_model.layers, [edit]))
-                if needle in text.lower() and coherent(text):
-                    trace = InterventionTrace(
-                        operation="inject", target_ids=tuple(target_ids), source_ids=(),
-                        experimental=len(target_ids) > 1, selected_layer=layer,
-                        selected_positions=(-1,), selected_scale=alpha,
-                        normalized_cost=0.0, baseline_scores={}, after_scores={},
-                        baseline_top_ids=(), after_top_ids=(), search_points=(),
-                        warnings=("j-space generation steering",),
-                    )
-                    result = InterventionResult(
-                        True, trace, delta.detach().cpu(),
-                        f"steered generation toward {target_term!r} "
-                        f"(L{layer}, strength {alpha:.2f})",
-                    )
-                    fresh = ActivationEditor(self.lens_model.layers, [
-                        ResidualEdit(layer=layer, positions=(-1,), delta=delta,
-                                     max_applications=None)
-                    ])
-                    return fresh, result
+                if needle not in text.lower() or not coherent(text):
+                    continue
+                if len(text.split()) >= 3:
+                    return build(layer, alpha, delta)
+                if fallback is None:
+                    fallback = (layer, alpha, delta)
+        if fallback is not None:
+            return build(*fallback)
         trace = InterventionTrace(
             operation="inject", target_ids=tuple(target_ids), source_ids=(),
             experimental=len(target_ids) > 1, selected_layer=None,
@@ -971,7 +988,9 @@ class HFGenerationService:
                     for editor in editors:
                         stack.enter_context(editor)
                     for chunk in self._runtime.stream(
-                        run.prompt, max_new_tokens=request.read.max_new_tokens
+                        run.prompt,
+                        max_new_tokens=request.read.max_new_tokens,
+                        history=request.history,
                     ):
                         with control.condition:
                             while (

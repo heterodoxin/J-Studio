@@ -172,6 +172,7 @@ class ChatWorkspace(QWidget):
         if not text:
             self.composer.setFocus()
             return
+        history = self._conversation_history()
         self.transcript_model.append(ChatMessage("You", text))
         self._assistant_row = self.transcript_model.append(
             ChatMessage(self.session.display_name or self.session.model_id, "Generating…")
@@ -196,9 +197,21 @@ class ChatWorkspace(QWidget):
                 tuple(entry.draft for entry in enabled_entries),
                 rule_ids,
                 rule_records,
+                history=history,
             ),
             self.bridge,
         )
+
+    def _conversation_history(self) -> tuple[tuple[str, str], ...]:
+        """Prior completed turns as (role, content) pairs for model context."""
+        turns = []
+        for message in self.transcript_model._messages:
+            content = message.content.strip()
+            if message.event or not content or content == "Generating…":
+                continue
+            role = "user" if message.role == "You" else "assistant"
+            turns.append((role, content))
+        return tuple(turns)
 
     def stop(self) -> None:
         if self.active_run_id:

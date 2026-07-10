@@ -1,7 +1,7 @@
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QPalette
 
-from jstudio.ui.jlens.web_view import JLensWebView
+from jstudio.ui.lensview.web_view import JLensWebView
 
 
 def test_compact_native_shell_geometry_and_splitters(qtbot, window):

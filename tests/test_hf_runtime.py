@@ -42,7 +42,8 @@ class RuntimeDouble:
             ),
         )
 
-    def stream(self, prompt, *, max_new_tokens):
+    def stream(self, prompt, *, max_new_tokens, history=()):
+        self.last_history = history
         yield " /\\_/\\"
         yield "\n( o.o )"
 
@@ -145,6 +146,27 @@ def test_runtime_services_emit_real_runtime_output_and_readouts():
     assert sink.frames[0].activations[0].term == "cat"
     assert sink.run.ttft_seconds is not None
     assert sink.run.decode_tokens_per_second is not None
+    services.generation.close()
+
+
+def test_generation_forwards_conversation_history_to_runtime():
+    runtime = RuntimeDouble()
+    services = services_for_runtime(runtime)
+    session = services.sessions.list_sessions()[0]
+    sink = Sink()
+    history = (("user", "hi"), ("assistant", "hello"))
+
+    services.generation.start(
+        GenerationRequest(
+            session_id=session.session_id,
+            prompt="make me an ascii cat",
+            history=history,
+        ),
+        sink,
+    )
+    assert sink.finished.wait(timeout=2)
+
+    assert runtime.last_history == history
     services.generation.close()
 
 
@@ -671,7 +693,7 @@ def test_generation_priority_blocks_background_fit_between_prompts():
     release_generation = threading.Event()
     events = []
 
-    def stream(prompt, *, max_new_tokens):
+    def stream(prompt, *, max_new_tokens, history=()):
         with runtime.coordinator.generation():
             events.append("generation")
             release_generation.wait(timeout=2)

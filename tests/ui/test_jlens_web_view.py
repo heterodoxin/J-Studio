@@ -1,7 +1,7 @@
 from PySide6.QtCore import QUrl
 
 from jstudio.services.protocols import SlicePage
-from jstudio.ui.jlens.web_view import JLensBridge, JLensWebView, SecureSlicePage
+from jstudio.ui.lensview.web_view import JLensBridge, JLensWebView, SecureSlicePage
 
 
 def test_web_view_loads_html_and_rejects_remote_navigation(qtbot):

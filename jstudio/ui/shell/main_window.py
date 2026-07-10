@@ -22,7 +22,7 @@ from jstudio.domain import LensFitState, LensFitStatus, ModelSessionSummary, Run
 from jstudio.project import ProjectDocument
 from jstudio.services.protocols import JStudioServices
 from jstudio.ui.chat import ChatWorkspace
-from jstudio.ui.jlens.workspace import JLensWorkspace
+from jstudio.ui.lensview.workspace import JLensWorkspace
 from jstudio.ui.main_workspace import MainReadWorkspace
 from jstudio.ui.rules.workspace import RulesWorkspace
 from jstudio.ui.secondary import TOOL_CLASSES

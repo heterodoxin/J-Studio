@@ -44,12 +44,15 @@ class GenerationRequest:
     rule_records: tuple[RuleRecord, ...] = ()
     read: ReadConfiguration = ReadConfiguration()
     backend: GenerationBackend = GenerationBackend.FAST
+    history: tuple[tuple[str, str], ...] = ()
 
     def __post_init__(self) -> None:
         if self.intervention_drafts and (
             len(self.intervention_ids) != len(self.intervention_drafts)
         ):
             raise ValueError("intervention IDs and drafts must have equal length")
+        if any(len(turn) != 2 for turn in self.history):
+            raise ValueError("history turns must be (role, content) pairs")
 
 
 @dataclass(frozen=True, slots=True)

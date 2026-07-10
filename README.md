@@ -2,7 +2,7 @@
 
 ## What is this project
 
-J Studio is a native desktop workbench for inspecting the internal J-space of decoder-only language models and applying calibrated word-level interventions on a local Hugging Face model running on ROCm. It reads a fitted Jacobian lens across layers and token positions, renders the readout as an interactive layer-by-position slice, and arms inject, replace, and suppress operations that are verified against the model's own generation before they are applied. PyTorch, Transformers, and the lens backend sit behind a backend-neutral service boundary, and a deterministic demo mode and fail-closed QuickJS rules sandbox are included.
+J Studio is a native desktop workbench for inspecting the internal J-space of decoder-only language models and applying calibrated word-level interventions on a local Hugging Face model running on a CUDA or ROCm GPU. It reads a fitted Jacobian lens across layers and token positions, renders the readout as an interactive layer-by-position slice, and arms inject, replace, and suppress operations that are verified against the model's own generation before they are applied. PyTorch, Transformers, and the lens backend sit behind a backend-neutral service boundary, and a deterministic demo mode and fail-closed QuickJS rules sandbox are included.
 
 ## Install
 
@@ -12,10 +12,23 @@ cd J-Studio
 pip install -e .
 ```
 
-The command above installs the desktop application and its Qt and rules-sandbox dependencies. The local model backend additionally requires a ROCm build of PyTorch, Transformers, and the Jacobian lens library:
+The command above installs the desktop application and its Qt and rules-sandbox dependencies. The local model backend additionally requires a GPU build of PyTorch, Transformers, and the Jacobian lens library. Install the PyTorch build that matches your GPU.
+
+On NVIDIA (CUDA):
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cu124
+```
+
+On AMD (ROCm):
 
 ```bash
 pip install torch --index-url https://download.pytorch.org/whl/rocm6.3
+```
+
+Then install the remaining backend dependencies:
+
+```bash
 pip install transformers
 pip install git+https://github.com/anthropics/jacobian-lens.git
 ```
@@ -42,7 +55,7 @@ You can see the token a model is disposed to emit at any layer and position, pin
 
 ## Advanced
 
-The auto-fit estimator projects each per-prompt input-output Jacobian onto the subspace spanned by the model's real final-layer residuals, accumulates the correction in two independent prompt halves, and keeps only singular directions that reproduce across the split via a cross-validated singular-value shrinkage. It fits the deep band of source layers, targets the penultimate transport layer, calibrates residual-covariance geometry for intervention cost, and reports held-out pass@10 without gating on it. J-space injection steers generation by adding the lens readout covector for the target token, unit-normalized and scaled to a fraction of the residual norm, persistently at every generated position; the layer and strength are searched per model and per intervention, preferring the gentlest setting that produces a coherent steer. Streaming output strips `<think>` reasoning blocks incrementally, and the ROCm backend loads one BF16 decoder whose residual blocks are located by trying known Hugging Face layouts in order.
+The auto-fit estimator projects each per-prompt input-output Jacobian onto the subspace spanned by the model's real final-layer residuals, accumulates the correction in two independent prompt halves, and keeps only singular directions that reproduce across the split via a cross-validated singular-value shrinkage. It fits the deep band of source layers, targets the final transport layer, calibrates residual-covariance geometry for intervention cost, and reports held-out pass@10 without gating on it. J-space injection steers generation by adding the lens readout covector for the target token, unit-normalized and scaled to a fraction of the residual norm, persistently at every generated position; the layer and strength are searched per model and per intervention, preferring the gentlest setting that produces a coherent steer. Streaming output strips `<think>` reasoning blocks incrementally, and the CUDA or ROCm backend loads one BF16 decoder whose residual blocks are located by trying known Hugging Face layouts in order.
 
 ## Disclaimer
 

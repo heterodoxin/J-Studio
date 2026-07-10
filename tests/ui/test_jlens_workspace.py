@@ -1,5 +1,5 @@
-from jstudio.ui.jlens.web_view import JLensWebView
-from jstudio.ui.jlens.workspace import JLensWorkspace
+from jstudio.ui.lensview.web_view import JLensWebView
+from jstudio.ui.lensview.workspace import JLensWorkspace
 
 
 def test_workspace_uses_original_slice_renderer(qtbot, services):

@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
 
 from jstudio.domain import LensFitState, LensFitStatus
 from jstudio.services.protocols import JStudioServices, SliceRequest
-from jstudio.ui.jlens.web_view import JLensWebView
+from jstudio.ui.lensview.web_view import JLensWebView
 
 
 class JLensSelectionModel(QObject):
