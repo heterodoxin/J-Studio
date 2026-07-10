@@ -115,7 +115,7 @@ def default_lens_path(model_id: str) -> Path:
     if override:
         return Path(override).expanduser()
     safe_name = model_id.replace("/", "--")
-    workspace = Path(__file__).parents[3] / "lenses" / safe_name / "lens.pt"
+    workspace = Path(__file__).parents[2] / "lenses" / safe_name / "lens.pt"
     if workspace.exists():
         return workspace
     return Path.home() / ".cache" / "jstudio" / "lenses" / safe_name / "lens.pt"
