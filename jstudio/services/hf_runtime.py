@@ -516,35 +516,36 @@ class HFModelRuntime:
         return tuple(editors), tuple(results)
 
     def _steer_injection(self, model_prompt: str, target_term: str, layers, strength):
-        """Steer generation with the lens readout covector for the target token,
-        searching layer and strength per model for the gentlest coherent steer."""
+        """Steer generation toward a concept with a contrastive residual
+        direction, tuned to the gentlest strength that surfaces the concept
+        without shortening or degrading the response."""
         from jlens.hooks import ActivationEditor, ActivationRecorder, ResidualEdit
         from jlens.interventions import (
             ConceptResolver,
             InterventionResult,
             InterventionTrace,
-            downstream_score_covectors,
         )
 
         torch = self._torch
         target_ids = ConceptResolver(self.tokenizer).resolve(target_term).token_ids
+        concept = target_term.strip()
         # Search at most five evenly spaced deep layers to bound arming time.
         lo = int(0.4 * max(self.lens.source_layers))
         candidates = [layer for layer in layers if layer >= lo] or list(layers)
         if len(candidates) > 5:
             step = len(candidates) / 5
             candidates = [candidates[int(i * step)] for i in range(5)]
-        alpha_ceiling = max(0.15, min(0.6, float(strength) / 16.0 * 0.6))
-        alphas = [a for a in (0.15, 0.25, 0.35, 0.5, 0.6) if a <= alpha_ceiling + 1e-9]
+        alpha_ceiling = max(0.1, min(0.8, float(strength) / 16.0 * 0.8))
+        alphas = [a for a in (0.1, 0.2, 0.3, 0.45, 0.6, 0.8) if a <= alpha_ceiling + 1e-9]
 
         input_ids = self.tokenizer(model_prompt, return_tensors="pt").input_ids.to(
             self.model.device
         )
 
-        def probe(editor) -> str:
-            with torch.inference_mode(), editor:
+        def generate(editor=None) -> str:
+            with torch.inference_mode(), (editor if editor is not None else nullcontext()):
                 out = self.model.generate(
-                    input_ids, max_new_tokens=16, do_sample=False,
+                    input_ids, max_new_tokens=32, do_sample=False,
                     pad_token_id=self.tokenizer.eos_token_id,
                 )
             return self.tokenizer.decode(
@@ -562,7 +563,7 @@ class HFModelRuntime:
                 selected_positions=(-1,), selected_scale=alpha,
                 normalized_cost=0.0, baseline_scores={}, after_scores={},
                 baseline_top_ids=(), after_top_ids=(), search_points=(),
-                warnings=("j-space generation steering",),
+                warnings=("j-space contrastive steering",),
             )
             result = InterventionResult(
                 True, trace, delta.detach().cpu(),
@@ -575,35 +576,53 @@ class HFModelRuntime:
             ])
             return editor, result
 
-        directions: dict[int, tuple[torch.Tensor, float]] = {}
-        for layer in candidates:
-            covectors = downstream_score_covectors(
-                self.lens_model, model_prompt, layer=layer, position=-1,
-                token_ids=list(target_ids),
-            )
-            direction = covectors.float().mean(dim=0)
-            direction = direction / direction.norm().clamp_min(1e-8)
-            recorder = ActivationRecorder(self.lens_model.layers, at=[layer])
-            with torch.no_grad(), recorder as rec:
-                self.lens_model.forward(input_ids)
-            norm = float(rec.activations[layer][0, -1].norm())
-            directions[layer] = (direction, norm)
+        baseline_words = len(generate().split())
 
-        # Prefer the gentlest strength that weaves the concept into a full
-        # sentence, keeping a one-word steer only as a fallback.
-        needle = target_term.strip().lower()
+        # Contrastive concept direction: the mean residual of a context that
+        # names the concept minus one that does not, so it steers topic rather
+        # than the next token.
+        def residuals(text: str) -> dict:
+            ids = self.tokenizer(text, return_tensors="pt").input_ids.to(
+                self.model.device
+            )
+            with torch.no_grad(), ActivationRecorder(
+                self.lens_model.layers, at=candidates
+            ) as rec:
+                self.lens_model.forward(ids)
+            return {
+                layer: rec.activations[layer][0].float().mean(dim=0)
+                for layer in candidates
+            }
+
+        positive = residuals(f"I keep thinking about {concept}.")
+        negative = residuals("I keep thinking about it.")
+        with torch.no_grad(), ActivationRecorder(
+            self.lens_model.layers, at=candidates
+        ) as rec:
+            self.lens_model.forward(input_ids)
+        prompt_norm = {
+            layer: float(rec.activations[layer][0, -1].norm()) for layer in candidates
+        }
+        directions = {}
+        for layer in candidates:
+            difference = positive[layer] - negative[layer]
+            directions[layer] = difference / difference.norm().clamp_min(1e-8)
+
+        # Prefer the gentlest steer that keeps the response roughly its natural
+        # length; a collapsed short answer is only a fallback.
+        needle = concept.lower()
+        min_words = int(0.6 * baseline_words)
         fallback = None
         for alpha in alphas:
             for layer in candidates:
-                direction, norm = directions[layer]
-                delta = direction * (alpha * norm)
+                delta = directions[layer] * (alpha * prompt_norm[layer])
                 edit = ResidualEdit(
                     layer=layer, positions=(-1,), delta=delta, max_applications=None
                 )
-                text = probe(ActivationEditor(self.lens_model.layers, [edit]))
+                text = generate(ActivationEditor(self.lens_model.layers, [edit]))
                 if needle not in text.lower() or not coherent(text):
                     continue
-                if len(text.split()) >= 3:
+                if len(text.split()) >= min_words:
                     return build(layer, alpha, delta)
                 if fallback is None:
                     fallback = (layer, alpha, delta)

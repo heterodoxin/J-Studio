@@ -374,17 +374,10 @@ def test_steer_injection_reports_not_applied_when_no_coherent_steer(monkeypatch)
     import jlens.interventions as ji
     import torch
 
-    # covector direction is arbitrary; the probe never contains the concept.
-    monkeypatch.setattr(
-        ji, "downstream_score_covectors",
-        lambda model, prompt, *, layer, position, token_ids: torch.ones(
-            len(token_ids), 4
-        ),
-    )
     monkeypatch.setattr(hooks, "ActivationEditor", lambda layers, edits: nullcontext())
     monkeypatch.setattr(
         hooks, "ActivationRecorder",
-        lambda layers, at: _RecorderDouble({at[0]: torch.ones(1, 3, 4)}),
+        lambda layers, at: _RecorderDouble({layer: torch.ones(1, 3, 4) for layer in at}),
     )
 
     class Tok:
