@@ -516,9 +516,9 @@ class HFModelRuntime:
         return tuple(editors), tuple(results)
 
     def _steer_injection(self, model_prompt: str, target_term: str, layers, strength):
-        """Steer generation toward a concept with a contrastive residual
-        direction, tuned to the gentlest strength that surfaces the concept
-        without shortening or degrading the response."""
+        """Steer generation with a J-space covector for the concept's topic set,
+        tuned to the gentlest strength that surfaces the concept without
+        shortening or degrading the response."""
         from jlens.hooks import ActivationEditor, ActivationRecorder, ResidualEdit
         from jlens.interventions import (
             ConceptResolver,
@@ -535,8 +535,9 @@ class HFModelRuntime:
         if len(candidates) > 5:
             step = len(candidates) / 5
             candidates = [candidates[int(i * step)] for i in range(5)]
-        alpha_ceiling = max(0.1, min(0.8, float(strength) / 16.0 * 0.8))
-        alphas = [a for a in (0.1, 0.2, 0.3, 0.45, 0.6, 0.8) if a <= alpha_ceiling + 1e-9]
+        alpha_ceiling = max(0.1, min(1.2, float(strength) / 16.0 * 1.2))
+        ladder = (0.1, 0.2, 0.3, 0.45, 0.6, 0.8, 1.0, 1.2)
+        alphas = [a for a in ladder if a <= alpha_ceiling + 1e-9]
 
         input_ids = self.tokenizer(model_prompt, return_tensors="pt").input_ids.to(
             self.model.device
@@ -563,7 +564,7 @@ class HFModelRuntime:
                 selected_positions=(-1,), selected_scale=alpha,
                 normalized_cost=0.0, baseline_scores={}, after_scores={},
                 baseline_top_ids=(), after_top_ids=(), search_points=(),
-                warnings=("j-space contrastive steering",),
+                warnings=("j-space topic covector",),
             )
             result = InterventionResult(
                 True, trace, delta.detach().cpu(),
@@ -578,9 +579,8 @@ class HFModelRuntime:
 
         baseline_words = len(generate().split())
 
-        # Contrastive concept direction: the mean residual of a context that
-        # names the concept minus one that does not, so it steers topic rather
-        # than the next token.
+        # Contrast a context that names the concept against one that does not,
+        # so the difference captures the topic rather than the next token.
         def residuals(text: str) -> dict:
             ids = self.tokenizer(text, return_tensors="pt").input_ids.to(
                 self.model.device
@@ -603,10 +603,27 @@ class HFModelRuntime:
         prompt_norm = {
             layer: float(rec.activations[layer][0, -1].norm()) for layer in candidates
         }
+        # Read the topic's token set off the contrast through the lens, then pull
+        # that whole set back through the same transport: a J-space covector for
+        # a topic (not one next token), so it stays in J-space and does not
+        # collapse long-form output.
+        unembed_weight = self.model.get_output_embeddings().weight.float()
         directions = {}
         for layer in candidates:
-            difference = positive[layer] - negative[layer]
-            directions[layer] = difference / difference.norm().clamp_min(1e-8)
+            contrast = positive[layer] - negative[layer]
+            if layer not in self.lens.jacobians:
+                directions[layer] = contrast / contrast.norm().clamp_min(1e-8)
+                continue
+            with torch.no_grad():
+                readout = self.lens_model.unembed(
+                    self.lens.transport(contrast, layer)
+                ).float()
+            values, topic_ids = readout.topk(8)
+            weights = values.softmax(0)
+            target = (weights[:, None] * unembed_weight[topic_ids]).sum(0)
+            jacobian = self.lens.jacobians[layer].to(target.device).float()
+            direction = jacobian.T @ target
+            directions[layer] = direction / direction.norm().clamp_min(1e-8)
 
         # Prefer the gentlest steer that keeps the response roughly its natural
         # length; a collapsed short answer is only a fallback.

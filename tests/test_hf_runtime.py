@@ -395,6 +395,9 @@ def test_steer_injection_reports_not_applied_when_no_coherent_steer(monkeypatch)
         def generate(self, input_ids, **kwargs):
             return torch.zeros(1, input_ids.shape[1] + 4, dtype=torch.long)
 
+        def get_output_embeddings(self):
+            return SimpleNamespace(weight=torch.zeros(6, 4))
+
     class LensModel:
         layers = [object()]
 
@@ -406,7 +409,8 @@ def test_steer_injection_reports_not_applied_when_no_coherent_steer(monkeypatch)
             return nullcontext()
 
     runtime = HFModelRuntime.__new__(HFModelRuntime)
-    runtime.lens = SimpleNamespace(source_layers=(0, 1, 2, 3))
+    # empty jacobians forces the residual-contrast fallback path
+    runtime.lens = SimpleNamespace(source_layers=(0, 1, 2, 3), jacobians={})
     runtime.lens_model = LensModel()
     runtime.model = Model()
     runtime.tokenizer = Tok()
