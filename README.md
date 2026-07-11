@@ -49,13 +49,21 @@ j-studio --demo
 
 The lens readout uses a dense-family Jacobian transport rather than a low-rank random sketch, so per-position token ranks reflect the fitted average Jacobian instead of amplified projection noise. Interventions are confirmed on the real generation path: an inject search returns the smallest steering strength whose short greedy probe contains the target concept while output stays coherent, and an edit that does not change generation is reported as not applied rather than silently dropped. The GUI package holds no PyTorch or Transformers imports; all model execution crosses a single service boundary, and a shared-GPU coordinator serializes fitting, readout, and generation against one loaded model.
 
+![Best readout rank by lens type](assets/readout_ranks.png)
+
+*Best readout rank on `heterodoxin/qwen3-8b-apostate` across three probe cases (log scale, lower is better): the dense lens ranks the target token far above the low-rank sketch.*
+
 ## Why should I care
 
 You can see the token a model is disposed to emit at any layer and position, pin those readouts, and watch their ranks across the network, all against a local model on your own hardware. Word-level interventions let you steer generation toward a chosen concept and observe the result token by token, with a provenance badge that states which lens is active and whether its readout is trustworthy. A background auto-fit produces a usable lens for a newly loaded model with a live progress bar and time estimate, so a model with no fitted lens becomes inspectable without leaving the application.
 
+![Rank of the intermediate concept across layers](assets/readout_by_layer.png)
+
+*Reading the intermediate concept "Italy" at the boot position across layers: the dense lens surfaces it to rank 2 near layer 18, where the sketch lens never resolves it.*
+
 ## Advanced
 
-The auto-fit estimator projects each per-prompt input-output Jacobian onto the subspace spanned by the model's real final-layer residuals, accumulates the correction in two independent prompt halves, and keeps only singular directions that reproduce across the split via a cross-validated singular-value shrinkage. It fits the deep band of source layers, targets the final transport layer, calibrates residual-covariance geometry for intervention cost, and reports held-out pass@10 without gating on it. J-space injection steers generation by adding the lens readout covector for the target token, unit-normalized and scaled to a fraction of the residual norm, persistently at every generated position; the layer and strength are searched per model and per intervention, preferring the gentlest setting that produces a coherent steer. Streaming output strips `<think>` reasoning blocks incrementally, and the CUDA or ROCm backend loads one BF16 decoder whose residual blocks are located by trying known Hugging Face layouts in order.
+The auto-fit estimator projects each per-prompt input-output Jacobian onto the subspace spanned by the model's real final-layer residuals, accumulates the correction in two independent prompt halves, and keeps only singular directions that reproduce across the split via a cross-validated singular-value shrinkage. It fits the deep band of source layers, targets the final transport layer, calibrates residual-covariance geometry for intervention cost, and reports held-out pass@10 without gating on it. J-space injection reads the target concept's token set off a contrastive readout through the lens, pulls that whole set back through the same Jacobian transport into a residual-space covector, and adds it at every generated position; the layer and strength are searched per model and per intervention, preferring the gentlest setting that surfaces the concept while keeping the response near its natural length. Streaming output strips `<think>` reasoning blocks incrementally, and the CUDA or ROCm backend loads one BF16 decoder whose residual blocks are located by trying known Hugging Face layouts in order.
 
 ## Disclaimer
 
