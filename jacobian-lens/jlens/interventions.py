@@ -296,6 +296,8 @@ class InterventionTrace:
     warnings: tuple[str, ...]
     sequence_logprob_before: float | None = None
     sequence_logprob_after: float | None = None
+    application_delay: int = 0
+    carrier_phrase: str | None = None
 
     def __post_init__(self) -> None:
         scalar_values = [self.selected_scale, self.normalized_cost]
@@ -313,6 +315,8 @@ class InterventionTrace:
             raise ValueError("intervention trace numeric values must be finite")
         if self.selected_scale < 0 or self.normalized_cost < 0:
             raise ValueError("intervention scale and cost must be non-negative")
+        if self.application_delay < 0:
+            raise ValueError("application delay must be non-negative")
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -414,8 +418,10 @@ class PhraseResidualOperator:
             raise ValueError("phrase operator produced non-finite residuals")
         return edited.to(residual.dtype)
 
-    def make_transform(self, *, ordered: bool = True) -> PhraseResidualSchedule:
-        return PhraseResidualSchedule(self, ordered=ordered)
+    def make_transform(
+        self, *, ordered: bool = True, delay: int = 0
+    ) -> PhraseResidualSchedule:
+        return PhraseResidualSchedule(self, ordered=ordered, delay=delay)
 
 
 @dataclass
@@ -424,9 +430,19 @@ class PhraseResidualSchedule:
 
     operator: PhraseResidualOperator
     ordered: bool = True
+    delay: int = 0
     step: int = 0
+    calls: int = 0
+
+    def __post_init__(self) -> None:
+        if self.delay < 0:
+            raise ValueError("phrase schedule delay must be non-negative")
 
     def __call__(self, residual: torch.Tensor) -> torch.Tensor:
+        if self.calls < self.delay:
+            self.calls += 1
+            return residual
+        self.calls += 1
         edited = self.operator.apply_at_step(
             residual, self.step if self.ordered else None
         )
@@ -552,6 +568,7 @@ class InterventionEngine:
         once: bool = True,
         max_applications: int | None = None,
         ordered: bool = True,
+        delay: int | None = None,
     ) -> ActivationEditor | ResidualTransformEditor:
         """Return a scoped hook that applies a selected edit during inference.
 
@@ -570,6 +587,9 @@ class InterventionEngine:
             raise ValueError("intervention result has no selected edit location")
         if max_applications is not None and max_applications <= 0:
             raise ValueError("max_applications must be positive")
+        resolved_delay = result.trace.application_delay if delay is None else delay
+        if resolved_delay < 0:
+            raise ValueError("application delay must be non-negative")
         phrase_limit = (
             max_applications if max_applications is not None else (1 if once else None)
         )
@@ -580,7 +600,9 @@ class InterventionEngine:
                     ResidualTransform(
                         layer=operator_layer,
                         positions=result.trace.selected_positions,
-                        transform=operator.make_transform(ordered=ordered),
+                        transform=operator.make_transform(
+                            ordered=ordered, delay=resolved_delay
+                        ),
                         max_applications=phrase_limit,
                     )
                     for operator_layer, operator in result.operators
@@ -593,7 +615,9 @@ class InterventionEngine:
                     ResidualTransform(
                         layer=layer,
                         positions=result.trace.selected_positions,
-                        transform=result.operator.make_transform(ordered=ordered),
+                        transform=result.operator.make_transform(
+                            ordered=ordered, delay=resolved_delay
+                        ),
                         max_applications=phrase_limit,
                     )
                 ],
@@ -618,6 +642,8 @@ class InterventionEngine:
         layers: Sequence[int] | None = None,
         positions: Sequence[int] = (-1,),
         application_positions: Sequence[int] | None = None,
+        application_delay: int = 0,
+        carrier_phrase: str | None = None,
         maximum_scale: float = 16.0,
         effect_probe: Callable[
             [tuple[tuple[int, PhraseResidualOperator], ...], tuple[int, ...]],
@@ -633,6 +659,8 @@ class InterventionEngine:
             layers=layers,
             positions=positions,
             application_positions=application_positions,
+            application_delay=application_delay,
+            carrier_phrase=carrier_phrase,
             maximum_scale=maximum_scale,
             effect_probe=effect_probe,
         )
@@ -645,6 +673,8 @@ class InterventionEngine:
         layers: Sequence[int] | None = None,
         positions: Sequence[int] = (-1,),
         application_positions: Sequence[int] | None = None,
+        application_delay: int = 0,
+        carrier_phrase: str | None = None,
         maximum_scale: float = 16.0,
         effect_probe: Callable[
             [tuple[tuple[int, PhraseResidualOperator], ...], tuple[int, ...]],
@@ -660,6 +690,8 @@ class InterventionEngine:
             layers=layers,
             positions=positions,
             application_positions=application_positions,
+            application_delay=application_delay,
+            carrier_phrase=carrier_phrase,
             maximum_scale=maximum_scale,
             effect_probe=effect_probe,
         )
@@ -673,6 +705,8 @@ class InterventionEngine:
         layers: Sequence[int] | None = None,
         positions: Sequence[int] = (-1,),
         application_positions: Sequence[int] | None = None,
+        application_delay: int = 0,
+        carrier_phrase: str | None = None,
         maximum_scale: float = 16.0,
         effect_probe: Callable[
             [tuple[tuple[int, PhraseResidualOperator], ...], tuple[int, ...]],
@@ -688,6 +722,8 @@ class InterventionEngine:
             layers=layers,
             positions=positions,
             application_positions=application_positions,
+            application_delay=application_delay,
+            carrier_phrase=carrier_phrase,
             maximum_scale=maximum_scale,
             effect_probe=effect_probe,
         )
@@ -799,6 +835,8 @@ class InterventionEngine:
         layers: Sequence[int] | None,
         positions: Sequence[int],
         application_positions: Sequence[int] | None,
+        application_delay: int,
+        carrier_phrase: str | None,
         maximum_scale: float,
         effect_probe: Callable[
             [tuple[tuple[int, PhraseResidualOperator], ...], tuple[int, ...]],
@@ -812,6 +850,8 @@ class InterventionEngine:
             raise ValueError("positions must not be empty")
         if application_positions is not None and not application_positions:
             raise ValueError("application_positions must be None or non-empty")
+        if application_delay < 0:
+            raise ValueError("application_delay must be non-negative")
         if layers is None:
             start = len(self.lens.source_layers) // 3
             layers = self.lens.source_layers[start:]
@@ -962,12 +1002,15 @@ class InterventionEngine:
                     warnings=(
                         "multi-token-jspace-transform",
                         f"layer-range:{layers[0]}-{layers[-1]}",
+                        *(("natural-carrier",) if carrier_phrase else ()),
                         *(
                             ("generation-causal-probe",)
                             if effect_probe is not None
                             else ()
                         ),
                     ),
+                    application_delay=application_delay,
+                    carrier_phrase=carrier_phrase,
                 )
                 result = InterventionResult(
                     success=passed,
@@ -977,6 +1020,11 @@ class InterventionEngine:
                         f"minimum effective J-space strength "
                         f"{selected_scale:.2f} across layers "
                         f"{layers[0]}-{layers[-1]}"
+                        + (
+                            f" after {application_delay} decode steps"
+                            if application_delay
+                            else ""
+                        )
                         if passed
                         else "bounded J-space phrase search did not pass"
                     ),

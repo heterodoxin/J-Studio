@@ -243,6 +243,8 @@ def test_trace_json_round_trip():
         after_top_ids=(7, 1, 2),
         search_points=(SearchPoint(0.5, True, 0.4, 0.2),),
         warnings=(),
+        application_delay=2,
+        carrier_phrase=" I like cat",
     )
 
     encoded = json.dumps(trace.to_dict())
@@ -448,6 +450,29 @@ def test_phrase_schedule_can_hold_a_multitoken_concept_across_positions():
 
     torch.testing.assert_close(first, second)
     torch.testing.assert_close(first[0], first[1])
+
+
+def test_phrase_schedule_can_delay_ordered_transport():
+    operator = PhraseResidualOperator(
+        operation="inject",
+        source_basis=None,
+        target_directions=torch.eye(2),
+        alignment=None,
+        scale=1.0,
+    )
+    schedule = PhraseResidualSchedule(operator, delay=2)
+    residual = torch.tensor([1.0, 1.0])
+
+    untouched_first = schedule(residual)
+    untouched_second = schedule(residual)
+    first_target = schedule(residual)
+    second_target = schedule(residual)
+
+    torch.testing.assert_close(untouched_first, residual)
+    torch.testing.assert_close(untouched_second, residual)
+    assert first_target[0] > first_target[1]
+    assert second_target[1] > second_target[0]
+    assert schedule.step == 2
 
 
 def test_multitoken_phrase_suppress_uses_all_source_tokens(tiny_engine):

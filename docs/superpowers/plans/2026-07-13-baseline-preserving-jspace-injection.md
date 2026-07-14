@@ -126,3 +126,50 @@ explicit Steps/Generation modes on their ordered response-boundary schedule.
 Run both full test suites and Ruff, then manually compare baseline and intervention
 responses on Qwen for arbitrary greetings, a verbal-report prompt, replacement,
 and suppression. Forced-prefix candidates must fail closed.
+
+### Task 3: Compile bare concepts into natural J-space realizations
+
+**Files:**
+- Modify: `jacobian-lens/jlens/interventions.py`
+- Modify: `jacobian-lens/tests/test_interventions.py`
+- Modify: `jstudio/services/hf_runtime.py`
+- Modify: `tests/test_hf_runtime.py`
+- Modify: `README.md`
+- Modify: `CHANGELOG.md`
+
+**Interfaces:**
+- Consumes: default `InterventionOperation.INJECT` drafts and ordered phrase
+  residual operators.
+- Produces: delayed phrase schedules plus trace fields `application_delay` and
+  `carrier_phrase`.
+
+- [x] **Step 1: Add failing delayed-schedule tests**
+
+Prove a phrase transform leaves the first two forward calls unchanged, then applies
+each target direction once in order. Prove its trace serializes the delay and carrier.
+
+- [x] **Step 2: Add failing runtime compilation tests**
+
+Prove a bare target `banana` compiles to ` I like banana`, the engine
+receives delay 2, application lasts exactly delay plus carrier-token count, and the
+causal judge still checks the original target rather than the whole carrier.
+
+- [x] **Step 3: Implement delayed carrier transport**
+
+Extend `PhraseResidualSchedule`, `PhraseResidualOperator.make_transform()`, and
+`InterventionEngine.apply()` with a nonnegative delay. Store delay and carrier in
+`InterventionTrace` and preserve backward-compatible defaults during loading.
+
+- [x] **Step 4: Wire natural default injection**
+
+Compile only default Next Token Inject drafts to the explicit carrier, run the same
+minimum-strength generated-token search with delay 2, and apply the successful
+ordered transform for exactly the delay plus carrier-token count. Never rewrite the
+prompt or return the carrier as an output fallback.
+
+- [x] **Step 5: Verify the real Qwen response**
+
+Run `hi` with target `banana` on the fitted Qwen lens. Require a coherent greeting,
+one non-leading banana occurrence, no replacement-character corruption, and a
+selected strength no greater than the configured maximum. Then run both complete
+test suites, Ruff, diff checks, commit, push, and restart J Studio.

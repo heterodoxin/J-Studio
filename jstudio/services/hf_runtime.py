@@ -94,6 +94,14 @@ def _last_subsequence_positions(
     raise ValueError("current user turn was not found in the formatted model prompt")
 
 
+def _natural_injection_carrier(target: str) -> str:
+    """Give a bare concept an explicit relation for J-space transport."""
+    concept = target.strip()
+    if not concept:
+        raise ValueError("injection target must not be empty")
+    return f" I like {concept}"
+
+
 def _remove_sequence_variants(
     tokens: tuple[int, ...], variants: tuple[tuple[int, ...], ...]
 ) -> tuple[int, ...]:
@@ -167,6 +175,7 @@ def _causal_token_effect(
     candidate: tuple[int, ...],
     source_variants: tuple[tuple[int, ...], ...],
     target_variants: tuple[tuple[int, ...], ...],
+    required_variants: tuple[tuple[int, ...], ...] = (),
 ) -> tuple[bool, float]:
     """Judge a short generated-token probe without optimizing against logits."""
     width = max(len(baseline), len(candidate), 1)
@@ -195,6 +204,10 @@ def _causal_token_effect(
         )
         passed = (
             target_gain == 1
+            and (
+                not required_variants
+                or _sequence_count(candidate, required_variants) > 0
+            )
             and _trajectory_preserved(baseline, preserved_candidate)
             and not leading_takeover
             and not _is_edge_concatenation(
@@ -682,7 +695,13 @@ class HFModelRuntime:
                 current_ids = next_id
         return tuple(generated)
 
-    def _make_phrase_effect_probe(self, model_prompt: str, draft):
+    def _make_phrase_effect_probe(
+        self,
+        model_prompt: str,
+        draft,
+        carrier_phrase: str | None = None,
+        application_delay: int = 0,
+    ):
         from jlens.hooks import (
             ResidualTransform,
             ResidualTransformEditor,
@@ -691,13 +710,19 @@ class HFModelRuntime:
         baseline = self._causal_probe_ids(model_prompt)
         source_variants = self._token_variants(draft.source_term)
         target_variants = self._token_variants(draft.target_term)
-        target_steps = min((len(value) for value in target_variants), default=1)
+        required_variants = (
+            self._token_variants("I like") if carrier_phrase is not None else ()
+        )
+        transported_variants = self._token_variants(
+            carrier_phrase or draft.target_term
+        )
+        target_steps = min((len(value) for value in transported_variants), default=1)
         max_applications = (
             None
             if draft.duration == "generation"
-            else max(draft.step_count or 1, target_steps)
+            else application_delay + max(draft.step_count or 1, target_steps)
             if draft.duration == "steps"
-            else target_steps
+            else application_delay + target_steps
         )
 
         def probe(operator_pairs, positions):
@@ -708,10 +733,12 @@ class HFModelRuntime:
                         layer=layer,
                         positions=positions,
                         transform=operator.make_transform(
-                            ordered=not (
+                            ordered=carrier_phrase is not None
+                            or not (
                                 draft.operation.value == "inject"
                                 and draft.duration == "next-token"
-                            )
+                            ),
+                            delay=application_delay,
                         ),
                         max_applications=max_applications,
                     )
@@ -726,6 +753,7 @@ class HFModelRuntime:
                 candidate,
                 source_variants,
                 target_variants,
+                required_variants,
             )
 
         return probe
@@ -753,9 +781,8 @@ class HFModelRuntime:
         # The J-space workspace is an intermediate-layer phenomenon. Late layers
         # are increasingly motor/output-like and recreate forced first tokens.
         workspace_floor = math.ceil(0.38 * (self.layer_count - 1))
-        workspace_ceiling = math.floor(0.75 * (self.layer_count - 1))
+        workspace_ceiling = math.floor(0.8 * (self.layer_count - 1))
         coherent_ceiling = math.floor(0.8 * (self.layer_count - 1))
-        user_positions = None
         with self.coordinator.exclusive("intervention-search"):
             engine = jlens.InterventionEngine(self.lens_model, self.lens)
             for draft in drafts:
@@ -780,26 +807,32 @@ class HFModelRuntime:
                     ]
                     if not layers:
                         raise ValueError("intervention range contains no fitted layers")
-                    if workspace_mode and user_positions is None:
-                        user_positions = self._current_user_positions(
-                            model_prompt, prompt
-                        )
+                    carrier_phrase = (
+                        _natural_injection_carrier(draft.target_term)
+                        if workspace_mode
+                        else None
+                    )
+                    application_delay = 2 if workspace_mode else 0
                     options = {
                         "layers": layers,
                         "positions": (-1,),
-                        "application_positions": (
-                            user_positions
-                            if workspace_mode and user_positions is not None
-                            else (-1,)
-                        ),
+                        "application_positions": (-1,),
                         "maximum_scale": draft.strength,
                         "effect_probe": self._make_phrase_effect_probe(
-                            model_prompt, draft
+                            model_prompt,
+                            draft,
+                            carrier_phrase,
+                            application_delay,
                         ),
                     }
                     if draft.operation.value == "inject":
+                        if workspace_mode:
+                            options["application_delay"] = application_delay
+                            options["carrier_phrase"] = carrier_phrase
                         result = engine.phrase_inject(
-                            model_prompt, draft.target_term, **options
+                            model_prompt,
+                            carrier_phrase or draft.target_term,
+                            **options,
                         )
                     elif draft.operation.value == "replace":
                         result = engine.phrase_replace(
@@ -817,8 +850,12 @@ class HFModelRuntime:
                     elif workspace_mode:
                         editor = engine.apply(
                             result,
-                            max_applications=1,
-                            ordered=False,
+                            max_applications=(
+                                result.trace.application_delay
+                                + len(result.trace.target_ids)
+                            ),
+                            ordered=True,
+                            delay=result.trace.application_delay,
                         )
                     elif draft.duration == "next-token":
                         editor = engine.apply(

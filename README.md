@@ -25,8 +25,8 @@ service boundary and out of the GUI package.
 - Multi-token J-space injection and replacement with generated-sequence probes
 - Automatic selection of the lowest generated-output-effective strength within the
   configured maximum budget, with no alternate logit-steering fallback
-- Context-selective default injection across the current user turn at workspace
-  layers, with localized replace/suppress and explicit duration modes
+- Natural default injection at workspace layers: a bare concept is compiled into
+  a trace-visible friendly relation and introduced after the reply begins
 - Chat and the repository's original interactive J-Lens slice visualization
 - Model View, Layer Explorer, Influence Trace, Generation Trace, sweeps, experiments,
   snapshots, settings, light/dark palettes, and keyboard navigation
@@ -76,11 +76,13 @@ J Studio; exported HTML retains the same dark research surface and interactions.
 For interventions, Strength is a maximum search budget rather than a guaranteed
 applied dose. A value of `16` allows the bounded causal search to choose the minimum
 effective strength. Multi-token targets are transported in token order across
-decode steps for explicit Steps/Generation durations; the default context mode holds
-their centroid concept once across the current user turn. Accepted responses must
-preserve the baseline trajectory and cannot begin with a forced target-token
-takeover. A request that produces no directional causal effect within the budget
-fails explicitly instead of silently switching intervention methods.
+decode steps for explicit Steps/Generation durations; the default context mode uses
+their ordered directions in an explicit `I like {concept}` carrier after
+two unmodified decode steps. The carrier is recorded in the trace and is never
+inserted into the prompt or output as a fallback. Accepted responses must preserve
+the baseline trajectory and cannot begin with a forced target-token takeover. A
+request that produces no directional causal effect within the budget fails
+explicitly instead of silently switching intervention methods.
 
 ## Verify
 

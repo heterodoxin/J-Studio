@@ -21,6 +21,7 @@ from jstudio.services.hf_runtime import (
     ThinkingFilter,
     _causal_token_effect,
     _last_subsequence_positions,
+    _natural_injection_carrier,
     _readout_values,
     services_for_runtime,
 )
@@ -613,6 +614,24 @@ def test_last_subsequence_positions_selects_current_user_turn():
         raise AssertionError("missing user turn was silently accepted")
 
 
+def test_natural_injection_carrier_is_relational_and_explicit():
+    assert _natural_injection_carrier("banana") == " I like banana"
+    assert _natural_injection_carrier("  ASCII cat  ") == " I like ASCII cat"
+
+
+def test_natural_injection_requires_relation_not_just_target_appearance():
+    baseline = (1, 2, 3, 4)
+    target = ((9,),)
+    relation = ((7, 8),)
+
+    assert not _causal_token_effect(
+        "inject", baseline, (1, 2, 9, 3, 4), (), target, relation
+    )[0]
+    assert _causal_token_effect(
+        "inject", baseline, (1, 2, 7, 8, 9, 3, 4), (), target, relation
+    )[0]
+
+
 def test_causal_suppression_without_literal_baseline_requires_divergence():
     baseline = (1, 2, 3)
 
@@ -778,7 +797,11 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
             return SimpleNamespace(
                 success=True,
                 message="inject ready",
-                trace=SimpleNamespace(target_ids=(42, 43)),
+                trace=SimpleNamespace(
+                    target_ids=(42, 43, 44, 45, 46),
+                    application_delay=2,
+                    carrier_phrase=" I like ASCII cat",
+                ),
             )
 
         def phrase_suppress(self, prompt, source, **options):
@@ -836,7 +859,10 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
     editors, results = runtime.prepare_interventions("prompt", drafts)
 
     assert [call[0] for call in calls] == ["inject", "suppress", "replace"]
-    assert calls[0][4]["application_positions"] == (4, 5)
+    assert calls[0][3] == " I like ASCII cat"
+    assert calls[0][4]["application_positions"] == (-1,)
+    assert calls[0][4]["application_delay"] == 2
+    assert calls[0][4]["carrier_phrase"] == " I like ASCII cat"
     assert calls[0][4]["layers"] == [2]
     assert all(call[4]["application_positions"] == (-1,) for call in calls[1:])
     assert all(call[4]["layers"] == [0, 1, 2] for call in calls[1:])
@@ -847,7 +873,11 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
         "suppress ready",
         "replace ready",
     ]
-    assert applied[0][1] == {"max_applications": 1, "ordered": False}
+    assert applied[0][1] == {
+        "max_applications": 7,
+        "ordered": True,
+        "delay": 2,
+    }
     assert applied[1][1] == {"max_applications": 1}
     assert applied[2][1] == {"max_applications": 3}
 

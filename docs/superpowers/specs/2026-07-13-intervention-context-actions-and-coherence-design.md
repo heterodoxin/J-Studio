@@ -60,24 +60,37 @@ runtime never substitutes a logit bias, prompt rewrite, or other fallback.
 
 ### Workspace-site application
 
-The default Next Token injection is a context intervention, not an output-boundary
-edit. J Studio locates the exact current user-turn token span inside the formatted
-chat prompt and applies each layer-specific J-lens vector once across that span. It
-never silently falls back to the final assistant-prefill token when span matching
-fails.
-
-Eligible layers are constrained to 38–75% of model depth, intersected with the
-fitted lens layers and the user's explicit layer range. This targets the
+Injection directions are constrained to 38–80% of model depth, intersected with
+the fitted lens layers and the user's explicit layer range. This targets the
 workspace-like intermediate regime while avoiding late motor/output layers that
-turn a concept vector into a forced first token. The relative band generalizes to
-decoder depths without model-specific absolute layer numbers.
+turn a concept vector into an unconditional next-token impulse. The relative band
+generalizes to decoder depths without model-specific absolute layer numbers.
 
-Multi-token injection targets use the normalized centroid of their token directions
-at each user-turn position. They do not cycle token fragments over prompt positions.
-Replace and Suppress remain localized coordinate edits at the response boundary;
-their purpose is an explicit output-coordinate change rather than context priming.
-Explicit Steps and Generation durations retain ordered per-generation scheduling;
-their generated-sequence probe must still pass the same coherence checks.
+The engine retains an explicit grouped-position API for research protocols that
+inject across a user turn. User-facing default Inject instead uses the delayed
+natural realization below because a one-word concept on a context such as `hi` is
+otherwise correctly ignored by downstream computation. Replace and Suppress remain
+localized coordinate edits at the response boundary.
+
+### Natural realization of a bare concept
+
+A bare default Inject request is user-facing semantic realization, not a request to
+splice one vocabulary token. J Studio compiles the requested concept into the
+friendly carrier `I like {concept}`. The carrier is recorded verbatim in
+the intervention trace so the added relation is never presented as if it came from
+the original one-word coordinate.
+
+The carrier remains a residual-only J-space operation: its ordered token directions
+are written at workspace layers after two unmodified assistant decode positions.
+This lets the model establish its normal conversational opening before the concept
+is introduced. The generated-sequence probe still judges the original requested
+concept, requires exactly one non-leading occurrence, rejects repetition and
+trajectory collapse, and selects the first passing strength. The runtime does not
+substitute the carrier text into the prompt or output.
+
+Explicit Steps and Generation durations continue to mean literal ordered phrase
+transport and do not receive an automatic carrier. Replace and Suppress remain
+localized coordinate operations.
 
 ## Validation
 
