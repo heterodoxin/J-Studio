@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>J-Lens Viewing Benchmark — heterodoxin/qwen3-8b-apostate</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; color: #0f172a; }
+    .summary { display: flex; gap: 12px; margin: 18px 0; }
+    .card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 16px; }
+    .value { font-size: 24px; font-weight: 700; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 8px; vertical-align: top; }
+    th { text-align: left; background: #f8fafc; }
+    tr.pass { background: #f0fdf4; }
+    tr.fail { background: #fef2f2; }
+    tr.details { background: white; }
+    pre { white-space: pre-wrap; background: #f8fafc; padding: 8px; border-radius: 6px; }
+    svg { width: 220px; height: 72px; }
+  </style>
+</head>
+<body>
+  <h1>J-Lens Viewing Benchmark — heterodoxin/qwen3-8b-apostate</h1>
+  <p>Prompt-context J-lens readout benchmark. It runs one forward pass over the supplied context, matching the original notebook viewing path.</p>
+  <div class="summary">
+    <div class="card"><div>Cases</div><div class="value">3</div></div>
+    <div class="card"><div>Passed</div><div class="value">3</div></div>
+    <div class="card"><div>Pass rate</div><div class="value">100.0%</div></div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Case</th><th>Context</th><th>Target</th><th>Position</th>
+        <th>Best layer</th><th>Best rank</th>
+        <th>Criterion</th><th>Status</th><th>Layer ranks</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+            <tr class="pass">
+              <td>ascii-face nose at caret</td>
+              <td>prompt+generated-response</td>
+              <td>' nose'</td>
+              <td>P28</td>
+              <td>L32</td>
+              <td>#91</td>
+              <td>top 100</td>
+              <td>pass</td>
+              <td><svg viewBox="0 0 144 56"><rect x="0" y="10" width="5" height="44" fill="#dc2626"><title>L10: rank #2530</title></rect><rect x="8" y="5" width="5" height="49" fill="#dc2626"><title>L11: rank #573</title></rect><rect x="16" y="5" width="5" height="49" fill="#dc2626"><title>L12: rank #631</title></rect><rect x="24" y="6" width="5" height="48" fill="#dc2626"><title>L14: rank #1139</title></rect><rect x="32" y="28" width="5" height="26" fill="#dc2626"><title>L15: rank #9364</title></rect><rect x="40" y="52" width="5" height="2" fill="#dc2626"><title>L16: rank #18580</title></rect><rect x="48" y="22" width="5" height="32" fill="#dc2626"><title>L18: rank #7260</title></rect><rect x="56" y="28" width="5" height="26" fill="#dc2626"><title>L19: rank #9348</title></rect><rect x="64" y="39" width="5" height="15" fill="#dc2626"><title>L21: rank #13912</title></rect><rect x="72" y="8" width="5" height="46" fill="#dc2626"><title>L22: rank #1691</title></rect><rect x="80" y="7" width="5" height="47" fill="#dc2626"><title>L23: rank #1311</title></rect><rect x="88" y="8" width="5" height="46" fill="#dc2626"><title>L25: rank #1670</title></rect><rect x="96" y="7" width="5" height="47" fill="#dc2626"><title>L26: rank #1455</title></rect><rect x="104" y="6" width="5" height="48" fill="#dc2626"><title>L28: rank #859</title></rect><rect x="112" y="6" width="5" height="48" fill="#dc2626"><title>L29: rank #901</title></rect><rect x="120" y="4" width="5" height="50" fill="#dc2626"><title>L30: rank #228</title></rect><rect x="128" y="4" width="5" height="50" fill="#16a34a"><title>L32: rank #91</title></rect><rect x="136" y="4" width="5" height="50" fill="#dc2626"><title>L33: rank #296</title></rect></svg></td>
+            </tr>
+            <tr class="details">
+              <td colspan="9">
+                <details>
+                  <summary>Prompt and layer ranks</summary>
+                  <pre>     _______     
+   /         \   
+  /  ~     ~  \  
+ (   o     o   ) 
+ |      ^      | 
+ |             | 
+ |   \_____/   | 
+  \           /  
+   \_________/   
+      |   |      
+
+What is this?
+
+It is an ASCII face with eyes, a nose, and a smile.</pre>
+                  <pre>{&#x27;case&#x27;: {&#x27;name&#x27;: &#x27;ascii-face nose at caret&#x27;, &#x27;prompt&#x27;: &#x27;     _______     \n   /         \\   \n  /  ~     ~  \\  \n (   o     o   ) \n |      ^      | \n |             | \n |   \\_____/   | \n  \\           /  \n   \\_________/   \n      |   |      \n\nWhat is this?\n\nIt is an ASCII face with eyes, a nose, and a smile.&#x27;, &#x27;target&#x27;: &#x27;nose&#x27;, &#x27;position&#x27;: 28, &#x27;layers&#x27;: (), &#x27;max_rank&#x27;: 100, &#x27;context_mode&#x27;: &#x27;prompt+generated-response&#x27;}, &#x27;success&#x27;: True, &#x27;target_id&#x27;: 19142, &#x27;target_ids&#x27;: (19142,), &#x27;target_token&#x27;: &#x27; nose&#x27;, &#x27;resolved_position&#x27;: 28, &#x27;best_rank&#x27;: 90, &#x27;best_layer&#x27;: 32, &#x27;layer_ranks&#x27;: ({&#x27;layer&#x27;: 10, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 2529, &#x27;logit&#x27;: 5.5625}, {&#x27;layer&#x27;: 11, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 572, &#x27;logit&#x27;: 10.5625}, {&#x27;layer&#x27;: 12, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 630, &#x27;logit&#x27;: 11.8125}, {&#x27;layer&#x27;: 14, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 1138, &#x27;logit&#x27;: 11.625}, {&#x27;layer&#x27;: 15, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 9363, &#x27;logit&#x27;: 5.9375}, {&#x27;layer&#x27;: 16, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 18579, &#x27;logit&#x27;: 3.828125}, {&#x27;layer&#x27;: 18, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 7259, &#x27;logit&#x27;: 6.375}, {&#x27;layer&#x27;: 19, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 9347, &#x27;logit&#x27;: 2.6875}, {&#x27;layer&#x27;: 21, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 13911, &#x27;logit&#x27;: -1.25}, {&#x27;layer&#x27;: 22, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 1690, &#x27;logit&#x27;: 7.1875}, {&#x27;layer&#x27;: 23, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 1310, &#x27;logit&#x27;: 8.75}, {&#x27;layer&#x27;: 25, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 1669, &#x27;logit&#x27;: 6.46875}, {&#x27;layer&#x27;: 26, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 1454, &#x27;logit&#x27;: 7.3125}, {&#x27;layer&#x27;: 28, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 858, &#x27;logit&#x27;: 8.4375}, {&#x27;layer&#x27;: 29, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 900, &#x27;logit&#x27;: 7.71875}, {&#x27;layer&#x27;: 30, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 227, &#x27;logit&#x27;: 9.625}, {&#x27;layer&#x27;: 32, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 90, &#x27;logit&#x27;: 10.25}, {&#x27;layer&#x27;: 33, &#x27;token_id&#x27;: 19142, &#x27;token&#x27;: &#x27; nose&#x27;, &#x27;rank&#x27;: 295, &#x27;logit&#x27;: 7.40625})}</pre>
+                </details>
+              </td>
+            </tr>
+            
+            <tr class="pass">
+              <td>multihop country at boot position</td>
+              <td>prompt+generated-response</td>
+              <td>' Italy'</td>
+              <td>P20</td>
+              <td>L30</td>
+              <td>#42</td>
+              <td>top 100</td>
+              <td>pass</td>
+              <td><svg viewBox="0 0 144 56"><rect x="0" y="52" width="5" height="2" fill="#dc2626"><title>L10: rank #4114</title></rect><rect x="8" y="17" width="5" height="37" fill="#dc2626"><title>L11: rank #1155</title></rect><rect x="16" y="5" width="5" height="49" fill="#dc2626"><title>L12: rank #131</title></rect><rect x="24" y="5" width="5" height="49" fill="#dc2626"><title>L14: rank #112</title></rect><rect x="32" y="10" width="5" height="44" fill="#dc2626"><title>L15: rank #539</title></rect><rect x="40" y="6" width="5" height="48" fill="#dc2626"><title>L16: rank #194</title></rect><rect x="48" y="8" width="5" height="46" fill="#dc2626"><title>L18: rank #359</title></rect><rect x="56" y="38" width="5" height="16" fill="#dc2626"><title>L19: rank #2968</title></rect><rect x="64" y="11" width="5" height="43" fill="#dc2626"><title>L21: rank #633</title></rect><rect x="72" y="9" width="5" height="45" fill="#dc2626"><title>L22: rank #463</title></rect><rect x="80" y="6" width="5" height="48" fill="#dc2626"><title>L23: rank #185</title></rect><rect x="88" y="4" width="5" height="50" fill="#16a34a"><title>L25: rank #54</title></rect><rect x="96" y="5" width="5" height="49" fill="#dc2626"><title>L26: rank #127</title></rect><rect x="104" y="4" width="5" height="50" fill="#16a34a"><title>L28: rank #62</title></rect><rect x="112" y="4" width="5" height="50" fill="#16a34a"><title>L29: rank #69</title></rect><rect x="120" y="4" width="5" height="50" fill="#16a34a"><title>L30: rank #42</title></rect><rect x="128" y="6" width="5" height="48" fill="#dc2626"><title>L32: rank #250</title></rect><rect x="136" y="6" width="5" height="48" fill="#dc2626"><title>L33: rank #203</title></rect></svg></td>
+            </tr>
+            <tr class="details">
+              <td colspan="9">
+                <details>
+                  <summary>Prompt and layer ranks</summary>
+                  <pre>Fact: The capital of Japan is Tokyo.
+Fact: The currency used in the country shaped like a boot is the Euro.</pre>
+                  <pre>{&#x27;case&#x27;: {&#x27;name&#x27;: &#x27;multihop country at boot position&#x27;, &#x27;prompt&#x27;: &#x27;Fact: The capital of Japan is Tokyo.\nFact: The currency used in the country shaped like a boot is the Euro.&#x27;, &#x27;target&#x27;: &#x27;Italy&#x27;, &#x27;position&#x27;: 20, &#x27;layers&#x27;: (), &#x27;max_rank&#x27;: 100, &#x27;context_mode&#x27;: &#x27;prompt+generated-response&#x27;}, &#x27;success&#x27;: True, &#x27;target_id&#x27;: 15344, &#x27;target_ids&#x27;: (70503, 15344), &#x27;target_token&#x27;: &#x27; Italy&#x27;, &#x27;resolved_position&#x27;: 20, &#x27;best_rank&#x27;: 41, &#x27;best_layer&#x27;: 30, &#x27;layer_ranks&#x27;: ({&#x27;layer&#x27;: 10, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 4113, &#x27;logit&#x27;: 7.40625}, {&#x27;layer&#x27;: 11, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 1154, &#x27;logit&#x27;: 9.75}, {&#x27;layer&#x27;: 12, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 130, &#x27;logit&#x27;: 13.0625}, {&#x27;layer&#x27;: 14, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 111, &#x27;logit&#x27;: 14.875}, {&#x27;layer&#x27;: 15, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 538, &#x27;logit&#x27;: 11.875}, {&#x27;layer&#x27;: 16, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 193, &#x27;logit&#x27;: 15.25}, {&#x27;layer&#x27;: 18, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 358, &#x27;logit&#x27;: 12.75}, {&#x27;layer&#x27;: 19, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 2967, &#x27;logit&#x27;: 8.25}, {&#x27;layer&#x27;: 21, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 632, &#x27;logit&#x27;: 11.4375}, {&#x27;layer&#x27;: 22, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 462, &#x27;logit&#x27;: 10.6875}, {&#x27;layer&#x27;: 23, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 184, &#x27;logit&#x27;: 12.0625}, {&#x27;layer&#x27;: 25, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 53, &#x27;logit&#x27;: 14.8125}, {&#x27;layer&#x27;: 26, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 126, &#x27;logit&#x27;: 11.9375}, {&#x27;layer&#x27;: 28, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 61, &#x27;logit&#x27;: 14.0625}, {&#x27;layer&#x27;: 29, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 68, &#x27;logit&#x27;: 13.0625}, {&#x27;layer&#x27;: 30, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 41, &#x27;logit&#x27;: 13.9375}, {&#x27;layer&#x27;: 32, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 249, &#x27;logit&#x27;: 9.3125}, {&#x27;layer&#x27;: 33, &#x27;token_id&#x27;: 15344, &#x27;token&#x27;: &#x27; Italy&#x27;, &#x27;rank&#x27;: 202, &#x27;logit&#x27;: 8.75})}</pre>
+                </details>
+              </td>
+            </tr>
+            
+            <tr class="pass">
+              <td>multihop currency at answer boundary</td>
+              <td>prompt+generated-response</td>
+              <td>' Euro'</td>
+              <td>P22</td>
+              <td>L32</td>
+              <td>#2</td>
+              <td>top 100</td>
+              <td>pass</td>
+              <td><svg viewBox="0 0 144 56"><rect x="0" y="41" width="5" height="13" fill="#dc2626"><title>L10: rank #6895</title></rect><rect x="8" y="10" width="5" height="44" fill="#dc2626"><title>L11: rank #1123</title></rect><rect x="16" y="5" width="5" height="49" fill="#dc2626"><title>L12: rank #313</title></rect><rect x="24" y="5" width="5" height="49" fill="#dc2626"><title>L14: rank #299</title></rect><rect x="32" y="5" width="5" height="49" fill="#dc2626"><title>L15: rank #199</title></rect><rect x="40" y="6" width="5" height="48" fill="#dc2626"><title>L16: rank #395</title></rect><rect x="48" y="8" width="5" height="46" fill="#dc2626"><title>L18: rank #855</title></rect><rect x="56" y="23" width="5" height="31" fill="#dc2626"><title>L19: rank #3657</title></rect><rect x="64" y="13" width="5" height="41" fill="#dc2626"><title>L21: rank #1826</title></rect><rect x="72" y="52" width="5" height="2" fill="#dc2626"><title>L22: rank #8926</title></rect><rect x="80" y="34" width="5" height="20" fill="#dc2626"><title>L23: rank #5616</title></rect><rect x="88" y="7" width="5" height="47" fill="#dc2626"><title>L25: rank #679</title></rect><rect x="96" y="5" width="5" height="49" fill="#dc2626"><title>L26: rank #232</title></rect><rect x="104" y="4" width="5" height="50" fill="#16a34a"><title>L28: rank #33</title></rect><rect x="112" y="4" width="5" height="50" fill="#16a34a"><title>L29: rank #25</title></rect><rect x="120" y="4" width="5" height="50" fill="#16a34a"><title>L30: rank #6</title></rect><rect x="128" y="4" width="5" height="50" fill="#16a34a"><title>L32: rank #2</title></rect><rect x="136" y="4" width="5" height="50" fill="#16a34a"><title>L33: rank #2</title></rect></svg></td>
+            </tr>
+            <tr class="details">
+              <td colspan="9">
+                <details>
+                  <summary>Prompt and layer ranks</summary>
+                  <pre>Fact: The capital of Japan is Tokyo.
+Fact: The currency used in the country shaped like a boot is the Euro.</pre>
+                  <pre>{&#x27;case&#x27;: {&#x27;name&#x27;: &#x27;multihop currency at answer boundary&#x27;, &#x27;prompt&#x27;: &#x27;Fact: The capital of Japan is Tokyo.\nFact: The currency used in the country shaped like a boot is the Euro.&#x27;, &#x27;target&#x27;: &#x27;Euro&#x27;, &#x27;position&#x27;: 22, &#x27;layers&#x27;: (), &#x27;max_rank&#x27;: 100, &#x27;context_mode&#x27;: &#x27;prompt+generated-response&#x27;}, &#x27;success&#x27;: True, &#x27;target_id&#x27;: 19461, &#x27;target_ids&#x27;: (97427, 19461), &#x27;target_token&#x27;: &#x27; Euro&#x27;, &#x27;resolved_position&#x27;: 22, &#x27;best_rank&#x27;: 1, &#x27;best_layer&#x27;: 32, &#x27;layer_ranks&#x27;: ({&#x27;layer&#x27;: 10, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 6894, &#x27;logit&#x27;: 8.1875}, {&#x27;layer&#x27;: 11, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 1122, &#x27;logit&#x27;: 10.8125}, {&#x27;layer&#x27;: 12, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 312, &#x27;logit&#x27;: 11.75}, {&#x27;layer&#x27;: 14, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 298, &#x27;logit&#x27;: 11.3125}, {&#x27;layer&#x27;: 15, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 198, &#x27;logit&#x27;: 11.8125}, {&#x27;layer&#x27;: 16, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 394, &#x27;logit&#x27;: 11.5625}, {&#x27;layer&#x27;: 18, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 854, &#x27;logit&#x27;: 10.375}, {&#x27;layer&#x27;: 19, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 3656, &#x27;logit&#x27;: 8.875}, {&#x27;layer&#x27;: 21, &#x27;token_id&#x27;: 97427, &#x27;token&#x27;: &#x27;Euro&#x27;, &#x27;rank&#x27;: 1825, &#x27;logit&#x27;: 4.25}, {&#x27;layer&#x27;: 22, &#x27;token_id&#x27;: 97427, &#x27;token&#x27;: &#x27;Euro&#x27;, &#x27;rank&#x27;: 8925, &#x27;logit&#x27;: 3.0625}, {&#x27;layer&#x27;: 23, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 5615, &#x27;logit&#x27;: 5.78125}, {&#x27;layer&#x27;: 25, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 678, &#x27;logit&#x27;: 10.25}, {&#x27;layer&#x27;: 26, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 231, &#x27;logit&#x27;: 12.625}, {&#x27;layer&#x27;: 28, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 32, &#x27;logit&#x27;: 19.875}, {&#x27;layer&#x27;: 29, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 24, &#x27;logit&#x27;: 31.125}, {&#x27;layer&#x27;: 30, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 30.375}, {&#x27;layer&#x27;: 32, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 29.0}, {&#x27;layer&#x27;: 33, &#x27;token_id&#x27;: 19461, &#x27;token&#x27;: &#x27; Euro&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 23.75})}</pre>
+                </details>
+              </td>
+            </tr>
+            
+    </tbody>
+  </table>
+</body>
+</html>

@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from pathlib import Path
 
 from PySide6.QtCore import QObject, QSize, Signal
 from PySide6.QtWidgets import (
+    QFileDialog,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QProgressBar,
@@ -57,32 +60,47 @@ class JLensWorkspace(QWidget):
         self._request_serial = 0
 
         root = QVBoxLayout(self)
-        root.setContentsMargins(4, 4, 4, 4)
-        toolbar = QHBoxLayout()
-        self.heading = QLabel("J-Lens", self)
-        self.status = QLabel("No run selected", self)
-        self.lens_badge = QLabel("No lens", self)
+        root.setContentsMargins(10, 10, 10, 10)
+        root.setSpacing(8)
+        self.header = QFrame(self)
+        self.header.setProperty("role", "panel")
+        toolbar = QHBoxLayout(self.header)
+        toolbar.setContentsMargins(12, 8, 10, 8)
+        toolbar.setSpacing(8)
+        titles = QVBoxLayout()
+        titles.setSpacing(1)
+        self.heading = QLabel("J-Lens", self.header)
+        self.heading.setProperty("role", "heading")
+        self.status = QLabel("No run selected", self.header)
+        self.status.setProperty("role", "muted")
+        titles.addWidget(self.heading)
+        titles.addWidget(self.status)
+        self.lens_badge = QLabel("No lens", self.header)
+        self.lens_badge.setProperty("role", "statusPill")
         self.lens_badge.setAccessibleName("Active lens and readout reliability")
-        self.fit_status = QLabel("Lens status unavailable", self)
-        self.fit_button = QPushButton("Start Fit", self)
-        self.refresh_button = QPushButton("Refresh", self)
+        self.fit_status = QLabel("Lens status unavailable", self.header)
+        self.fit_status.setProperty("role", "statusPill")
+        self.fit_button = QPushButton("Start Fit", self.header)
+        self.refresh_button = QPushButton("Refresh", self.header)
+        self.refresh_button.setProperty("role", "primary")
         self.refresh_button.setAccessibleName("Refresh J-Lens slice")
-        self.export_button = QPushButton("Export", self)
+        self.export_button = QPushButton("Export", self.header)
+        self.export_button.setProperty("role", "ghost")
         self.export_button.setAccessibleName("Export J-Lens slice")
-        toolbar.addWidget(self.heading)
-        toolbar.addWidget(self.status, 1)
+        toolbar.addLayout(titles, 1)
         toolbar.addWidget(self.lens_badge)
         toolbar.addWidget(self.fit_status)
         toolbar.addWidget(self.fit_button)
         toolbar.addWidget(self.refresh_button)
         toolbar.addWidget(self.export_button)
-        root.addLayout(toolbar)
+        root.addWidget(self.header)
 
         self.fit_panel = QWidget(self)
+        self.fit_panel.setProperty("role", "panel")
         fit_layout = QVBoxLayout(self.fit_panel)
         fit_layout.setContentsMargins(12, 8, 12, 8)
         self.fit_headline = QLabel("Fitting Jacobian lens", self.fit_panel)
-        self.fit_headline.setStyleSheet("font-weight: 600;")
+        self.fit_headline.setProperty("role", "heading")
         self.fit_bar = QProgressBar(self.fit_panel)
         self.fit_bar.setTextVisible(True)
         self.fit_estimate = QLabel("", self.fit_panel)
@@ -93,9 +111,15 @@ class JLensWorkspace(QWidget):
         self.fit_panel.hide()
         root.addWidget(self.fit_panel)
 
-        self.web = JLensWebView(self)
-        root.addWidget(self.web, 1)
+        self.web_frame = QFrame(self)
+        self.web_frame.setProperty("role", "data")
+        web_layout = QVBoxLayout(self.web_frame)
+        web_layout.setContentsMargins(1, 1, 1, 1)
+        self.web = JLensWebView(self.web_frame)
+        web_layout.addWidget(self.web)
+        root.addWidget(self.web_frame, 1)
         self.refresh_button.clicked.connect(self.refresh)
+        self.export_button.clicked.connect(self._export_html)
         self.fit_button.clicked.connect(self._toggle_fit)
         self.web.bridge.coordinate_selected.connect(self._select)
         self.web.bridge.term_pinned.connect(self.selection.pin)
@@ -173,6 +197,21 @@ class JLensWorkspace(QWidget):
 
     def _select(self, position: int, layer: int) -> None:
         self.selection.select(position=position, layer=layer)
+
+    def _export_html(self) -> None:
+        if not self.web.last_html:
+            self.status.setText("Nothing to export — render a slice first")
+            return
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Export Interactive J-Lens Slice",
+            "j-lens-slice.html",
+            "HTML (*.html)",
+        )
+        if not path:
+            return
+        Path(path).write_text(self.web.last_html, encoding="utf-8")
+        self.status.setText(f"Exported {Path(path).name}")
 
     def set_lens_identity(self, lens_id: str | None) -> None:
         if not lens_id:

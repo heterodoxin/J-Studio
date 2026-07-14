@@ -15,13 +15,66 @@ def test_main_workspace_matches_scanner_structure(window):
     workspace = window.main_workspace
 
     assert workspace.found_table.model().columnCount() == 3
-    assert workspace.upper_splitter.handleWidth() == 7
-    assert workspace.vertical_splitter.handleWidth() == 7
-    assert workspace.bottom_strip.height() == 33
+    assert workspace.upper_splitter.handleWidth() == 8
+    assert workspace.vertical_splitter.handleWidth() == 8
+    assert not workspace.bottom_strip.isVisible()
     assert workspace.first_read.text() == "First Read"
     assert workspace.next_read.text() == "Next Read"
     assert workspace.undo_read.text() == "Undo Read"
     assert not workspace.output.isVisible()
+    assert workspace.stack_view.bake.text() == "Bake Stack"
+
+
+def test_main_workspace_uses_progressive_disclosure_and_semantic_actions(
+    qtbot, window
+):
+    workspace = window.main_workspace
+
+    assert workspace.found_panel.property("role") == "panel"
+    assert workspace.controls_panel.property("role") == "panel"
+    assert workspace.first_read.property("role") == "primary"
+    assert workspace.advanced_scan.isCheckable()
+    assert not workspace.scan_options.isVisible()
+
+    qtbot.mouseClick(workspace.advanced_scan, Qt.MouseButton.LeftButton)
+
+    assert workspace.scan_options.isVisible()
+    assert workspace.advanced_scan.isChecked()
+
+
+def test_bake_stack_exports_enabled_projection_rules(
+    qtbot, window, monkeypatch, tmp_path
+):
+    from dataclasses import replace
+
+    from PySide6.QtWidgets import QFileDialog
+
+    draft = InterventionDraft(
+        InterventionOperation.SUPPRESS,
+        "refusal",
+        None,
+        4.0,
+        0,
+        2,
+    )
+    entry = replace(InterventionEntry.from_draft(draft), enabled=True)
+    window.project.interventions.append(entry)
+    window.main_workspace.intervention_model.replace_rows(
+        window.project.interventions
+    )
+    destination = tmp_path / "projection.safetensors"
+    monkeypatch.setattr(
+        QFileDialog,
+        "getSaveFileName",
+        lambda *args, **kwargs: (str(destination), "Safetensors (*.safetensors)"),
+    )
+
+    qtbot.mouseClick(
+        window.main_workspace.stack_view.bake, Qt.MouseButton.LeftButton
+    )
+
+    assert window.services.interventions.baked[0][1] == (draft,)
+    assert "Baked" in window.main_workspace.status.text()
 
 
 def test_first_read_pause_next_resume_stop(qtbot):
@@ -108,3 +161,14 @@ def test_editing_completed_prompt_makes_rerun_action_explicit(window):
 
     assert workspace.first_read.text() == "Rerun Edited Prompt"
     assert "rerun" in workspace.status.text().lower()
+
+
+def test_main_generation_error_is_visible_without_hovering(window):
+    workspace = window.main_workspace
+
+    workspace._on_error(
+        "run-1", "Local Qwen generation failed", "TypeError('bad cache')"
+    )
+
+    assert "TypeError('bad cache')" in workspace.status.text()
+    assert workspace.status.toolTip() == "TypeError('bad cache')"

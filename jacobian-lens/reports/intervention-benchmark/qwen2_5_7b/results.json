@@ -1,0 +1,887 @@
+[
+  {
+    "case": {
+      "name": "inject baseline-rank-5",
+      "operation": "inject",
+      "prompt": "Complete with exactly one word: The secret word is",
+      "target": 30743,
+      "source": null,
+      "layers": [],
+      "position": -1,
+      "top_k": 1,
+      "maximum_scale": 16.0,
+      "context_mode": "prompt-only"
+    },
+    "success": true,
+    "applied": true,
+    "target_before": {
+      "token_id": 30743,
+      "token": " ____",
+      "rank": 4,
+      "logit": 11.6875
+    },
+    "target_after": {
+      "token_id": 30743,
+      "token": " ____",
+      "rank": 0,
+      "logit": 8.8125
+    },
+    "source_before": null,
+    "source_after": null,
+    "top_before": [
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 0,
+        "logit": 13.5
+      },
+      {
+        "token_id": 1112,
+        "token": "...",
+        "rank": 1,
+        "logit": 12.875
+      },
+      {
+        "token_id": 25,
+        "token": ":",
+        "rank": 2,
+        "logit": 12.8125
+      },
+      {
+        "token_id": 1304,
+        "token": " __",
+        "rank": 3,
+        "logit": 12.75
+      },
+      {
+        "token_id": 30743,
+        "token": " ____",
+        "rank": 4,
+        "logit": 11.6875
+      },
+      {
+        "token_id": 32671,
+        "token": " ______",
+        "rank": 5,
+        "logit": 11.375
+      },
+      {
+        "token_id": 364,
+        "token": " '",
+        "rank": 6,
+        "logit": 11.25
+      },
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 7,
+        "logit": 11.125
+      }
+    ],
+    "top_after": [
+      {
+        "token_id": 30743,
+        "token": " ____",
+        "rank": 0,
+        "logit": 8.8125
+      },
+      {
+        "token_id": 1304,
+        "token": " __",
+        "rank": 1,
+        "logit": 8.75
+      },
+      {
+        "token_id": 6303,
+        "token": " blue",
+        "rank": 2,
+        "logit": 8.375
+      },
+      {
+        "token_id": 32671,
+        "token": " ______",
+        "rank": 3,
+        "logit": 8.3125
+      },
+      {
+        "token_id": 279,
+        "token": " the",
+        "rank": 4,
+        "logit": 8.125
+      },
+      {
+        "token_id": 25,
+        "token": ":",
+        "rank": 5,
+        "logit": 7.90625
+      },
+      {
+        "token_id": 77082,
+        "token": " pineapple",
+        "rank": 6,
+        "logit": 7.78125
+      },
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 7,
+        "logit": 7.71875
+      }
+    ],
+    "selected_layer": 21,
+    "selected_scale": 1.9296875,
+    "normalized_cost": 0.007555058475249296,
+    "trace": {
+      "operation": "inject",
+      "target_ids": [
+        30743
+      ],
+      "source_ids": [],
+      "experimental": false,
+      "selected_layer": 21,
+      "selected_positions": [
+        9
+      ],
+      "selected_scale": 1.9296875,
+      "normalized_cost": 0.007555058475249296,
+      "baseline_scores": {
+        "30743": 11.6875,
+        "330": 13.5
+      },
+      "after_scores": {
+        "30743": 8.8125,
+        "330": 6.8125
+      },
+      "baseline_top_ids": [
+        330,
+        1112,
+        25,
+        1304,
+        30743,
+        32671,
+        364,
+        264,
+        9338,
+        304,
+        2146,
+        65892,
+        1939,
+        2130,
+        2948,
+        30,
+        6303,
+        279,
+        3545,
+        5267,
+        1934,
+        7436,
+        12236,
+        2503,
+        1447,
+        458,
+        825,
+        2677,
+        5468,
+        28149,
+        537,
+        3979
+      ],
+      "after_top_ids": [
+        30743,
+        1304,
+        6303,
+        32671,
+        279,
+        25,
+        77082,
+        264,
+        65892,
+        1112,
+        1128,
+        330,
+        3979,
+        2146,
+        458,
+        2130,
+        28149,
+        362,
+        320,
+        7436,
+        1447,
+        1501,
+        5468,
+        537,
+        43841,
+        304,
+        25037,
+        12236,
+        2494,
+        9338,
+        67818,
+        55892
+      ],
+      "search_points": [
+        {
+          "scale": 0.0,
+          "passed": false,
+          "target_margin": -1.8125,
+          "downstream_shift": 0.0
+        },
+        {
+          "scale": 1.0,
+          "passed": false,
+          "target_margin": 0.125,
+          "downstream_shift": -0.1875
+        },
+        {
+          "scale": 2.0,
+          "passed": true,
+          "target_margin": 2.09375,
+          "downstream_shift": -3.0625
+        },
+        {
+          "scale": 1.5,
+          "passed": false,
+          "target_margin": 1.0625,
+          "downstream_shift": -1.5625
+        },
+        {
+          "scale": 1.75,
+          "passed": false,
+          "target_margin": 1.625,
+          "downstream_shift": -2.25
+        },
+        {
+          "scale": 1.875,
+          "passed": false,
+          "target_margin": 1.84375,
+          "downstream_shift": -2.75
+        },
+        {
+          "scale": 1.9375,
+          "passed": true,
+          "target_margin": 2.03125,
+          "downstream_shift": -2.8125
+        },
+        {
+          "scale": 1.90625,
+          "passed": false,
+          "target_margin": 1.90625,
+          "downstream_shift": -2.75
+        },
+        {
+          "scale": 1.921875,
+          "passed": true,
+          "target_margin": 2.0,
+          "downstream_shift": -2.875
+        }
+      ],
+      "warnings": [],
+      "sequence_logprob_before": null,
+      "sequence_logprob_after": null,
+      "message": "minimum passing intervention found",
+      "benchmark_success": true,
+      "benchmark_reason": "target entered requested top-k"
+    }
+  },
+  {
+    "case": {
+      "name": "replace top-1 with baseline lower-ranked token",
+      "operation": "replace",
+      "prompt": "Complete with exactly one word: The secret word is",
+      "target": 30743,
+      "source": 330,
+      "layers": [],
+      "position": -1,
+      "top_k": 1,
+      "maximum_scale": 16.0,
+      "context_mode": "prompt-only"
+    },
+    "success": true,
+    "applied": true,
+    "target_before": {
+      "token_id": 30743,
+      "token": " ____",
+      "rank": 4,
+      "logit": 11.6875
+    },
+    "target_after": {
+      "token_id": 30743,
+      "token": " ____",
+      "rank": 2,
+      "logit": 11.5625
+    },
+    "source_before": {
+      "token_id": 330,
+      "token": " \"",
+      "rank": 0,
+      "logit": 13.5
+    },
+    "source_after": {
+      "token_id": 330,
+      "token": " \"",
+      "rank": 3,
+      "logit": 11.4375
+    },
+    "top_before": [
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 0,
+        "logit": 13.5
+      },
+      {
+        "token_id": 1112,
+        "token": "...",
+        "rank": 1,
+        "logit": 12.875
+      },
+      {
+        "token_id": 25,
+        "token": ":",
+        "rank": 2,
+        "logit": 12.8125
+      },
+      {
+        "token_id": 1304,
+        "token": " __",
+        "rank": 3,
+        "logit": 12.75
+      },
+      {
+        "token_id": 30743,
+        "token": " ____",
+        "rank": 4,
+        "logit": 11.6875
+      },
+      {
+        "token_id": 32671,
+        "token": " ______",
+        "rank": 5,
+        "logit": 11.375
+      },
+      {
+        "token_id": 364,
+        "token": " '",
+        "rank": 6,
+        "logit": 11.25
+      },
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 7,
+        "logit": 11.125
+      }
+    ],
+    "top_after": [
+      {
+        "token_id": 1304,
+        "token": " __",
+        "rank": 0,
+        "logit": 12.0
+      },
+      {
+        "token_id": 25,
+        "token": ":",
+        "rank": 1,
+        "logit": 11.8125
+      },
+      {
+        "token_id": 30743,
+        "token": " ____",
+        "rank": 2,
+        "logit": 11.5625
+      },
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 3,
+        "logit": 11.4375
+      },
+      {
+        "token_id": 32671,
+        "token": " ______",
+        "rank": 4,
+        "logit": 10.8125
+      },
+      {
+        "token_id": 1112,
+        "token": "...",
+        "rank": 5,
+        "logit": 10.625
+      },
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 5,
+        "logit": 10.625
+      },
+      {
+        "token_id": 6303,
+        "token": " blue",
+        "rank": 5,
+        "logit": 10.625
+      }
+    ],
+    "selected_layer": 20,
+    "selected_scale": 1.0078125,
+    "normalized_cost": 0.047414060008961235,
+    "trace": {
+      "operation": "replace",
+      "target_ids": [
+        30743
+      ],
+      "source_ids": [
+        330
+      ],
+      "experimental": false,
+      "selected_layer": 20,
+      "selected_positions": [
+        9
+      ],
+      "selected_scale": 1.0078125,
+      "normalized_cost": 0.047414060008961235,
+      "baseline_scores": {
+        "30743": 11.6875,
+        "330": 13.5
+      },
+      "after_scores": {
+        "30743": 11.5625,
+        "330": 11.4375
+      },
+      "baseline_top_ids": [
+        330,
+        1112,
+        25,
+        1304,
+        30743,
+        32671,
+        364,
+        264,
+        9338,
+        304,
+        2146,
+        65892,
+        1939,
+        2130,
+        2948,
+        30,
+        6303,
+        279,
+        3545,
+        5267,
+        1934,
+        7436,
+        12236,
+        2503,
+        1447,
+        458,
+        825,
+        2677,
+        5468,
+        28149,
+        537,
+        3979
+      ],
+      "after_top_ids": [
+        1304,
+        25,
+        30743,
+        330,
+        32671,
+        6303,
+        264,
+        1112,
+        304,
+        65892,
+        2130,
+        2146,
+        364,
+        9338,
+        1447,
+        279,
+        825,
+        2948,
+        3545,
+        1730,
+        7436,
+        8177,
+        271,
+        12236,
+        320,
+        537,
+        25037,
+        5468,
+        1501,
+        362,
+        10113,
+        3979
+      ],
+      "search_points": [
+        {
+          "scale": 0.0,
+          "passed": false,
+          "target_margin": -1.8125,
+          "downstream_shift": 0.0
+        },
+        {
+          "scale": 1.0,
+          "passed": false,
+          "target_margin": 0.0625,
+          "downstream_shift": 1.875
+        },
+        {
+          "scale": 2.0,
+          "passed": true,
+          "target_margin": 1.875,
+          "downstream_shift": 3.6875
+        },
+        {
+          "scale": 1.5,
+          "passed": true,
+          "target_margin": 1.0625,
+          "downstream_shift": 2.875
+        },
+        {
+          "scale": 1.25,
+          "passed": true,
+          "target_margin": 0.625,
+          "downstream_shift": 2.4375
+        },
+        {
+          "scale": 1.125,
+          "passed": true,
+          "target_margin": 0.3125,
+          "downstream_shift": 2.125
+        },
+        {
+          "scale": 1.0625,
+          "passed": true,
+          "target_margin": 0.3125,
+          "downstream_shift": 2.125
+        },
+        {
+          "scale": 1.03125,
+          "passed": true,
+          "target_margin": 0.125,
+          "downstream_shift": 1.9375
+        },
+        {
+          "scale": 1.015625,
+          "passed": true,
+          "target_margin": 0.125,
+          "downstream_shift": 1.9375
+        },
+        {
+          "scale": 1.0078125,
+          "passed": true,
+          "target_margin": 0.125,
+          "downstream_shift": 1.9375
+        }
+      ],
+      "warnings": [],
+      "sequence_logprob_before": null,
+      "sequence_logprob_after": null,
+      "message": "minimum passing intervention found",
+      "benchmark_success": true,
+      "benchmark_reason": "target overtook source"
+    }
+  },
+  {
+    "case": {
+      "name": "replace top-2 with baseline lower-ranked token",
+      "operation": "replace",
+      "prompt": "Complete with exactly one word: The secret word is",
+      "target": 32671,
+      "source": 1112,
+      "layers": [],
+      "position": -1,
+      "top_k": 1,
+      "maximum_scale": 16.0,
+      "context_mode": "prompt-only"
+    },
+    "success": true,
+    "applied": true,
+    "target_before": {
+      "token_id": 32671,
+      "token": " ______",
+      "rank": 5,
+      "logit": 11.375
+    },
+    "target_after": {
+      "token_id": 32671,
+      "token": " ______",
+      "rank": 4,
+      "logit": 11.6875
+    },
+    "source_before": {
+      "token_id": 1112,
+      "token": "...",
+      "rank": 1,
+      "logit": 12.875
+    },
+    "source_after": {
+      "token_id": 1112,
+      "token": "...",
+      "rank": 5,
+      "logit": 11.5625
+    },
+    "top_before": [
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 0,
+        "logit": 13.5
+      },
+      {
+        "token_id": 1112,
+        "token": "...",
+        "rank": 1,
+        "logit": 12.875
+      },
+      {
+        "token_id": 25,
+        "token": ":",
+        "rank": 2,
+        "logit": 12.8125
+      },
+      {
+        "token_id": 1304,
+        "token": " __",
+        "rank": 3,
+        "logit": 12.75
+      },
+      {
+        "token_id": 30743,
+        "token": " ____",
+        "rank": 4,
+        "logit": 11.6875
+      },
+      {
+        "token_id": 32671,
+        "token": " ______",
+        "rank": 5,
+        "logit": 11.375
+      },
+      {
+        "token_id": 364,
+        "token": " '",
+        "rank": 6,
+        "logit": 11.25
+      },
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 7,
+        "logit": 11.125
+      }
+    ],
+    "top_after": [
+      {
+        "token_id": 1304,
+        "token": " __",
+        "rank": 0,
+        "logit": 12.5625
+      },
+      {
+        "token_id": 25,
+        "token": ":",
+        "rank": 1,
+        "logit": 12.375
+      },
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 1,
+        "logit": 12.375
+      },
+      {
+        "token_id": 30743,
+        "token": " ____",
+        "rank": 3,
+        "logit": 11.875
+      },
+      {
+        "token_id": 32671,
+        "token": " ______",
+        "rank": 4,
+        "logit": 11.6875
+      },
+      {
+        "token_id": 1112,
+        "token": "...",
+        "rank": 5,
+        "logit": 11.5625
+      },
+      {
+        "token_id": 65892,
+        "token": " _____",
+        "rank": 6,
+        "logit": 11.0
+      },
+      {
+        "token_id": 304,
+        "token": " in",
+        "rank": 7,
+        "logit": 10.5
+      }
+    ],
+    "selected_layer": 23,
+    "selected_scale": 0.9140625,
+    "normalized_cost": 0.05057932531072151,
+    "trace": {
+      "operation": "replace",
+      "target_ids": [
+        32671
+      ],
+      "source_ids": [
+        1112
+      ],
+      "experimental": false,
+      "selected_layer": 23,
+      "selected_positions": [
+        9
+      ],
+      "selected_scale": 0.9140625,
+      "normalized_cost": 0.05057932531072151,
+      "baseline_scores": {
+        "32671": 11.375,
+        "1112": 12.875
+      },
+      "after_scores": {
+        "32671": 11.6875,
+        "1112": 11.5625
+      },
+      "baseline_top_ids": [
+        330,
+        1112,
+        25,
+        1304,
+        30743,
+        32671,
+        364,
+        264,
+        9338,
+        304,
+        2146,
+        65892,
+        1939,
+        2130,
+        2948,
+        30,
+        6303,
+        279,
+        3545,
+        5267,
+        1934,
+        7436,
+        12236,
+        2503,
+        1447,
+        458,
+        825,
+        2677,
+        5468,
+        28149,
+        537,
+        3979
+      ],
+      "after_top_ids": [
+        1304,
+        25,
+        330,
+        30743,
+        32671,
+        1112,
+        65892,
+        304,
+        2146,
+        264,
+        1939,
+        364,
+        279,
+        7436,
+        2130,
+        9338,
+        5468,
+        30,
+        12236,
+        2948,
+        1447,
+        3545,
+        2503,
+        6303,
+        28149,
+        1934,
+        3979,
+        2677,
+        5267,
+        825,
+        537,
+        1730
+      ],
+      "search_points": [
+        {
+          "scale": 0.0,
+          "passed": false,
+          "target_margin": -1.5,
+          "downstream_shift": 0.0
+        },
+        {
+          "scale": 1.0,
+          "passed": true,
+          "target_margin": 0.3125,
+          "downstream_shift": 1.8125
+        },
+        {
+          "scale": 0.5,
+          "passed": false,
+          "target_margin": -0.6875,
+          "downstream_shift": 0.8125
+        },
+        {
+          "scale": 0.75,
+          "passed": false,
+          "target_margin": -0.1875,
+          "downstream_shift": 1.3125
+        },
+        {
+          "scale": 0.875,
+          "passed": false,
+          "target_margin": 0.0,
+          "downstream_shift": 1.5
+        },
+        {
+          "scale": 0.9375,
+          "passed": true,
+          "target_margin": 0.1875,
+          "downstream_shift": 1.6875
+        },
+        {
+          "scale": 0.90625,
+          "passed": false,
+          "target_margin": 0.0625,
+          "downstream_shift": 1.5625
+        },
+        {
+          "scale": 0.921875,
+          "passed": true,
+          "target_margin": 0.125,
+          "downstream_shift": 1.625
+        },
+        {
+          "scale": 0.9140625,
+          "passed": true,
+          "target_margin": 0.125,
+          "downstream_shift": 1.625
+        }
+      ],
+      "warnings": [],
+      "sequence_logprob_before": null,
+      "sequence_logprob_after": null,
+      "message": "minimum passing intervention found",
+      "benchmark_success": true,
+      "benchmark_reason": "target overtook source"
+    }
+  }
+]

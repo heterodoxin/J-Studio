@@ -111,12 +111,25 @@ def inspect_lens_file(path: Path) -> LensInspection:
             for metric in geometry.values()
             if isinstance(metric, dict)
         )
-    # Treat dense-family lenses as usable regardless of the sketch-only pass@10 gate.
     dense_family = estimator in DENSE_LENS_ESTIMATORS
     if calibrated and dense_family:
-        pass_at_10 = metadata.get("fit_quality_pass_at_10")
-        suffix = f" · pass@10 {pass_at_10}" if pass_at_10 else ""
-        return LensInspection(LensState.STABLE, path, f"Dense calibrated lens{suffix}")
+        gate = metadata.get("quality_gate_version")
+        try:
+            passed = int(metadata.get("viewing_passed", "0"))
+            total = int(metadata.get("viewing_total", "0"))
+        except ValueError:
+            passed = total = 0
+        if gate == "jspace-viewing-v2" and total > 0 and passed == total:
+            return LensInspection(
+                LensState.STABLE,
+                path,
+                f"Dense calibrated lens · viewing {passed}/{total}",
+            )
+        return LensInspection(
+            LensState.NEEDS_FIT,
+            path,
+            "Dense lens exists but has not passed the reference viewing gate",
+        )
     if stage == "Stable" and calibrated:
         rank = metadata.get("effective_rank") or metadata.get("sketch_rank")
         suffix = f" · rank {rank}" if rank else ""

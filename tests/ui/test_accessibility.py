@@ -25,12 +25,14 @@ def test_key_workflow_controls_remain_visible_at_160_percent(qapp, qtbot, window
             window.main_workspace.next_read,
             window.main_workspace.undo_read,
             window.main_workspace.add_manual,
-            window.main_workspace.rules_button,
         )
         for control in controls:
             assert control.isVisible()
             assert control.width() >= control.sizeHint().width()
             assert control.height() >= control.sizeHint().height()
+        rules_index = window.tabs.indexOf(window.rules_workspace)
+        assert window.tabs.tabBar().isVisible()
+        assert window.tabs.tabBar().tabRect(rules_index).width() > 0
     finally:
         qapp.setFont(original_font)
 

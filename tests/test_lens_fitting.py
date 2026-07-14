@@ -2,7 +2,24 @@ import threading
 from types import SimpleNamespace
 
 from jstudio.domain import LensFitState
-from jstudio.services.lens_fitting import GPUCoordinator, ProgressiveLensController
+from jstudio.services.lens_fitting import (
+    GPUCoordinator,
+    ProgressiveLensController,
+    RuntimeProgressiveFitter,
+)
+
+
+def test_runtime_fitter_requires_all_reference_viewing_cases_to_pass():
+    passed = [SimpleNamespace(success=True, best_rank=value) for value in (10, 20, 30)]
+    failed = [*passed[:2], SimpleNamespace(success=False, best_rank=101)]
+
+    good = RuntimeProgressiveFitter._readout_quality(passed)
+    bad = RuntimeProgressiveFitter._readout_quality(failed)
+
+    assert good.stable
+    assert good.pass_at_10 == 1.0
+    assert not bad.stable
+    assert "below 1.00" in bad.reasons[0]
 
 
 def stage(name, *, stable):

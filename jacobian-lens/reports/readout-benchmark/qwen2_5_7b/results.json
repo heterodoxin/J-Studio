@@ -1,0 +1,595 @@
+[
+  {
+    "case": {
+      "name": "ascii-face nose at caret",
+      "prompt": "     _______     \n   /         \\   \n  /  ~     ~  \\  \n (   o     o   ) \n |      ^      | \n |             | \n |   \\_____/   | \n  \\           /  \n   \\_________/   \n      |   |      \n\nWhat is this?",
+      "target": "nose",
+      "position": 28,
+      "layers": [],
+      "max_rank": 100,
+      "context_mode": "prompt-only"
+    },
+    "success": false,
+    "target_id": 19142,
+    "target_ids": [
+      19142
+    ],
+    "target_token": " nose",
+    "resolved_position": 28,
+    "best_rank": 721,
+    "best_layer": 25,
+    "layer_ranks": [
+      {
+        "layer": 0,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 111018,
+        "logit": -2.375
+      },
+      {
+        "layer": 1,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 48219,
+        "logit": 0.63671875
+      },
+      {
+        "layer": 2,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 43045,
+        "logit": 0.69140625
+      },
+      {
+        "layer": 3,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 30962,
+        "logit": 1.640625
+      },
+      {
+        "layer": 4,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 46311,
+        "logit": 0.333984375
+      },
+      {
+        "layer": 5,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 32989,
+        "logit": 0.90625
+      },
+      {
+        "layer": 6,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 41764,
+        "logit": 0.6171875
+      },
+      {
+        "layer": 7,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 33752,
+        "logit": 0.53125
+      },
+      {
+        "layer": 8,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 14132,
+        "logit": 1.7734375
+      },
+      {
+        "layer": 9,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 11608,
+        "logit": 1.8359375
+      },
+      {
+        "layer": 10,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 55682,
+        "logit": -0.5234375
+      },
+      {
+        "layer": 11,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 50983,
+        "logit": -0.30859375
+      },
+      {
+        "layer": 12,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 53267,
+        "logit": 0.19140625
+      },
+      {
+        "layer": 14,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 28042,
+        "logit": 2.125
+      },
+      {
+        "layer": 15,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 25314,
+        "logit": 1.5078125
+      },
+      {
+        "layer": 16,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 17637,
+        "logit": 2.25
+      },
+      {
+        "layer": 17,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 19047,
+        "logit": 2.03125
+      },
+      {
+        "layer": 18,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 22665,
+        "logit": 2.3125
+      },
+      {
+        "layer": 19,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 25147,
+        "logit": 2.0
+      },
+      {
+        "layer": 20,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 26796,
+        "logit": 2.09375
+      },
+      {
+        "layer": 21,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 10463,
+        "logit": 3.484375
+      },
+      {
+        "layer": 22,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 6801,
+        "logit": 4.03125
+      },
+      {
+        "layer": 23,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 3784,
+        "logit": 4.4375
+      },
+      {
+        "layer": 24,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 1598,
+        "logit": 5.46875
+      },
+      {
+        "layer": 25,
+        "token_id": 19142,
+        "token": " nose",
+        "rank": 721,
+        "logit": 5.71875
+      }
+    ]
+  },
+  {
+    "case": {
+      "name": "multihop country at boot position",
+      "prompt": "Fact: The capital of Japan is Tokyo.\nFact: The currency used in the country shaped like a boot is",
+      "target": "Italy",
+      "position": -2,
+      "layers": [],
+      "max_rank": 100,
+      "context_mode": "prompt-only"
+    },
+    "success": false,
+    "target_id": 70503,
+    "target_ids": [
+      70503,
+      15344
+    ],
+    "target_token": "Italy",
+    "resolved_position": 20,
+    "best_rank": 2705,
+    "best_layer": 9,
+    "layer_ranks": [
+      {
+        "layer": 0,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 56329,
+        "logit": 1.0390625
+      },
+      {
+        "layer": 1,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 99935,
+        "logit": -0.9140625
+      },
+      {
+        "layer": 2,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 38416,
+        "logit": 1.515625
+      },
+      {
+        "layer": 3,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 41149,
+        "logit": 1.5859375
+      },
+      {
+        "layer": 4,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 33845,
+        "logit": 2.28125
+      },
+      {
+        "layer": 5,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 25185,
+        "logit": 2.203125
+      },
+      {
+        "layer": 6,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 17193,
+        "logit": 3.34375
+      },
+      {
+        "layer": 7,
+        "token_id": 15344,
+        "token": " Italy",
+        "rank": 27567,
+        "logit": 2.796875
+      },
+      {
+        "layer": 8,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 10916,
+        "logit": 4.125
+      },
+      {
+        "layer": 9,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 2705,
+        "logit": 5.59375
+      },
+      {
+        "layer": 10,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 3977,
+        "logit": 5.0
+      },
+      {
+        "layer": 11,
+        "token_id": 15344,
+        "token": " Italy",
+        "rank": 11426,
+        "logit": 3.421875
+      },
+      {
+        "layer": 12,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 17335,
+        "logit": 2.890625
+      },
+      {
+        "layer": 14,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 39068,
+        "logit": 1.46875
+      },
+      {
+        "layer": 15,
+        "token_id": 15344,
+        "token": " Italy",
+        "rank": 22709,
+        "logit": 2.71875
+      },
+      {
+        "layer": 16,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 22329,
+        "logit": 2.734375
+      },
+      {
+        "layer": 17,
+        "token_id": 15344,
+        "token": " Italy",
+        "rank": 42599,
+        "logit": 1.484375
+      },
+      {
+        "layer": 18,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 42103,
+        "logit": 1.5859375
+      },
+      {
+        "layer": 19,
+        "token_id": 15344,
+        "token": " Italy",
+        "rank": 52085,
+        "logit": 0.90625
+      },
+      {
+        "layer": 20,
+        "token_id": 15344,
+        "token": " Italy",
+        "rank": 65765,
+        "logit": -0.283203125
+      },
+      {
+        "layer": 21,
+        "token_id": 15344,
+        "token": " Italy",
+        "rank": 32684,
+        "logit": 1.5859375
+      },
+      {
+        "layer": 22,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 32702,
+        "logit": 1.9609375
+      },
+      {
+        "layer": 23,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 65587,
+        "logit": -0.029052734375
+      },
+      {
+        "layer": 24,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 33019,
+        "logit": 1.9609375
+      },
+      {
+        "layer": 25,
+        "token_id": 70503,
+        "token": "Italy",
+        "rank": 9541,
+        "logit": 3.546875
+      }
+    ]
+  },
+  {
+    "case": {
+      "name": "multihop currency at boot position",
+      "prompt": "Fact: The capital of Japan is Tokyo.\nFact: The currency used in the country shaped like a boot is",
+      "target": "Euro",
+      "position": -2,
+      "layers": [],
+      "max_rank": 100,
+      "context_mode": "prompt-only"
+    },
+    "success": false,
+    "target_id": 19461,
+    "target_ids": [
+      97427,
+      19461
+    ],
+    "target_token": " Euro",
+    "resolved_position": 20,
+    "best_rank": 8023,
+    "best_layer": 9,
+    "layer_ranks": [
+      {
+        "layer": 0,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 124067,
+        "logit": -1.9375
+      },
+      {
+        "layer": 1,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 133847,
+        "logit": -2.921875
+      },
+      {
+        "layer": 2,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 126103,
+        "logit": -2.453125
+      },
+      {
+        "layer": 3,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 106693,
+        "logit": -1.140625
+      },
+      {
+        "layer": 4,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 90819,
+        "logit": -0.09814453125
+      },
+      {
+        "layer": 5,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 90336,
+        "logit": -0.73828125
+      },
+      {
+        "layer": 6,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 106080,
+        "logit": -0.953125
+      },
+      {
+        "layer": 7,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 97187,
+        "logit": -0.2734375
+      },
+      {
+        "layer": 8,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 16534,
+        "logit": 3.515625
+      },
+      {
+        "layer": 9,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 8023,
+        "logit": 4.25
+      },
+      {
+        "layer": 10,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 33757,
+        "logit": 1.890625
+      },
+      {
+        "layer": 11,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 27770,
+        "logit": 2.015625
+      },
+      {
+        "layer": 12,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 38596,
+        "logit": 1.4453125
+      },
+      {
+        "layer": 14,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 39336,
+        "logit": 1.453125
+      },
+      {
+        "layer": 15,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 13410,
+        "logit": 3.5625
+      },
+      {
+        "layer": 16,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 15496,
+        "logit": 3.328125
+      },
+      {
+        "layer": 17,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 22003,
+        "logit": 2.75
+      },
+      {
+        "layer": 18,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 12145,
+        "logit": 3.703125
+      },
+      {
+        "layer": 19,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 12080,
+        "logit": 3.53125
+      },
+      {
+        "layer": 20,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 36203,
+        "logit": 1.1328125
+      },
+      {
+        "layer": 21,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 52907,
+        "logit": 0.54296875
+      },
+      {
+        "layer": 22,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 73656,
+        "logit": 0.06005859375
+      },
+      {
+        "layer": 23,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 45271,
+        "logit": 0.87890625
+      },
+      {
+        "layer": 24,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 19281,
+        "logit": 2.859375
+      },
+      {
+        "layer": 25,
+        "token_id": 19461,
+        "token": " Euro",
+        "rank": 8566,
+        "logit": 3.6875
+      }
+    ]
+  }
+]

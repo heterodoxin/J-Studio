@@ -58,11 +58,13 @@ class JStudioMainWindow(QMainWindow):
         populate_menus(self, self.commands)
 
         central = QWidget(self)
+        central.setObjectName("applicationRoot")
         layout = QVBoxLayout(central)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         self.session_bar = SessionBar(central)
         self.tabs = QTabWidget(central)
+        self.tabs.setObjectName("workspaceTabs")
         self.tabs.setDocumentMode(False)
         self.tabs.setMovable(False)
         self.tabs.setTabsClosable(False)
@@ -360,15 +362,20 @@ class JStudioMainWindow(QMainWindow):
             None,
         )
         if run_id == self.main_workspace.last_run_id:
-            prompt = self.main_workspace.prompt.toPlainText().strip()
-            output = self.main_workspace.output_text.strip()
-            if run is not None and run.output_text:
-                output = run.output_text.strip()
-            text = prompt + ("\n\n" + output if output else "")
+            if run is not None and run.inspection_text:
+                text = run.inspection_text
+            else:
+                prompt = self.main_workspace.prompt.toPlainText().strip()
+                output = self.main_workspace.output_text.strip()
+                if run is not None and run.output_text:
+                    output = run.output_text.strip()
+                text = prompt + ("\n\n" + output if output else "")
         elif run is None:
             text = "".join(frame.token_text for frame in frames) or "No captured text"
         else:
-            text = run.prompt + ("\n\n" + run.output_text if run.output_text else "")
+            text = run.inspection_text or (
+                run.prompt + ("\n\n" + run.output_text if run.output_text else "")
+            )
         self.jlens_workspace.inspect(
             run_id, text, "Chat inspection", position=position
         )

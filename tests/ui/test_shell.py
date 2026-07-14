@@ -17,7 +17,7 @@ def test_main_window_geometry_tabs_and_native_structure(qtbot, services, project
     ]
     assert window.tabs.currentWidget() is window.main_workspace
     assert window.findChild(QDockWidget) is None
-    assert window.session_bar.height() == 36
+    assert window.session_bar.height() == 46
 
 
 def test_shell_has_exact_top_level_menus(qtbot, services, project):

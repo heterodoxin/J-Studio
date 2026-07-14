@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>J-Lens Intervention Benchmark — Qwen/Qwen2.5-7B-Instruct</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; color: #0f172a; }
+    h1 { margin-bottom: 4px; }
+    .summary { display: flex; gap: 12px; margin: 18px 0; }
+    .card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 16px; }
+    .value { font-size: 24px; font-weight: 700; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 8px; vertical-align: top; }
+    th { text-align: left; background: #f8fafc; position: sticky; top: 0; }
+    tr.pass { background: #f0fdf4; }
+    tr.fail { background: #fef2f2; }
+    tr.details { background: white; }
+    pre { white-space: pre-wrap; background: #f8fafc; padding: 8px; border-radius: 6px; }
+    svg { width: 160px; height: 38px; }
+  </style>
+</head>
+<body>
+  <h1>J-Lens Intervention Benchmark — Qwen/Qwen2.5-7B-Instruct</h1>
+  <p>Strict residual/J-space benchmark. No logit fallback, lexical fallback, or corrective residual fallback.</p>
+  <div class="summary">
+    <div class="card"><div>Cases</div><div class="value">3</div></div>
+    <div class="card"><div>Passed</div><div class="value">3</div></div>
+    <div class="card"><div>Pass rate</div><div class="value">100.0%</div></div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Case</th><th>Operation</th><th>Context</th><th>Status</th>
+        <th>Applied</th><th>Target rank</th><th>Source rank</th>
+        <th>Layer</th><th>Scale</th><th>Cost</th><th>Rank visual</th><th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+            <tr class="pass">
+              <td>inject baseline-rank-5</td>
+              <td>inject</td>
+              <td>prompt-only</td>
+              <td>pass</td>
+              <td>yes</td>
+              <td>#5 ' ____' (11.7) → #1 ' ____' (8.81)</td>
+              <td>—</td>
+              <td>L21</td>
+              <td>1.93</td>
+              <td>0.007555</td>
+              <td>
+      <svg viewBox="0 0 120 28" role="img" aria-label="Target rank before and after">
+        <rect x="0" y="3" width="96" height="8" rx="2" fill="#94a3b8"/>
+        <rect x="0" y="17" width="100" height="8" rx="2" fill="#16a34a"/>
+        <text x="104" y="10" font-size="7" fill="#475569">before</text>
+        <text x="104" y="24" font-size="7" fill="#475569">after</text>
+      </svg>
+    </td>
+              <td>minimum passing intervention found</td>
+            </tr>
+            <tr class="details">
+              <td colspan="12">
+                <details>
+                  <summary>Prompt, top tokens, and trace</summary>
+                  <pre>Complete with exactly one word: The secret word is</pre>
+                  <p><b>Before:</b> ' &quot;' #1, '...' #2, ':' #3, ' __' #4, ' ____' #5, ' ______' #6, ' &#x27;' #7, ' a' #8</p>
+                  <p><b>After:</b> ' ____' #1, ' __' #2, ' blue' #3, ' ______' #4, ' the' #5, ':' #6, ' pineapple' #7, ' a' #8</p>
+                  <pre>{&#x27;case&#x27;: {&#x27;name&#x27;: &#x27;inject baseline-rank-5&#x27;, &#x27;operation&#x27;: &#x27;inject&#x27;, &#x27;prompt&#x27;: &#x27;Complete with exactly one word: The secret word is&#x27;, &#x27;target&#x27;: 30743, &#x27;source&#x27;: None, &#x27;layers&#x27;: (), &#x27;position&#x27;: -1, &#x27;top_k&#x27;: 1, &#x27;maximum_scale&#x27;: 16.0, &#x27;context_mode&#x27;: &#x27;prompt-only&#x27;}, &#x27;success&#x27;: True, &#x27;applied&#x27;: True, &#x27;target_before&#x27;: {&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 11.6875}, &#x27;target_after&#x27;: {&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 8.8125}, &#x27;source_before&#x27;: None, &#x27;source_after&#x27;: None, &#x27;top_before&#x27;: ({&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 13.5}, {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 12.875}, {&#x27;token_id&#x27;: 25, &#x27;token&#x27;: &#x27;:&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 12.8125}, {&#x27;token_id&#x27;: 1304, &#x27;token&#x27;: &#x27; __&#x27;, &#x27;rank&#x27;: 3, &#x27;logit&#x27;: 12.75}, {&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 11.6875}, {&#x27;token_id&#x27;: 32671, &#x27;token&#x27;: &#x27; ______&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 11.375}, {&#x27;token_id&#x27;: 364, &#x27;token&#x27;: &quot; &#x27;&quot;, &#x27;rank&#x27;: 6, &#x27;logit&#x27;: 11.25}, {&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 7, &#x27;logit&#x27;: 11.125}), &#x27;top_after&#x27;: ({&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 8.8125}, {&#x27;token_id&#x27;: 1304, &#x27;token&#x27;: &#x27; __&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 8.75}, {&#x27;token_id&#x27;: 6303, &#x27;token&#x27;: &#x27; blue&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 8.375}, {&#x27;token_id&#x27;: 32671, &#x27;token&#x27;: &#x27; ______&#x27;, &#x27;rank&#x27;: 3, &#x27;logit&#x27;: 8.3125}, {&#x27;token_id&#x27;: 279, &#x27;token&#x27;: &#x27; the&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 8.125}, {&#x27;token_id&#x27;: 25, &#x27;token&#x27;: &#x27;:&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 7.90625}, {&#x27;token_id&#x27;: 77082, &#x27;token&#x27;: &#x27; pineapple&#x27;, &#x27;rank&#x27;: 6, &#x27;logit&#x27;: 7.78125}, {&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 7, &#x27;logit&#x27;: 7.71875}), &#x27;selected_layer&#x27;: 21, &#x27;selected_scale&#x27;: 1.9296875, &#x27;normalized_cost&#x27;: 0.007555058475249296, &#x27;trace&#x27;: {&#x27;operation&#x27;: &#x27;inject&#x27;, &#x27;target_ids&#x27;: (30743,), &#x27;source_ids&#x27;: (), &#x27;experimental&#x27;: False, &#x27;selected_layer&#x27;: 21, &#x27;selected_positions&#x27;: (9,), &#x27;selected_scale&#x27;: 1.9296875, &#x27;normalized_cost&#x27;: 0.007555058475249296, &#x27;baseline_scores&#x27;: {&#x27;30743&#x27;: 11.6875, &#x27;330&#x27;: 13.5}, &#x27;after_scores&#x27;: {&#x27;30743&#x27;: 8.8125, &#x27;330&#x27;: 6.8125}, &#x27;baseline_top_ids&#x27;: (330, 1112, 25, 1304, 30743, 32671, 364, 264, 9338, 304, 2146, 65892, 1939, 2130, 2948, 30, 6303, 279, 3545, 5267, 1934, 7436, 12236, 2503, 1447, 458, 825, 2677, 5468, 28149, 537, 3979), &#x27;after_top_ids&#x27;: (30743, 1304, 6303, 32671, 279, 25, 77082, 264, 65892, 1112, 1128, 330, 3979, 2146, 458, 2130, 28149, 362, 320, 7436, 1447, 1501, 5468, 537, 43841, 304, 25037, 12236, 2494, 9338, 67818, 55892), &#x27;search_points&#x27;: ({&#x27;scale&#x27;: 0.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -1.8125, &#x27;downstream_shift&#x27;: 0.0}, {&#x27;scale&#x27;: 1.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: -0.1875}, {&#x27;scale&#x27;: 2.0, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 2.09375, &#x27;downstream_shift&#x27;: -3.0625}, {&#x27;scale&#x27;: 1.5, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 1.0625, &#x27;downstream_shift&#x27;: -1.5625}, {&#x27;scale&#x27;: 1.75, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 1.625, &#x27;downstream_shift&#x27;: -2.25}, {&#x27;scale&#x27;: 1.875, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 1.84375, &#x27;downstream_shift&#x27;: -2.75}, {&#x27;scale&#x27;: 1.9375, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 2.03125, &#x27;downstream_shift&#x27;: -2.8125}, {&#x27;scale&#x27;: 1.90625, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 1.90625, &#x27;downstream_shift&#x27;: -2.75}, {&#x27;scale&#x27;: 1.921875, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 2.0, &#x27;downstream_shift&#x27;: -2.875}), &#x27;warnings&#x27;: (), &#x27;sequence_logprob_before&#x27;: None, &#x27;sequence_logprob_after&#x27;: None, &#x27;message&#x27;: &#x27;minimum passing intervention found&#x27;, &#x27;benchmark_success&#x27;: True, &#x27;benchmark_reason&#x27;: &#x27;target entered requested top-k&#x27;}}</pre>
+                </details>
+              </td>
+            </tr>
+            
+            <tr class="pass">
+              <td>replace top-1 with baseline lower-ranked token</td>
+              <td>replace</td>
+              <td>prompt-only</td>
+              <td>pass</td>
+              <td>yes</td>
+              <td>#5 ' ____' (11.7) → #3 ' ____' (11.6)</td>
+              <td>#1 ' &quot;' (13.5) → #4 ' &quot;' (11.4)</td>
+              <td>L20</td>
+              <td>1.008</td>
+              <td>0.04741</td>
+              <td>
+      <svg viewBox="0 0 120 28" role="img" aria-label="Target rank before and after">
+        <rect x="0" y="3" width="96" height="8" rx="2" fill="#94a3b8"/>
+        <rect x="0" y="17" width="98" height="8" rx="2" fill="#16a34a"/>
+        <text x="104" y="10" font-size="7" fill="#475569">before</text>
+        <text x="104" y="24" font-size="7" fill="#475569">after</text>
+      </svg>
+    </td>
+              <td>minimum passing intervention found</td>
+            </tr>
+            <tr class="details">
+              <td colspan="12">
+                <details>
+                  <summary>Prompt, top tokens, and trace</summary>
+                  <pre>Complete with exactly one word: The secret word is</pre>
+                  <p><b>Before:</b> ' &quot;' #1, '...' #2, ':' #3, ' __' #4, ' ____' #5, ' ______' #6, ' &#x27;' #7, ' a' #8</p>
+                  <p><b>After:</b> ' __' #1, ':' #2, ' ____' #3, ' &quot;' #4, ' ______' #5, '...' #6, ' a' #6, ' blue' #6</p>
+                  <pre>{&#x27;case&#x27;: {&#x27;name&#x27;: &#x27;replace top-1 with baseline lower-ranked token&#x27;, &#x27;operation&#x27;: &#x27;replace&#x27;, &#x27;prompt&#x27;: &#x27;Complete with exactly one word: The secret word is&#x27;, &#x27;target&#x27;: 30743, &#x27;source&#x27;: 330, &#x27;layers&#x27;: (), &#x27;position&#x27;: -1, &#x27;top_k&#x27;: 1, &#x27;maximum_scale&#x27;: 16.0, &#x27;context_mode&#x27;: &#x27;prompt-only&#x27;}, &#x27;success&#x27;: True, &#x27;applied&#x27;: True, &#x27;target_before&#x27;: {&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 11.6875}, &#x27;target_after&#x27;: {&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 11.5625}, &#x27;source_before&#x27;: {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 13.5}, &#x27;source_after&#x27;: {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 3, &#x27;logit&#x27;: 11.4375}, &#x27;top_before&#x27;: ({&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 13.5}, {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 12.875}, {&#x27;token_id&#x27;: 25, &#x27;token&#x27;: &#x27;:&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 12.8125}, {&#x27;token_id&#x27;: 1304, &#x27;token&#x27;: &#x27; __&#x27;, &#x27;rank&#x27;: 3, &#x27;logit&#x27;: 12.75}, {&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 11.6875}, {&#x27;token_id&#x27;: 32671, &#x27;token&#x27;: &#x27; ______&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 11.375}, {&#x27;token_id&#x27;: 364, &#x27;token&#x27;: &quot; &#x27;&quot;, &#x27;rank&#x27;: 6, &#x27;logit&#x27;: 11.25}, {&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 7, &#x27;logit&#x27;: 11.125}), &#x27;top_after&#x27;: ({&#x27;token_id&#x27;: 1304, &#x27;token&#x27;: &#x27; __&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 12.0}, {&#x27;token_id&#x27;: 25, &#x27;token&#x27;: &#x27;:&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 11.8125}, {&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 11.5625}, {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 3, &#x27;logit&#x27;: 11.4375}, {&#x27;token_id&#x27;: 32671, &#x27;token&#x27;: &#x27; ______&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 10.8125}, {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 10.625}, {&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 10.625}, {&#x27;token_id&#x27;: 6303, &#x27;token&#x27;: &#x27; blue&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 10.625}), &#x27;selected_layer&#x27;: 20, &#x27;selected_scale&#x27;: 1.0078125, &#x27;normalized_cost&#x27;: 0.047414060008961235, &#x27;trace&#x27;: {&#x27;operation&#x27;: &#x27;replace&#x27;, &#x27;target_ids&#x27;: (30743,), &#x27;source_ids&#x27;: (330,), &#x27;experimental&#x27;: False, &#x27;selected_layer&#x27;: 20, &#x27;selected_positions&#x27;: (9,), &#x27;selected_scale&#x27;: 1.0078125, &#x27;normalized_cost&#x27;: 0.047414060008961235, &#x27;baseline_scores&#x27;: {&#x27;30743&#x27;: 11.6875, &#x27;330&#x27;: 13.5}, &#x27;after_scores&#x27;: {&#x27;30743&#x27;: 11.5625, &#x27;330&#x27;: 11.4375}, &#x27;baseline_top_ids&#x27;: (330, 1112, 25, 1304, 30743, 32671, 364, 264, 9338, 304, 2146, 65892, 1939, 2130, 2948, 30, 6303, 279, 3545, 5267, 1934, 7436, 12236, 2503, 1447, 458, 825, 2677, 5468, 28149, 537, 3979), &#x27;after_top_ids&#x27;: (1304, 25, 30743, 330, 32671, 6303, 264, 1112, 304, 65892, 2130, 2146, 364, 9338, 1447, 279, 825, 2948, 3545, 1730, 7436, 8177, 271, 12236, 320, 537, 25037, 5468, 1501, 362, 10113, 3979), &#x27;search_points&#x27;: ({&#x27;scale&#x27;: 0.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -1.8125, &#x27;downstream_shift&#x27;: 0.0}, {&#x27;scale&#x27;: 1.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.0625, &#x27;downstream_shift&#x27;: 1.875}, {&#x27;scale&#x27;: 2.0, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 1.875, &#x27;downstream_shift&#x27;: 3.6875}, {&#x27;scale&#x27;: 1.5, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 1.0625, &#x27;downstream_shift&#x27;: 2.875}, {&#x27;scale&#x27;: 1.25, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.625, &#x27;downstream_shift&#x27;: 2.4375}, {&#x27;scale&#x27;: 1.125, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.3125, &#x27;downstream_shift&#x27;: 2.125}, {&#x27;scale&#x27;: 1.0625, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.3125, &#x27;downstream_shift&#x27;: 2.125}, {&#x27;scale&#x27;: 1.03125, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: 1.9375}, {&#x27;scale&#x27;: 1.015625, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: 1.9375}, {&#x27;scale&#x27;: 1.0078125, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: 1.9375}), &#x27;warnings&#x27;: (), &#x27;sequence_logprob_before&#x27;: None, &#x27;sequence_logprob_after&#x27;: None, &#x27;message&#x27;: &#x27;minimum passing intervention found&#x27;, &#x27;benchmark_success&#x27;: True, &#x27;benchmark_reason&#x27;: &#x27;target overtook source&#x27;}}</pre>
+                </details>
+              </td>
+            </tr>
+            
+            <tr class="pass">
+              <td>replace top-2 with baseline lower-ranked token</td>
+              <td>replace</td>
+              <td>prompt-only</td>
+              <td>pass</td>
+              <td>yes</td>
+              <td>#6 ' ______' (11.4) → #5 ' ______' (11.7)</td>
+              <td>#2 '...' (12.9) → #6 '...' (11.6)</td>
+              <td>L23</td>
+              <td>0.9141</td>
+              <td>0.05058</td>
+              <td>
+      <svg viewBox="0 0 120 28" role="img" aria-label="Target rank before and after">
+        <rect x="0" y="3" width="95" height="8" rx="2" fill="#94a3b8"/>
+        <rect x="0" y="17" width="96" height="8" rx="2" fill="#16a34a"/>
+        <text x="104" y="10" font-size="7" fill="#475569">before</text>
+        <text x="104" y="24" font-size="7" fill="#475569">after</text>
+      </svg>
+    </td>
+              <td>minimum passing intervention found</td>
+            </tr>
+            <tr class="details">
+              <td colspan="12">
+                <details>
+                  <summary>Prompt, top tokens, and trace</summary>
+                  <pre>Complete with exactly one word: The secret word is</pre>
+                  <p><b>Before:</b> ' &quot;' #1, '...' #2, ':' #3, ' __' #4, ' ____' #5, ' ______' #6, ' &#x27;' #7, ' a' #8</p>
+                  <p><b>After:</b> ' __' #1, ':' #2, ' &quot;' #2, ' ____' #4, ' ______' #5, '...' #6, ' _____' #7, ' in' #8</p>
+                  <pre>{&#x27;case&#x27;: {&#x27;name&#x27;: &#x27;replace top-2 with baseline lower-ranked token&#x27;, &#x27;operation&#x27;: &#x27;replace&#x27;, &#x27;prompt&#x27;: &#x27;Complete with exactly one word: The secret word is&#x27;, &#x27;target&#x27;: 32671, &#x27;source&#x27;: 1112, &#x27;layers&#x27;: (), &#x27;position&#x27;: -1, &#x27;top_k&#x27;: 1, &#x27;maximum_scale&#x27;: 16.0, &#x27;context_mode&#x27;: &#x27;prompt-only&#x27;}, &#x27;success&#x27;: True, &#x27;applied&#x27;: True, &#x27;target_before&#x27;: {&#x27;token_id&#x27;: 32671, &#x27;token&#x27;: &#x27; ______&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 11.375}, &#x27;target_after&#x27;: {&#x27;token_id&#x27;: 32671, &#x27;token&#x27;: &#x27; ______&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 11.6875}, &#x27;source_before&#x27;: {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 12.875}, &#x27;source_after&#x27;: {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 11.5625}, &#x27;top_before&#x27;: ({&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 13.5}, {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 12.875}, {&#x27;token_id&#x27;: 25, &#x27;token&#x27;: &#x27;:&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 12.8125}, {&#x27;token_id&#x27;: 1304, &#x27;token&#x27;: &#x27; __&#x27;, &#x27;rank&#x27;: 3, &#x27;logit&#x27;: 12.75}, {&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 11.6875}, {&#x27;token_id&#x27;: 32671, &#x27;token&#x27;: &#x27; ______&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 11.375}, {&#x27;token_id&#x27;: 364, &#x27;token&#x27;: &quot; &#x27;&quot;, &#x27;rank&#x27;: 6, &#x27;logit&#x27;: 11.25}, {&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 7, &#x27;logit&#x27;: 11.125}), &#x27;top_after&#x27;: ({&#x27;token_id&#x27;: 1304, &#x27;token&#x27;: &#x27; __&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 12.5625}, {&#x27;token_id&#x27;: 25, &#x27;token&#x27;: &#x27;:&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 12.375}, {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 12.375}, {&#x27;token_id&#x27;: 30743, &#x27;token&#x27;: &#x27; ____&#x27;, &#x27;rank&#x27;: 3, &#x27;logit&#x27;: 11.875}, {&#x27;token_id&#x27;: 32671, &#x27;token&#x27;: &#x27; ______&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 11.6875}, {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 11.5625}, {&#x27;token_id&#x27;: 65892, &#x27;token&#x27;: &#x27; _____&#x27;, &#x27;rank&#x27;: 6, &#x27;logit&#x27;: 11.0}, {&#x27;token_id&#x27;: 304, &#x27;token&#x27;: &#x27; in&#x27;, &#x27;rank&#x27;: 7, &#x27;logit&#x27;: 10.5}), &#x27;selected_layer&#x27;: 23, &#x27;selected_scale&#x27;: 0.9140625, &#x27;normalized_cost&#x27;: 0.05057932531072151, &#x27;trace&#x27;: {&#x27;operation&#x27;: &#x27;replace&#x27;, &#x27;target_ids&#x27;: (32671,), &#x27;source_ids&#x27;: (1112,), &#x27;experimental&#x27;: False, &#x27;selected_layer&#x27;: 23, &#x27;selected_positions&#x27;: (9,), &#x27;selected_scale&#x27;: 0.9140625, &#x27;normalized_cost&#x27;: 0.05057932531072151, &#x27;baseline_scores&#x27;: {&#x27;32671&#x27;: 11.375, &#x27;1112&#x27;: 12.875}, &#x27;after_scores&#x27;: {&#x27;32671&#x27;: 11.6875, &#x27;1112&#x27;: 11.5625}, &#x27;baseline_top_ids&#x27;: (330, 1112, 25, 1304, 30743, 32671, 364, 264, 9338, 304, 2146, 65892, 1939, 2130, 2948, 30, 6303, 279, 3545, 5267, 1934, 7436, 12236, 2503, 1447, 458, 825, 2677, 5468, 28149, 537, 3979), &#x27;after_top_ids&#x27;: (1304, 25, 330, 30743, 32671, 1112, 65892, 304, 2146, 264, 1939, 364, 279, 7436, 2130, 9338, 5468, 30, 12236, 2948, 1447, 3545, 2503, 6303, 28149, 1934, 3979, 2677, 5267, 825, 537, 1730), &#x27;search_points&#x27;: ({&#x27;scale&#x27;: 0.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -1.5, &#x27;downstream_shift&#x27;: 0.0}, {&#x27;scale&#x27;: 1.0, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.3125, &#x27;downstream_shift&#x27;: 1.8125}, {&#x27;scale&#x27;: 0.5, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -0.6875, &#x27;downstream_shift&#x27;: 0.8125}, {&#x27;scale&#x27;: 0.75, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -0.1875, &#x27;downstream_shift&#x27;: 1.3125}, {&#x27;scale&#x27;: 0.875, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.0, &#x27;downstream_shift&#x27;: 1.5}, {&#x27;scale&#x27;: 0.9375, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.1875, &#x27;downstream_shift&#x27;: 1.6875}, {&#x27;scale&#x27;: 0.90625, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.0625, &#x27;downstream_shift&#x27;: 1.5625}, {&#x27;scale&#x27;: 0.921875, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: 1.625}, {&#x27;scale&#x27;: 0.9140625, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: 1.625}), &#x27;warnings&#x27;: (), &#x27;sequence_logprob_before&#x27;: None, &#x27;sequence_logprob_after&#x27;: None, &#x27;message&#x27;: &#x27;minimum passing intervention found&#x27;, &#x27;benchmark_success&#x27;: True, &#x27;benchmark_reason&#x27;: &#x27;target overtook source&#x27;}}</pre>
+                </details>
+              </td>
+            </tr>
+            
+    </tbody>
+  </table>
+</body>
+</html>

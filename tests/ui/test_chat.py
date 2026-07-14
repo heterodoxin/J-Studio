@@ -9,6 +9,17 @@ from jstudio.domain import (
     RuleRecord,
     RuleTrigger,
 )
+from jstudio.ui.chat import ChatMessage
+
+
+def test_chat_workspace_has_modern_semantic_surfaces(window):
+    chat = window.chat_workspace
+
+    assert chat.transcript.objectName() == "chatTranscript"
+    assert chat.composer.objectName() == "chatComposer"
+    assert chat.composer.property("role") == "data"
+    assert chat.send_button.property("role") == "primary"
+    assert chat.control_status.property("role") == "statusPill"
 
 
 def test_chat_send_stop_and_inspect(qtbot, window):
@@ -88,3 +99,36 @@ def test_chat_intervention_event_updates_status_not_transcript(window):
 
     assert window.chat_workspace.transcript_model.rowCount() == before
     assert "inject-cat: applied" in window.chat_workspace.control_status.text()
+
+
+def test_chat_error_replaces_generating_row_with_actionable_detail(window):
+    chat = window.chat_workspace
+    chat._assistant_row = chat.transcript_model.append(
+        ChatMessage("Model", "Generating…")
+    )
+
+    chat._on_error("run-1", "Local Qwen generation failed", "TypeError('bad cache')")
+
+    message = chat.transcript_model.message(chat._assistant_row)
+    assert message.role == "Error"
+    assert "TypeError('bad cache')" in message.content
+
+
+def test_chat_edit_and_continue_actions_create_real_conversation_branches(window):
+    chat = window.chat_workspace
+    chat.transcript_model.append(ChatMessage("You", "first question"))
+    chat.transcript_model.append(ChatMessage("Model", "first answer", run_id="r1"))
+    chat.transcript_model.append(ChatMessage("You", "later question"))
+
+    chat.edit_and_resend(0)
+
+    assert chat.composer.toPlainText() == "first question"
+    assert chat.transcript_model.rowCount() == 0
+
+    chat.transcript_model.append(ChatMessage("You", "new question"))
+    chat.transcript_model.append(ChatMessage("Model", "new answer", run_id="r2"))
+    chat.continue_response(1)
+    assert chat.composer.toPlainText() == "Continue from your previous response."
+
+    chat.add_output_to_prompt(1)
+    assert "new answer" in chat.composer.toPlainText()

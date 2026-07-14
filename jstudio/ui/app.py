@@ -18,6 +18,7 @@ from jstudio.services.hf_runtime import DEFAULT_MODEL_ID, create_hf_services
 from jstudio.services.protocols import JStudioServices
 from jstudio.ui.shell.main_window import JStudioMainWindow
 from jstudio.ui.startup import choose_startup_model
+from jstudio.ui.theme import apply_jstudio_theme
 
 
 def create_application(
@@ -32,6 +33,7 @@ def create_application(
     app.setOrganizationName("J Studio")
     app.setApplicationName("J Studio")
     app.setApplicationVersion("0.1.0")
+    apply_jstudio_theme(app)
     icon = QIcon(str(Path(__file__).parents[1] / "assets" / "j-studio.png"))
     app.setWindowIcon(icon)
     selected_services = services or create_fake_services()

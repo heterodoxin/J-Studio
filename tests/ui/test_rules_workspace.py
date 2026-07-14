@@ -31,6 +31,12 @@ def test_rules_workspace_has_required_panes(qtbot, services, project):
         "Returned Actions",
         "Execution Log",
     ]
+    assert workspace.rule_list_panel.property("role") == "panel"
+    assert workspace.side_panel.property("role") == "panel"
+    assert workspace.editor.objectName() == "ruleSourceEditor"
+    assert workspace.side_tabs.property("role") == "subtabs"
+    assert workspace.output_tabs.property("role") == "subtabs"
+    assert workspace.output_tabs.maximumHeight() <= 170
 
 
 def test_rules_api_tab_documents_context_helpers_and_examples(qtbot, services, project):

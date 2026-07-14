@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
     QFormLayout,
     QGroupBox,
     QLabel,
+    QMenu,
     QPlainTextEdit,
     QPushButton,
     QSpinBox,
@@ -20,6 +21,7 @@ from PySide6.QtWidgets import (
     QTableView,
     QTabWidget,
     QToolBar,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -123,22 +125,37 @@ class RulesWorkspace(QWidget):
         self._bridge = _ResultBridge(self)
         self._bridge.completed.connect(self._test_completed)
         root = QVBoxLayout(self)
-        root.setContentsMargins(4, 4, 4, 4)
+        root.setContentsMargins(10, 10, 10, 10)
+        root.setSpacing(8)
         toolbar = QToolBar(self)
+        toolbar.setObjectName("rulesToolbar")
         self.new_action = toolbar.addAction("New Rule")
-        toolbar.addAction("New Folder")
         self.save_action = toolbar.addAction("Save")
         self.enable_action = QAction("Enable", self)
         toolbar.addAction(self.enable_action)
-        toolbar.addAction("Disable")
-        toolbar.addAction("Duplicate")
-        toolbar.addAction("Export")
-        toolbar.addAction("Import")
-        toolbar.addAction("Delete")
+        self.more_button = QToolButton(toolbar)
+        self.more_button.setText("More  ⋮")
+        self.more_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.more_button.setAccessibleName("More rule actions")
+        more_menu = QMenu(self.more_button)
+        for label in (
+            "New Folder",
+            "Disable",
+            "Duplicate",
+            "Export",
+            "Import",
+            "Delete",
+        ):
+            more_menu.addAction(label)
+        self.more_button.setMenu(more_menu)
+        toolbar.addWidget(self.more_button)
         root.addWidget(toolbar)
         self.main_splitter = QSplitter(Qt.Orientation.Horizontal, self)
-        self.main_splitter.addWidget(self._build_rule_list())
+        self.rule_list_panel = self._build_rule_list()
+        self.main_splitter.addWidget(self.rule_list_panel)
         self.editor = RuleSourceEditor(self.main_splitter)
+        self.editor.setObjectName("ruleSourceEditor")
+        self.editor.setProperty("role", "data")
         self.editor.setAccessibleName("JavaScript rule source")
         self.main_splitter.addWidget(self.editor)
         self.side_panel = self._build_side_panel()
@@ -146,6 +163,7 @@ class RulesWorkspace(QWidget):
         self.main_splitter.setSizes([260, 520, 340])
         root.addWidget(self.main_splitter, 1)
         self.output_tabs = QTabWidget(self)
+        self.output_tabs.setProperty("role", "subtabs")
         self.problems = QPlainTextEdit(self.output_tabs)
         self.returned_actions = QPlainTextEdit(self.output_tabs)
         self.execution_log = QPlainTextEdit(self.output_tabs)
@@ -156,7 +174,7 @@ class RulesWorkspace(QWidget):
         ):
             widget.setReadOnly(True)
             self.output_tabs.addTab(widget, title)
-        self.output_tabs.setFixedHeight(200)
+        self.output_tabs.setFixedHeight(160)
         root.addWidget(self.output_tabs)
         self.new_action.triggered.connect(lambda: self.new_rule("New Rule"))
         self.save_action.triggered.connect(self.save_current)
@@ -172,8 +190,10 @@ class RulesWorkspace(QWidget):
 
     def _build_rule_list(self) -> QWidget:
         widget = QWidget(self.main_splitter)
+        widget.setProperty("role", "panel")
         layout = QVBoxLayout(widget)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(8)
         self.rule_model = RuleTableModel(self.project.rules, widget)
         self.rule_table = QTableView(widget)
         self.rule_table.setModel(self.rule_model)
@@ -182,14 +202,17 @@ class RulesWorkspace(QWidget):
         self.rule_table.setColumnHidden(2, True)
         self.rule_table.setColumnHidden(3, True)
         self.test_button = QPushButton("Test Rule", widget)
+        self.test_button.setProperty("role", "primary")
         layout.addWidget(self.rule_table, 1)
         layout.addWidget(self.test_button)
         return widget
 
     def _build_side_panel(self) -> QWidget:
         panel = QWidget(self.main_splitter)
+        panel.setProperty("role", "panel")
         layout = QVBoxLayout(panel)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(8)
         settings = QGroupBox("Rule Settings", panel)
         form = QFormLayout(settings)
         self.trigger = QComboBox(settings)
@@ -208,6 +231,7 @@ class RulesWorkspace(QWidget):
         layout.addWidget(settings)
 
         tabs = QTabWidget(panel)
+        tabs.setProperty("role", "subtabs")
         self.api_reference = QPlainTextEdit(tabs)
         self.api_reference.setReadOnly(True)
         self.api_reference.setPlainText(_API_REFERENCE)

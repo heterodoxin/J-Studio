@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QDialogButtonBox,
+    QFileDialog,
     QFormLayout,
     QGroupBox,
     QHBoxLayout,
@@ -139,14 +140,16 @@ class MainReadWorkspace(QWidget):
         self.bridge.error.connect(self._on_error)
 
         root = QVBoxLayout(self)
-        root.setContentsMargins(4, 4, 4, 0)
-        root.setSpacing(2)
+        root.setContentsMargins(10, 10, 10, 8)
+        root.setSpacing(8)
         self.vertical_splitter = QSplitter(Qt.Orientation.Vertical, self)
-        self.vertical_splitter.setHandleWidth(7)
+        self.vertical_splitter.setHandleWidth(8)
         self.upper_splitter = QSplitter(Qt.Orientation.Horizontal, self.vertical_splitter)
-        self.upper_splitter.setHandleWidth(7)
-        self.upper_splitter.addWidget(self._build_found_panel())
-        self.upper_splitter.addWidget(self._build_controls_panel())
+        self.upper_splitter.setHandleWidth(8)
+        self.found_panel = self._build_found_panel()
+        self.controls_panel = self._build_controls_panel()
+        self.upper_splitter.addWidget(self.found_panel)
+        self.upper_splitter.addWidget(self.controls_panel)
         self.upper_splitter.setSizes([330, 386])
         self.intervention_model = InterventionTableModel(self.project.interventions, self)
         self.intervention_model.enabled_changed.connect(
@@ -167,6 +170,7 @@ class MainReadWorkspace(QWidget):
         )
         self.stack_view.clear.clicked.connect(self._clear_stack)
         self.stack_view.preview.clicked.connect(self.preview_selected_intervention)
+        self.stack_view.bake.clicked.connect(self._bake_stack)
         self.stack_view.group.clicked.connect(
             lambda: self.status.setText(
                 "Intervention execution follows the current table order"
@@ -190,6 +194,7 @@ class MainReadWorkspace(QWidget):
         bottom.addWidget(self.rules_button)
         self.rules_button.clicked.connect(self.rules_requested)
         root.addWidget(self.bottom_strip)
+        self.bottom_strip.hide()
         self._sync_button_minimums()
         self._sync_session_state()
 
@@ -207,11 +212,16 @@ class MainReadWorkspace(QWidget):
 
     def _build_found_panel(self) -> QWidget:
         panel = QWidget(self)
+        panel.setProperty("role", "panel")
         layout = QVBoxLayout(panel)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(12, 10, 12, 12)
+        layout.setSpacing(8)
         header = QHBoxLayout()
-        header.addWidget(QLabel("Found Concepts"))
+        title = QLabel("Found Concepts")
+        title.setProperty("role", "heading")
+        header.addWidget(title)
         self.found_count = QLabel("Found: 0 Concepts")
+        self.found_count.setProperty("role", "muted")
         header.addStretch(1)
         header.addWidget(self.found_count)
         layout.addLayout(header)
@@ -232,8 +242,10 @@ class MainReadWorkspace(QWidget):
         layout.addWidget(self.found_table, 1)
         actions = QHBoxLayout()
         self.add_found = QPushButton("Add →")
+        self.add_found.setProperty("role", "primary")
         self.add_found.setToolTip("Add selected concept to the intervention list")
         self.clear_found = QPushButton("Clear")
+        self.clear_found.setProperty("role", "ghost")
         self.model_view = QPushButton("Model View")
         self.open_jlens = QPushButton("J-Lens")
         self.add_found.clicked.connect(self._add_selected)
@@ -250,10 +262,22 @@ class MainReadWorkspace(QWidget):
 
     def _build_controls_panel(self) -> QWidget:
         panel = QWidget(self)
+        panel.setProperty("role", "panel")
         layout = QVBoxLayout(panel)
-        layout.setContentsMargins(2, 0, 0, 0)
+        layout.setContentsMargins(12, 10, 12, 12)
+        layout.setSpacing(8)
+        heading = QHBoxLayout()
+        title = QLabel("Read J-Space", panel)
+        title.setProperty("role", "heading")
+        self.status = QLabel("Ready", panel)
+        self.status.setProperty("role", "muted")
+        heading.addWidget(title)
+        heading.addStretch(1)
+        heading.addWidget(self.status)
+        layout.addLayout(heading)
         buttons = QHBoxLayout()
         self.first_read = QPushButton("First Read")
+        self.first_read.setProperty("role", "primary")
         self.next_read = QPushButton("Next Read")
         self.undo_read = QPushButton("Undo Read")
         for button in (self.first_read, self.next_read, self.undo_read):
@@ -268,16 +292,19 @@ class MainReadWorkspace(QWidget):
         prompt_layout.setContentsMargins(0, 0, 0, 0)
         self.prompt = QPlainTextEdit(prompt_row)
         self.prompt.setObjectName("promptEditor")
-        self.prompt.setMaximumHeight(58)
+        self.prompt.setMinimumHeight(86)
+        self.prompt.setMaximumHeight(118)
         self.prompt.setPlaceholderText("Enter a prompt to inspect")
         self.prompt.textChanged.connect(self._prompt_edited)
-        self.prompt_expand = QPushButton("…", prompt_row)
-        self.prompt_expand.setFixedWidth(28)
+        self.prompt_expand = QPushButton("Expand", prompt_row)
+        self.prompt_expand.setProperty("role", "ghost")
         self.prompt_expand.setToolTip("Open larger prompt editor")
         self.prompt_expand.setAccessibleName("Open larger prompt editor")
         self.prompt_expand.clicked.connect(self._expand_prompt)
         prompt_layout.addWidget(self.prompt, 1)
-        prompt_layout.addWidget(self.prompt_expand)
+        prompt_layout.addWidget(
+            self.prompt_expand, 0, Qt.AlignmentFlag.AlignTop
+        )
         self.read_type = QComboBox(panel)
         self.read_type.addItems(
             [
@@ -309,9 +336,14 @@ class MainReadWorkspace(QWidget):
         form.addRow("Read Type", self.read_type)
         form.addRow("Concept Type", self.concept_type)
         layout.addLayout(form)
-        options = QGroupBox("J-Space Scan Options", panel)
-        option_layout = QFormLayout(options)
-        layer_row = QWidget(options)
+        self.advanced_scan = QPushButton("▸  Advanced scan", panel)
+        self.advanced_scan.setCheckable(True)
+        self.advanced_scan.setProperty("role", "ghost")
+        self.advanced_scan.setAccessibleName("Show advanced J-Space scan options")
+        layout.addWidget(self.advanced_scan)
+        self.scan_options = QGroupBox("Scan range and filters", panel)
+        option_layout = QFormLayout(self.scan_options)
+        layer_row = QWidget(self.scan_options)
         layer_layout = QHBoxLayout(layer_row)
         layer_layout.setContentsMargins(0, 0, 0, 0)
         self.layer_start = QSpinBox(layer_row)
@@ -325,7 +357,7 @@ class MainReadWorkspace(QWidget):
         layer_layout.addWidget(self.layer_stop)
         layer_layout.addWidget(QLabel("Step"))
         layer_layout.addWidget(self.layer_step)
-        flags = QWidget(options)
+        flags = QWidget(self.scan_options)
         flags_layout = QHBoxLayout(flags)
         flags_layout.setContentsMargins(0, 0, 0, 0)
         self.positive = QCheckBox("Positive")
@@ -337,7 +369,7 @@ class MainReadWorkspace(QWidget):
             flags_layout.addWidget(checkbox)
         self.pause_while_reading = QCheckBox("Pause generation while reading")
         self.live_update = QCheckBox("Live update found concepts")
-        limits = QWidget(options)
+        limits = QWidget(self.scan_options)
         limits_layout = QHBoxLayout(limits)
         limits_layout.setContentsMargins(0, 0, 0, 0)
         self.max_concepts = QSpinBox(limits)
@@ -350,18 +382,26 @@ class MainReadWorkspace(QWidget):
         limits_layout.addWidget(self.max_concepts)
         limits_layout.addWidget(QLabel("Max Tokens"))
         limits_layout.addWidget(self.max_tokens)
-        self.status = QLabel("Ready")
         option_layout.addRow(layer_row)
         option_layout.addRow(flags)
         option_layout.addRow(limits)
         option_layout.addRow(self.pause_while_reading)
-        option_layout.addRow(self.live_update, self.status)
-        layout.addWidget(options)
+        option_layout.addRow(self.live_update)
+        layout.addWidget(self.scan_options)
+        self.scan_options.hide()
+        self.advanced_scan.toggled.connect(self._toggle_scan_options)
         self.add_manual = QPushButton("Add Intervention Manually")
+        self.add_manual.setProperty("role", "ghost")
         self.add_manual.clicked.connect(lambda: self.open_intervention_editor("inject", ""))
         layout.addWidget(self.add_manual)
         layout.addStretch(1)
         return panel
+
+    def _toggle_scan_options(self, expanded: bool) -> None:
+        self.scan_options.setVisible(expanded)
+        self.advanced_scan.setText(
+            "▾  Advanced scan" if expanded else "▸  Advanced scan"
+        )
 
     def _expand_prompt(self) -> None:
         dialog = QDialog(self)
@@ -402,6 +442,36 @@ class MainReadWorkspace(QWidget):
         self.arm_button.setToolTip(
             "" if can_intervene else "Offline traces cannot apply interventions"
         )
+        self.stack_view.bake.setEnabled(can_intervene)
+
+    def _bake_stack(self) -> None:
+        if self.session is None:
+            self.status.setText("Select a model session before baking")
+            return
+        drafts = tuple(
+            entry.draft for entry in self.project.interventions if entry.enabled
+        )
+        if not drafts:
+            self.status.setText("Enable suppress/replace interventions before baking")
+            return
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Bake J-Space Projection",
+            "jspace-projection.safetensors",
+            "Safetensors (*.safetensors)",
+        )
+        if not path:
+            return
+        try:
+            weights, manifest = self.services.interventions.bake(
+                self.session.session_id,
+                drafts,
+                path,
+            )
+        except Exception as exc:
+            self.status.setText(f"Bake failed · {exc}")
+            return
+        self.status.setText(f"Baked {weights.name} + {manifest.name}")
 
     def button_labels(self) -> tuple[str, str, str]:
         return self.first_read.text(), self.next_read.text(), self.undo_read.text()
@@ -594,7 +664,10 @@ class MainReadWorkspace(QWidget):
     def _on_error(self, run_id: str, message: str, detail: str) -> None:
         self.current_run_id = None
         self._set_run_state(RunState.READY)
-        self.status.setText(f"{message} — Details available")
+        visible_detail = detail if len(detail) <= 180 else f"{detail[:177]}…"
+        self.status.setText(
+            f"{message} — {visible_detail}" if visible_detail else message
+        )
         self.status.setToolTip(detail)
 
     def _replace_activations(self, activations) -> None:

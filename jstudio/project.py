@@ -123,6 +123,7 @@ def _run_to_dict(run: RunRecord) -> dict[str, Any]:
         "intervention_ids": list(run.intervention_ids),
         "rule_ids": list(run.rule_ids),
         "output_text": run.output_text,
+        "inspection_text": run.inspection_text,
         "partial": run.partial,
         "generation_backend": run.generation_backend.value,
         "quantization": run.quantization,
@@ -266,6 +267,7 @@ class ProjectDocument:
                 intervention_ids=tuple(raw.get("intervention_ids", [])),
                 rule_ids=tuple(raw.get("rule_ids", [])),
                 output_text=raw.get("output_text", ""),
+                inspection_text=raw.get("inspection_text", ""),
                 partial=bool(raw.get("partial", False)),
                 generation_backend=GenerationBackend(
                     raw.get("generation_backend", "exact-bf16")

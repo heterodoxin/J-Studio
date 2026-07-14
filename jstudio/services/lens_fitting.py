@@ -74,6 +74,24 @@ class RuntimeProgressiveFitter:
     SKIP_FIRST = 16
 
     @staticmethod
+    def _readout_quality(results):
+        from jlens.evaluation import FitQuality
+
+        total = len(results)
+        passed = sum(bool(result.success) for result in results)
+        finite = bool(total) and all(
+            isinstance(result.best_rank, int) and result.best_rank >= 0
+            for result in results
+        )
+        return FitQuality(
+            passed / total if total else 0.0,
+            1.0,
+            finite,
+            minimum_pass_at_10=1.0,
+            minimum_rank_overlap=0.0,
+        )
+
+    @staticmethod
     def _items(jlens_module) -> list[dict]:
         root = Path(jlens_module.__file__).parent.parent / "data" / "evaluations"
         items = []
@@ -93,7 +111,10 @@ class RuntimeProgressiveFitter:
         import jlens
         import torch
         from jlens.autotune import autotune_vjp_batch
-        from jlens.evaluation import FitQuality, evaluate_fit_quality
+        from jlens.evaluation import (
+            select_readout_shrinkage,
+            standard_readout_cases,
+        )
         from jlens.fitting import sketched_jacobian_for_prompt, valid_position_mask
         from jlens.hooks import ActivationRecorder
         from jlens.lens import JacobianLens
@@ -105,7 +126,6 @@ class RuntimeProgressiveFitter:
             raise RuntimeError("lens fitting needs at least 8 local evaluation items")
         fit_count = min(self.FIT_PROMPTS, max(2, len(items) - 2))
         prompts = [item["prompt"] for item in items[:fit_count]]
-        validation = items[fit_count : fit_count + min(64, len(items) - fit_count)]
         target = model.n_layers - 1
         layers = self._fit_layers(target)
         rank = min(self.PROJECTION_RANK, model.d_model)
@@ -194,13 +214,18 @@ class RuntimeProgressiveFitter:
                 model, lens, prompts[: min(16, len(prompts))],
                 max_seq_len=self.MAX_SEQ_LEN, rank=16,
             )
-        measured = evaluate_fit_quality(model, lens, validation) if validation else None
-        # Accept a dense-family transport on construction, without gating on pass@10.
-        quality = FitQuality(
-            measured.pass_at_10 if measured else 0.0,
-            measured.rank_overlap if measured else 1.0,
-            True, minimum_pass_at_10=0.0, minimum_rank_overlap=0.0,
-        )
+        with self.runtime.coordinator.exclusive("lens-validation"):
+            cases = standard_readout_cases(model, max_rank=100)
+            lens, readout_results = select_readout_shrinkage(model, lens, cases)
+        quality = self._readout_quality(readout_results)
+        lens.metadata.update({
+            "fit_quality_metric": "reference-viewing-pass-rate-v2",
+            "viewing_passed": str(sum(result.success for result in readout_results)),
+            "viewing_total": str(len(readout_results)),
+            "viewing_best_ranks": ",".join(
+                str(result.best_rank) for result in readout_results
+            ),
+        })
         lens.metadata["quality_stage"] = "Stable"
         on_stage(StageResult(
             stage=FitStage("Stable", len(prompts), basis.shape[0], 1, self.MAX_SEQ_LEN),
@@ -310,7 +335,12 @@ class ProgressiveLensController:
         accepted = result.name == "Stable" and bool(result.quality.stable)
         result.lens.metadata.update(
             {
-                "quality_gate_version": "jspace-v1",
+                "quality_gate_version": (
+                    "jspace-viewing-v2"
+                    if result.lens.metadata.get("fit_quality_metric")
+                    == "reference-viewing-pass-rate-v2"
+                    else "jspace-v1"
+                ),
                 "fit_quality_pass_at_10": f"{result.quality.pass_at_10:.6g}",
                 "fit_quality_rank_overlap": f"{result.quality.rank_overlap:.6g}",
             }

@@ -138,6 +138,8 @@ class LensService(Protocol):
 class InterventionService(Protocol):
     def preview(self, session_id: str, draft: InterventionDraft) -> tuple[bool, str]: ...
 
+    def bake(self, session_id: str, drafts: tuple[InterventionDraft, ...], path): ...
+
 
 class RuleSandboxProtocol(Protocol):
     available: bool

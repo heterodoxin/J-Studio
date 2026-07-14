@@ -7,6 +7,7 @@ residual readout as vanilla and keeps model interventions disabled.
 
 from __future__ import annotations
 
+import logging
 import os
 import threading
 import time
@@ -50,6 +51,7 @@ from jstudio.services.protocols import (
 from jstudio.services.slice_runtime import SliceRendererService
 
 DEFAULT_MODEL_ID = "heterodoxin/qwen3-8b-apostate"
+LOGGER = logging.getLogger(__name__)
 
 
 def _readout_values(z_score: float) -> tuple[float, float]:
@@ -64,6 +66,57 @@ def _suffix_prefix_length(text: str, token: str) -> int:
         if token.startswith(text[-size:]):
             return size
     return 0
+
+
+def _sequence_count(tokens: tuple[int, ...], variants: tuple[tuple[int, ...], ...]) -> int:
+    count = 0
+    for variant in variants:
+        if not variant:
+            continue
+        width = len(variant)
+        count += sum(
+            tokens[index : index + width] == variant
+            for index in range(len(tokens) - width + 1)
+        )
+    return count
+
+
+def _causal_token_effect(
+    operation: str,
+    baseline: tuple[int, ...],
+    candidate: tuple[int, ...],
+    source_variants: tuple[tuple[int, ...], ...],
+    target_variants: tuple[tuple[int, ...], ...],
+) -> tuple[bool, float]:
+    """Judge a short generated-token probe without optimizing against logits."""
+    width = max(len(baseline), len(candidate), 1)
+    divergence = (
+        sum(
+            index >= len(baseline)
+            or index >= len(candidate)
+            or baseline[index] != candidate[index]
+            for index in range(width)
+        )
+        / width
+    )
+    source_before = _sequence_count(baseline, source_variants)
+    source_after = _sequence_count(candidate, source_variants)
+    target_before = _sequence_count(baseline, target_variants)
+    target_after = _sequence_count(candidate, target_variants)
+    target_gain = target_after - target_before
+    source_reduction = source_before - source_after
+    score = float(divergence + max(target_gain, 0) + max(source_reduction, 0))
+    if operation == "inject":
+        return target_gain > 0, score
+    if operation == "replace":
+        source_changed = source_reduction > 0 if source_before else divergence > 0
+        return target_gain > 0 and source_changed, score
+    if operation == "suppress":
+        return (
+            source_reduction > 0 if source_before else divergence > 0,
+            score,
+        )
+    raise ValueError(f"unsupported phrase operation {operation!r}")
 
 
 class ThinkingFilter:
@@ -115,7 +168,7 @@ def default_lens_path(model_id: str) -> Path:
     if override:
         return Path(override).expanduser()
     safe_name = model_id.replace("/", "--")
-    workspace = Path(__file__).parents[2] / "lenses" / safe_name / "lens.pt"
+    workspace = Path(__file__).parents[3] / "lenses" / safe_name / "lens.pt"
     if workspace.exists():
         return workspace
     return Path.home() / ".cache" / "jstudio" / "lenses" / safe_name / "lens.pt"
@@ -248,12 +301,22 @@ class HFModelRuntime:
         if fitted_revision and fitted_revision != self.revision:
             raise ValueError("lens was fitted for a different model revision")
         quality_stage = lens.metadata.get("quality_stage")
-        # Load dense-family lenses at any stage, since the 0.3 gate is sketch-calibrated.
-        if require_stable and not dense_family and quality_stage != "Stable":
+        if require_stable and quality_stage != "Stable":
             raise ValueError("only a Stable fitted Jacobian lens can be used for J-space")
         if quality_stage not in {"Preview", "Stable"}:
             raise ValueError("lens is missing a Preview or Stable quality stage")
-        if require_stable and not dense_family:
+        if require_stable and dense_family:
+            gate = lens.metadata.get("quality_gate_version")
+            try:
+                passed = int(lens.metadata.get("viewing_passed", "0"))
+                total = int(lens.metadata.get("viewing_total", "0"))
+            except ValueError:
+                passed = total = 0
+            if gate != "jspace-viewing-v2" or total <= 0 or passed != total:
+                raise ValueError(
+                    "Stable dense lens is missing a complete reference viewing gate"
+                )
+        elif require_stable:
             gate = lens.metadata.get("quality_gate_version")
             try:
                 pass_at_10 = float(lens.metadata.get("fit_quality_pass_at_10", "nan"))
@@ -278,6 +341,13 @@ class HFModelRuntime:
         assert self.lens is not None
         if self.lens.metadata.get("estimator") in DENSE_LENS_ESTIMATORS:
             self.lens_id = f"dense-jacobian-n{self.lens.n_prompts}"
+            passed = self.lens.metadata.get("viewing_passed")
+            total = self.lens.metadata.get("viewing_total")
+            if passed and total:
+                self.lens_id += f" · viewing {passed}/{total}"
+            shrinkage = self.lens.metadata.get("transport_shrinkage")
+            if shrinkage:
+                self.lens_id += f" · J×{shrinkage}"
         else:
             rank = self.lens.metadata.get("effective_rank") or self.lens.metadata.get(
                 "sketch_rank", "unknown"
@@ -288,7 +358,8 @@ class HFModelRuntime:
         except (KeyError, ValueError):
             pass
         else:
-            self.lens_id += f" · pass@10 {pass_at_10:.2f}"
+            if self.lens.metadata.get("estimator") not in DENSE_LENS_ESTIMATORS:
+                self.lens_id += f" · pass@10 {pass_at_10:.2f}"
         self.calibrated = all(
             self.lens.metric(layer).calibrated for layer in self.lens.source_layers
         )
@@ -339,6 +410,20 @@ class HFModelRuntime:
             )
         except (AttributeError, ValueError, TypeError):
             return prompt
+
+    def inspection_context(
+        self,
+        prompt: str,
+        output: str,
+        *,
+        history: tuple = (),
+    ) -> str:
+        """Build the exact causal transcript inspected by J-Lens."""
+        formatted = self._formatted_prompt(prompt, history)
+        if not output:
+            return formatted
+        separator = "\n\n" if formatted == prompt else ""
+        return f"{formatted}{separator}{output}"
 
     @staticmethod
     def _verbalizable(term: str) -> bool:
@@ -449,230 +534,183 @@ class HFModelRuntime:
         if tail:
             yield tail
 
-    def prepare_interventions(self, prompt: str, drafts):
+    def _token_variants(self, text: str | None) -> tuple[tuple[int, ...], ...]:
+        if not text:
+            return ()
+        variants = []
+        for candidate in (text, f" {text}"):
+            encoded = self.tokenizer(
+                candidate, return_tensors="pt", add_special_tokens=False
+            )
+            token_ids = tuple(int(value) for value in encoded.input_ids[0].tolist())
+            if token_ids and token_ids not in variants:
+                variants.append(token_ids)
+        return tuple(variants)
+
+    def _causal_probe_ids(
+        self, model_prompt: str, *, max_new_tokens: int = 12
+    ) -> tuple[int, ...]:
+        """Run a short deterministic completion used only as causal evidence."""
+        torch = self._torch
+        current_ids = self.tokenizer(model_prompt, return_tensors="pt").input_ids.to(
+            self.model.device
+        )
+        past_key_values = None
+        generated = []
+        eos_ids = self.model.generation_config.eos_token_id
+        eos_ids = {eos_ids} if isinstance(eos_ids, int) else set(eos_ids or ())
+        with torch.inference_mode():
+            for _ in range(max_new_tokens):
+                kwargs = {
+                    "input_ids": current_ids,
+                    "past_key_values": past_key_values,
+                    "use_cache": True,
+                }
+                if self._supports_logits_to_keep:
+                    kwargs["logits_to_keep"] = 1
+                output = self.model(**kwargs)
+                next_id = output.logits[:, -1].argmax(dim=-1, keepdim=True)
+                past_key_values = output.past_key_values
+                token_id = int(next_id.item())
+                if token_id in eos_ids:
+                    break
+                generated.append(token_id)
+                current_ids = next_id
+        return tuple(generated)
+
+    def _make_phrase_effect_probe(self, model_prompt: str, draft):
+        from jlens.hooks import (
+            ResidualTransform,
+            ResidualTransformEditor,
+        )
+
+        baseline = self._causal_probe_ids(model_prompt)
+        source_variants = self._token_variants(draft.source_term)
+        target_variants = self._token_variants(draft.target_term)
+        target_steps = min((len(value) for value in target_variants), default=1)
+        max_applications = (
+            None
+            if draft.duration == "generation"
+            else max(draft.step_count or 1, target_steps)
+            if draft.duration == "steps"
+            else target_steps
+        )
+
+        def probe(operator_pairs, positions):
+            editor = ResidualTransformEditor(
+                self.lens_model.layers,
+                [
+                    ResidualTransform(
+                        layer=layer,
+                        positions=positions,
+                        transform=operator.make_transform(),
+                        max_applications=max_applications,
+                    )
+                    for layer, operator in operator_pairs
+                ],
+            )
+            with editor:
+                candidate = self._causal_probe_ids(model_prompt)
+            return _causal_token_effect(
+                draft.operation.value,
+                baseline,
+                candidate,
+                source_variants,
+                target_variants,
+            )
+
+        return probe
+
+    def prepare_interventions(self, prompt: str, drafts, *, history: tuple = ()):
         if self.lens is None or not self.calibrated:
             raise RuntimeError("a calibrated Stable lens is required for interventions")
         import jlens
 
-        model_prompt = self._formatted_prompt(prompt)
+        model_prompt = self._formatted_prompt(prompt, history)
         editors = []
         results = []
         # Cap the search below the near-unembed layers where edits destroy coherence.
-        coherent_ceiling = int(0.8 * max(self.lens.source_layers))
+        coherent_ceiling = int(0.8 * (self.layer_count - 1))
         with self.coordinator.exclusive("intervention-search"):
+            engine = jlens.InterventionEngine(self.lens_model, self.lens)
             for draft in drafts:
-                layers = [
-                    layer
-                    for layer in self.lens.source_layers
-                    if draft.layer_start <= layer <= min(draft.layer_end, coherent_ceiling)
-                ]
-                if not layers:
-                    raise ValueError("intervention range contains no fitted layers")
-                if draft.operation.value == "inject":
-                    editor, result = self._steer_injection(
-                        model_prompt, draft.target_term, layers, draft.strength
-                    )
-                    editors.append(editor)
-                    results.append(result)
-                    continue
-                engine = jlens.InterventionEngine(self.lens_model, self.lens)
-                options = {
-                    "layers": layers,
-                    "positions": (-1,),
-                    "maximum_scale": draft.strength,
-                }
-                if draft.operation.value == "replace":
-                    result = engine.replace(
-                        model_prompt, draft.source_term, draft.target_term, **options
-                    )
-                else:
-                    result = engine.suppress(model_prompt, draft.source_term, **options)
-                editor = nullcontext()
-                if result.success:
-                    # Confirm the replacement on the generation path before arming.
-                    if not self._editor_targets_next_token(
-                        model_prompt, engine.apply(result), result.trace.target_ids
-                    ):
-                        result = replace(
+                try:
+                    layers = [
+                        layer
+                        for layer in self.lens.source_layers
+                        if draft.layer_start
+                        <= layer
+                        <= min(draft.layer_end, coherent_ceiling)
+                    ]
+                    if not layers:
+                        raise ValueError("intervention range contains no fitted layers")
+                    options = {
+                        "layers": layers,
+                        "positions": (-1,),
+                        "maximum_scale": draft.strength,
+                        "effect_probe": self._make_phrase_effect_probe(
+                            model_prompt, draft
+                        ),
+                    }
+                    if draft.operation.value == "inject":
+                        result = engine.phrase_inject(
+                            model_prompt, draft.target_term, **options
+                        )
+                    elif draft.operation.value == "replace":
+                        result = engine.phrase_replace(
+                            model_prompt,
+                            draft.source_term,
+                            draft.target_term,
+                            **options,
+                        )
+                    else:
+                        result = engine.phrase_suppress(
+                            model_prompt, draft.source_term, **options
+                        )
+                    if not result.success:
+                        editor = nullcontext()
+                    elif draft.duration == "generation":
+                        editor = engine.apply(result, once=False)
+                    elif draft.duration == "steps":
+                        editor = engine.apply(
                             result,
-                            success=False,
-                            message=(
-                                "edit did not change the model's next token; the "
-                                "target word is not the immediate continuation "
-                                "(try a prompt where it is the next word)"
-                            ),
-                            trace=replace(
-                                result.trace,
-                                warnings=(
-                                    *result.trace.warnings,
-                                    "generation-path-verification-failed",
-                                ),
+                            max_applications=max(
+                                draft.step_count or 1,
+                                len(result.trace.target_ids) or 1,
                             ),
                         )
                     else:
-                        editor = engine.apply(result)
+                        editor = engine.apply(
+                            result,
+                            max_applications=len(result.trace.target_ids) or 1,
+                        )
+                except Exception as exc:
+                    trace = jlens.InterventionTrace(
+                        operation=draft.operation.value,
+                        target_ids=(),
+                        source_ids=(),
+                        experimental=True,
+                        selected_layer=None,
+                        selected_positions=(-1,),
+                        selected_scale=0.0,
+                        normalized_cost=0.0,
+                        baseline_scores={},
+                        after_scores={},
+                        baseline_top_ids=(),
+                        after_top_ids=(),
+                        search_points=(),
+                        warnings=("rule-preparation-failed",),
+                    )
+                    result = jlens.InterventionResult(
+                        False,
+                        trace,
+                        None,
+                        f"{type(exc).__name__}: {exc}",
+                    )
+                    editor = nullcontext()
                 results.append(result)
                 editors.append(editor)
         return tuple(editors), tuple(results)
-
-    def _steer_injection(self, model_prompt: str, target_term: str, layers, strength):
-        """Steer generation with a J-space covector for the concept's topic set,
-        tuned to the gentlest strength that surfaces the concept without
-        shortening or degrading the response."""
-        from jlens.hooks import ActivationEditor, ActivationRecorder, ResidualEdit
-        from jlens.interventions import (
-            ConceptResolver,
-            InterventionResult,
-            InterventionTrace,
-        )
-
-        torch = self._torch
-        target_ids = ConceptResolver(self.tokenizer).resolve(target_term).token_ids
-        concept = target_term.strip()
-        # Search at most five evenly spaced deep layers to bound arming time.
-        lo = int(0.4 * max(self.lens.source_layers))
-        candidates = [layer for layer in layers if layer >= lo] or list(layers)
-        if len(candidates) > 5:
-            step = len(candidates) / 5
-            candidates = [candidates[int(i * step)] for i in range(5)]
-        alpha_ceiling = max(0.1, min(1.2, float(strength) / 16.0 * 1.2))
-        ladder = (0.1, 0.2, 0.3, 0.45, 0.6, 0.8, 1.0, 1.2)
-        alphas = [a for a in ladder if a <= alpha_ceiling + 1e-9]
-
-        input_ids = self.tokenizer(model_prompt, return_tensors="pt").input_ids.to(
-            self.model.device
-        )
-
-        def generate(editor=None) -> str:
-            with torch.inference_mode(), (editor if editor is not None else nullcontext()):
-                out = self.model.generate(
-                    input_ids, max_new_tokens=32, do_sample=False,
-                    pad_token_id=self.tokenizer.eos_token_id,
-                )
-            return self.tokenizer.decode(
-                out[0, input_ids.shape[1]:], skip_special_tokens=True
-            )
-
-        def coherent(text: str) -> bool:
-            words = text.split()
-            return bool(words) and len(set(words)) / len(words) >= 0.5
-
-        def build(layer: int, alpha: float, delta):
-            trace = InterventionTrace(
-                operation="inject", target_ids=tuple(target_ids), source_ids=(),
-                experimental=len(target_ids) > 1, selected_layer=layer,
-                selected_positions=(-1,), selected_scale=alpha,
-                normalized_cost=0.0, baseline_scores={}, after_scores={},
-                baseline_top_ids=(), after_top_ids=(), search_points=(),
-                warnings=("j-space topic covector",),
-            )
-            result = InterventionResult(
-                True, trace, delta.detach().cpu(),
-                f"steered generation toward {target_term!r} "
-                f"(L{layer}, strength {alpha:.2f})",
-            )
-            editor = ActivationEditor(self.lens_model.layers, [
-                ResidualEdit(layer=layer, positions=(-1,), delta=delta,
-                             max_applications=None)
-            ])
-            return editor, result
-
-        baseline_words = len(generate().split())
-
-        # Contrast a context that names the concept against one that does not,
-        # so the difference captures the topic rather than the next token.
-        def residuals(text: str) -> dict:
-            ids = self.tokenizer(text, return_tensors="pt").input_ids.to(
-                self.model.device
-            )
-            with torch.no_grad(), ActivationRecorder(
-                self.lens_model.layers, at=candidates
-            ) as rec:
-                self.lens_model.forward(ids)
-            return {
-                layer: rec.activations[layer][0].float().mean(dim=0)
-                for layer in candidates
-            }
-
-        positive = residuals(f"I keep thinking about {concept}.")
-        negative = residuals("I keep thinking about it.")
-        with torch.no_grad(), ActivationRecorder(
-            self.lens_model.layers, at=candidates
-        ) as rec:
-            self.lens_model.forward(input_ids)
-        prompt_norm = {
-            layer: float(rec.activations[layer][0, -1].norm()) for layer in candidates
-        }
-        # Read the topic's token set off the contrast through the lens, then pull
-        # that whole set back through the same transport: a J-space covector for
-        # a topic (not one next token), so it stays in J-space and does not
-        # collapse long-form output.
-        unembed_weight = self.model.get_output_embeddings().weight.float()
-        directions = {}
-        for layer in candidates:
-            contrast = positive[layer] - negative[layer]
-            if layer not in self.lens.jacobians:
-                directions[layer] = contrast / contrast.norm().clamp_min(1e-8)
-                continue
-            with torch.no_grad():
-                readout = self.lens_model.unembed(
-                    self.lens.transport(contrast, layer)
-                ).float()
-            values, topic_ids = readout.topk(8)
-            weights = values.softmax(0)
-            target = (weights[:, None] * unembed_weight[topic_ids]).sum(0)
-            jacobian = self.lens.jacobians[layer].to(target.device).float()
-            direction = jacobian.T @ target
-            directions[layer] = direction / direction.norm().clamp_min(1e-8)
-
-        # Prefer the gentlest steer that keeps the response roughly its natural
-        # length; a collapsed short answer is only a fallback.
-        needle = concept.lower()
-        min_words = int(0.6 * baseline_words)
-        fallback = None
-        for alpha in alphas:
-            for layer in candidates:
-                delta = directions[layer] * (alpha * prompt_norm[layer])
-                edit = ResidualEdit(
-                    layer=layer, positions=(-1,), delta=delta, max_applications=None
-                )
-                text = generate(ActivationEditor(self.lens_model.layers, [edit]))
-                if needle not in text.lower() or not coherent(text):
-                    continue
-                if len(text.split()) >= min_words:
-                    return build(layer, alpha, delta)
-                if fallback is None:
-                    fallback = (layer, alpha, delta)
-        if fallback is not None:
-            return build(*fallback)
-        trace = InterventionTrace(
-            operation="inject", target_ids=tuple(target_ids), source_ids=(),
-            experimental=len(target_ids) > 1, selected_layer=None,
-            selected_positions=(-1,), selected_scale=0.0, normalized_cost=0.0,
-            baseline_scores={}, after_scores={}, baseline_top_ids=(), after_top_ids=(),
-            search_points=(), warnings=("no-coherent-steer",),
-        )
-        result = InterventionResult(
-            False, trace, None,
-            f"could not steer generation toward {target_term!r} within the "
-            f"strength budget without breaking coherence",
-        )
-        return nullcontext(), result
-
-    def _next_token_logits(self, model_prompt: str, editor=None):
-        torch = self._torch
-        encoded = self.tokenizer(model_prompt, return_tensors="pt")
-        input_ids = encoded.input_ids.to(self.model.device)
-        kwargs = {"input_ids": input_ids, "use_cache": True}
-        if self._supports_logits_to_keep:
-            kwargs["logits_to_keep"] = 1
-        with torch.inference_mode(), (editor if editor is not None else nullcontext()):
-            output = self.model(**kwargs)
-        return output.logits[0, -1].float().cpu()
-
-    def _editor_targets_next_token(self, model_prompt: str, editor, target_ids) -> bool:
-        logits = self._next_token_logits(model_prompt, editor)
-        return int(logits.argmax()) in {int(token_id) for token_id in target_ids}
 
     def close(self) -> None:
         self.model.to("cpu")
@@ -1010,7 +1048,9 @@ class HFGenerationService:
                     if not hasattr(self._runtime, "prepare_interventions"):
                         raise RuntimeError("runtime does not support interventions")
                     editors, results = self._runtime.prepare_interventions(
-                        run.prompt, intervention_drafts
+                        run.prompt,
+                        intervention_drafts,
+                        history=request.history,
                     )
                     for intervention_id, result in zip(
                         intervention_ids, results, strict=True
@@ -1052,17 +1092,29 @@ class HFGenerationService:
                 decode_rate = 1.0 / max(token_times[0] - request_started, 1e-9)
             else:
                 decode_rate = 0.0
+            output_text = "".join(chunks)
+            if hasattr(self._runtime, "inspection_context"):
+                inspection_text = self._runtime.inspection_context(
+                    run.prompt,
+                    output_text,
+                    history=request.history,
+                )
+            else:
+                inspection_text = run.prompt + (
+                    "\n\n" + output_text if output_text else ""
+                )
             finished = replace(
-                run.with_state(state, output_text="".join(chunks)),
+                run.with_state(state, output_text=output_text),
                 ttft_seconds=ttft,
                 decode_tokens_per_second=decode_rate,
+                inspection_text=inspection_text,
             )
             sink.on_finished(finished)
             if control.stopped or getattr(self._runtime, "lens", object()) is None:
                 return
             try:
                 activations = self._runtime.read_activations(
-                    run.prompt,
+                    inspection_text,
                     token_index=0,
                     layers=request.read.layers,
                     max_concepts=request.read.max_concepts,
@@ -1086,6 +1138,7 @@ class HFGenerationService:
                 self._lens.record(frame)
                 sink.on_frame(frame)
         except Exception as exc:
+            LOGGER.exception("Local Qwen generation failed for run %s", run.run_id)
             sink.on_error(run.run_id, "Local Qwen generation failed", repr(exc))
         finally:
             with self._lock:
@@ -1173,6 +1226,37 @@ class RuntimeInterventionService:
             f"Will search the minimum effective scale up to {draft.strength:g} "
             f"across {len(layers)} fitted layers"
         )
+
+    def bake(self, session_id, drafts, path):
+        runtime = self._runtime
+        if not getattr(runtime, "calibrated", False) or runtime.lens is None:
+            raise ValueError("A calibrated J-space lens is required for baking")
+        if not drafts:
+            raise ValueError("Enable at least one intervention before baking")
+        import jlens
+
+        rules = []
+        for draft in drafts:
+            layers = tuple(
+                layer
+                for layer in runtime.lens.source_layers
+                if draft.layer_start <= layer <= draft.layer_end
+            )
+            if not layers:
+                raise ValueError(
+                    "An enabled intervention has no fitted layers in its range"
+                )
+            rules.append(
+                jlens.ProjectionBakeRule(
+                    draft.operation.value,
+                    source=draft.source_term,
+                    target=draft.target_term,
+                    strength=max(0.01, min(1.0, draft.strength / 16.0)),
+                    layers=layers,
+                )
+            )
+        baked = jlens.bake_projection(runtime.lens_model, runtime.lens, tuple(rules))
+        return jlens.save_projection_bake(path, baked)
 
 
 def services_for_runtime(runtime: ModelRuntime, *, rules=None) -> JStudioServices:

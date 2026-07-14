@@ -316,11 +316,21 @@ class FakeGenerationService:
 
 
 class FakeInterventionService:
+    def __init__(self):
+        self.baked = []
+
     def preview(self, session_id, draft):
         return True, (
             f"{draft.operation.value.title()} is compatible with {session_id}; "
             f"layers {draft.layer_start}–{draft.layer_end}."
         )
+
+    def bake(self, session_id, drafts, path):
+        from pathlib import Path
+
+        self.baked.append((session_id, drafts, Path(path)))
+        destination = Path(path).with_suffix(".safetensors")
+        return destination, destination.with_suffix(".json")
 
 
 class _UnavailableRules:

@@ -9,16 +9,25 @@ from jstudio.ui.models import InterventionTableModel
 class InterventionStackView(QWidget):
     def __init__(self, model: InterventionTableModel, parent=None) -> None:
         super().__init__(parent)
+        self.setProperty("role", "panel")
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(12, 10, 12, 12)
+        layout.setSpacing(8)
         toolbar = QHBoxLayout()
+        toolbar.setSpacing(6)
         self.inject = QPushButton("Inject")
         self.replace = QPushButton("Replace")
         self.suppress = QPushButton("Suppress")
         self.group = QPushButton("Group")
         self.preview = QPushButton("Preview")
         self.arm = QPushButton("Arm Stack")
+        self.bake = QPushButton("Bake Stack")
         self.clear = QPushButton("Clear")
+        self.inject.setProperty("operation", "inject")
+        self.replace.setProperty("operation", "replace")
+        self.suppress.setProperty("operation", "suppress")
+        self.arm.setProperty("role", "primary")
+        self.clear.setProperty("role", "danger")
         for button in (
             self.inject,
             self.replace,
@@ -26,10 +35,12 @@ class InterventionStackView(QWidget):
             self.group,
             self.preview,
             self.arm,
+            self.bake,
             self.clear,
         ):
             toolbar.addWidget(button)
-        toolbar.addStretch(1)
+        toolbar.insertStretch(3, 1)
+        toolbar.insertStretch(8, 1)
         self.table = QTableView(self)
         self.table.setModel(model)
         self.table.setAlternatingRowColors(True)

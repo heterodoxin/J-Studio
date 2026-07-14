@@ -269,6 +269,7 @@ class RunRecord:
     quantization: str = "BF16"
     ttft_seconds: float | None = None
     decode_tokens_per_second: float | None = None
+    inspection_text: str = ""
 
     def __post_init__(self) -> None:
         for name, value in (

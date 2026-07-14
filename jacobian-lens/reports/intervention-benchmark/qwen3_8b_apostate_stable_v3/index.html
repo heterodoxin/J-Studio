@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>J-Lens Intervention Benchmark — heterodoxin/qwen3-8b-apostate</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; color: #0f172a; }
+    h1 { margin-bottom: 4px; }
+    .summary { display: flex; gap: 12px; margin: 18px 0; }
+    .card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 16px; }
+    .value { font-size: 24px; font-weight: 700; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 8px; vertical-align: top; }
+    th { text-align: left; background: #f8fafc; position: sticky; top: 0; }
+    tr.pass { background: #f0fdf4; }
+    tr.fail { background: #fef2f2; }
+    tr.details { background: white; }
+    pre { white-space: pre-wrap; background: #f8fafc; padding: 8px; border-radius: 6px; }
+    svg { width: 160px; height: 38px; }
+  </style>
+</head>
+<body>
+  <h1>J-Lens Intervention Benchmark — heterodoxin/qwen3-8b-apostate</h1>
+  <p>Strict residual/J-space benchmark. No logit fallback, lexical fallback, or corrective residual fallback.</p>
+  <div class="summary">
+    <div class="card"><div>Cases</div><div class="value">3</div></div>
+    <div class="card"><div>Passed</div><div class="value">3</div></div>
+    <div class="card"><div>Pass rate</div><div class="value">100.0%</div></div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Case</th><th>Operation</th><th>Context</th><th>Status</th>
+        <th>Applied</th><th>Target rank</th><th>Source rank</th>
+        <th>Layer</th><th>Scale</th><th>Cost</th><th>Rank visual</th><th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+            <tr class="pass">
+              <td>inject baseline-rank-5</td>
+              <td>inject</td>
+              <td>prompt-only</td>
+              <td>pass</td>
+              <td>yes</td>
+              <td>#5 ' &quot;' (19) → #1 ' &quot;' (23.5)</td>
+              <td>—</td>
+              <td>L33</td>
+              <td>8.875</td>
+              <td>136.3</td>
+              <td>
+      <svg viewBox="0 0 120 28" role="img" aria-label="Target rank before and after">
+        <rect x="0" y="3" width="96" height="8" rx="2" fill="#94a3b8"/>
+        <rect x="0" y="17" width="100" height="8" rx="2" fill="#16a34a"/>
+        <text x="104" y="10" font-size="7" fill="#475569">before</text>
+        <text x="104" y="24" font-size="7" fill="#475569">after</text>
+      </svg>
+    </td>
+              <td>minimum passing intervention found</td>
+            </tr>
+            <tr class="details">
+              <td colspan="12">
+                <details>
+                  <summary>Prompt, top tokens, and trace</summary>
+                  <pre>Complete with exactly one word: The secret word is</pre>
+                  <p><b>Before:</b> ' a' #1, ' the' #2, ' in' #3, ' hidden' #3, ' &quot;' #5, '...' #6, ' an' #6, ' not' #8</p>
+                  <p><b>After:</b> ' &quot;' #1, ' ' #2, ' the' #3, ' it' #4, '&quot;' #5, ' that' #6, ' about' #6, ':\n' #6</p>
+                  <pre>{&#x27;case&#x27;: {&#x27;name&#x27;: &#x27;inject baseline-rank-5&#x27;, &#x27;operation&#x27;: &#x27;inject&#x27;, &#x27;prompt&#x27;: &#x27;Complete with exactly one word: The secret word is&#x27;, &#x27;target&#x27;: 330, &#x27;source&#x27;: None, &#x27;layers&#x27;: (), &#x27;position&#x27;: -1, &#x27;top_k&#x27;: 1, &#x27;maximum_scale&#x27;: 16.0, &#x27;context_mode&#x27;: &#x27;prompt-only&#x27;}, &#x27;success&#x27;: True, &#x27;applied&#x27;: True, &#x27;target_before&#x27;: {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 19.0}, &#x27;target_after&#x27;: {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 23.5}, &#x27;source_before&#x27;: None, &#x27;source_after&#x27;: None, &#x27;top_before&#x27;: ({&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 20.75}, {&#x27;token_id&#x27;: 279, &#x27;token&#x27;: &#x27; the&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 20.625}, {&#x27;token_id&#x27;: 304, &#x27;token&#x27;: &#x27; in&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 20.0}, {&#x27;token_id&#x27;: 8177, &#x27;token&#x27;: &#x27; hidden&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 20.0}, {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 19.0}, {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 18.75}, {&#x27;token_id&#x27;: 458, &#x27;token&#x27;: &#x27; an&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 18.75}, {&#x27;token_id&#x27;: 537, &#x27;token&#x27;: &#x27; not&#x27;, &#x27;rank&#x27;: 7, &#x27;logit&#x27;: 18.5}), &#x27;top_after&#x27;: ({&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 23.5}, {&#x27;token_id&#x27;: 220, &#x27;token&#x27;: &#x27; &#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 23.375}, {&#x27;token_id&#x27;: 279, &#x27;token&#x27;: &#x27; the&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 22.125}, {&#x27;token_id&#x27;: 432, &#x27;token&#x27;: &#x27; it&#x27;, &#x27;rank&#x27;: 3, &#x27;logit&#x27;: 20.75}, {&#x27;token_id&#x27;: 1, &#x27;token&#x27;: &#x27;&quot;&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 19.875}, {&#x27;token_id&#x27;: 429, &#x27;token&#x27;: &#x27; that&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 19.5}, {&#x27;token_id&#x27;: 911, &#x27;token&#x27;: &#x27; about&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 19.5}, {&#x27;token_id&#x27;: 510, &#x27;token&#x27;: &#x27;:\n&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 19.5}), &#x27;selected_layer&#x27;: 33, &#x27;selected_scale&#x27;: 8.875, &#x27;normalized_cost&#x27;: 136.29601707224776, &#x27;trace&#x27;: {&#x27;operation&#x27;: &#x27;inject&#x27;, &#x27;target_ids&#x27;: (330,), &#x27;source_ids&#x27;: (), &#x27;experimental&#x27;: False, &#x27;selected_layer&#x27;: 33, &#x27;selected_positions&#x27;: (9,), &#x27;selected_scale&#x27;: 8.875, &#x27;normalized_cost&#x27;: 136.29601707224776, &#x27;baseline_scores&#x27;: {&#x27;330&#x27;: 19.0, &#x27;264&#x27;: 20.75}, &#x27;after_scores&#x27;: {&#x27;330&#x27;: 23.5, &#x27;264&#x27;: 18.125}, &#x27;baseline_top_ids&#x27;: (264, 279, 8177, 304, 330, 458, 1112, 2494, 537, 1304, 220, 25, 2503, 825, 32671, 7436, 1730, 9338, 320, 4766, 12236, 716, 14696, 2326, 311, 2146, 364, 30743, 429, 508, 5435, 198), &#x27;after_top_ids&#x27;: (330, 220, 279, 432, 1, 510, 911, 429, 400, 320, 481, 1380, 537, 1124, 1447, 304, 3545, 419, 1112, 659, 25, 1128, 1565, 1052, 3070, 847, 264, 856, 518, 57960, 3170, 311), &#x27;search_points&#x27;: ({&#x27;scale&#x27;: 0.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -1.75, &#x27;downstream_shift&#x27;: 0.0}, {&#x27;scale&#x27;: 1.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -0.625, &#x27;downstream_shift&#x27;: 1.125}, {&#x27;scale&#x27;: 2.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.0, &#x27;downstream_shift&#x27;: 0.25}, {&#x27;scale&#x27;: 4.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.375, &#x27;downstream_shift&#x27;: 0.625}, {&#x27;scale&#x27;: 8.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 4.5, &#x27;downstream_shift&#x27;: 4.5}, {&#x27;scale&#x27;: 16.0, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 4.1875, &#x27;downstream_shift&#x27;: -6.375}, {&#x27;scale&#x27;: 12.0, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 5.5, &#x27;downstream_shift&#x27;: 0.0}, {&#x27;scale&#x27;: 10.0, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 5.75, &#x27;downstream_shift&#x27;: 3.5}, {&#x27;scale&#x27;: 9.0, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 5.375, &#x27;downstream_shift&#x27;: 4.375}, {&#x27;scale&#x27;: 8.5, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 5.0, &#x27;downstream_shift&#x27;: 4.625}, {&#x27;scale&#x27;: 8.75, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 5.125, &#x27;downstream_shift&#x27;: 4.5}, {&#x27;scale&#x27;: 8.875, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 5.375, &#x27;downstream_shift&#x27;: 4.5}, {&#x27;scale&#x27;: 8.8125, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 5.25, &#x27;downstream_shift&#x27;: 4.5}), &#x27;warnings&#x27;: (), &#x27;sequence_logprob_before&#x27;: None, &#x27;sequence_logprob_after&#x27;: None, &#x27;message&#x27;: &#x27;minimum passing intervention found&#x27;, &#x27;benchmark_success&#x27;: True, &#x27;benchmark_reason&#x27;: &#x27;target entered requested top-k&#x27;}}</pre>
+                </details>
+              </td>
+            </tr>
+            
+            <tr class="pass">
+              <td>replace top-1 with baseline lower-ranked token</td>
+              <td>replace</td>
+              <td>prompt-only</td>
+              <td>pass</td>
+              <td>yes</td>
+              <td>#5 ' &quot;' (19) → #2 ' &quot;' (19.8)</td>
+              <td>#1 ' a' (20.8) → #3 ' a' (19.6)</td>
+              <td>L23</td>
+              <td>1.227</td>
+              <td>1.268</td>
+              <td>
+      <svg viewBox="0 0 120 28" role="img" aria-label="Target rank before and after">
+        <rect x="0" y="3" width="96" height="8" rx="2" fill="#94a3b8"/>
+        <rect x="0" y="17" width="99" height="8" rx="2" fill="#16a34a"/>
+        <text x="104" y="10" font-size="7" fill="#475569">before</text>
+        <text x="104" y="24" font-size="7" fill="#475569">after</text>
+      </svg>
+    </td>
+              <td>minimum passing intervention found</td>
+            </tr>
+            <tr class="details">
+              <td colspan="12">
+                <details>
+                  <summary>Prompt, top tokens, and trace</summary>
+                  <pre>Complete with exactly one word: The secret word is</pre>
+                  <p><b>Before:</b> ' a' #1, ' the' #2, ' in' #3, ' hidden' #3, ' &quot;' #5, '...' #6, ' an' #6, ' not' #8</p>
+                  <p><b>After:</b> ' the' #1, ' &quot;' #2, ' in' #3, ' a' #3, ' hidden' #5, ':' #6, ' __' #7, ' ' #7</p>
+                  <pre>{&#x27;case&#x27;: {&#x27;name&#x27;: &#x27;replace top-1 with baseline lower-ranked token&#x27;, &#x27;operation&#x27;: &#x27;replace&#x27;, &#x27;prompt&#x27;: &#x27;Complete with exactly one word: The secret word is&#x27;, &#x27;target&#x27;: 330, &#x27;source&#x27;: 264, &#x27;layers&#x27;: (), &#x27;position&#x27;: -1, &#x27;top_k&#x27;: 1, &#x27;maximum_scale&#x27;: 16.0, &#x27;context_mode&#x27;: &#x27;prompt-only&#x27;}, &#x27;success&#x27;: True, &#x27;applied&#x27;: True, &#x27;target_before&#x27;: {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 19.0}, &#x27;target_after&#x27;: {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 19.75}, &#x27;source_before&#x27;: {&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 20.75}, &#x27;source_after&#x27;: {&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 19.625}, &#x27;top_before&#x27;: ({&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 20.75}, {&#x27;token_id&#x27;: 279, &#x27;token&#x27;: &#x27; the&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 20.625}, {&#x27;token_id&#x27;: 304, &#x27;token&#x27;: &#x27; in&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 20.0}, {&#x27;token_id&#x27;: 8177, &#x27;token&#x27;: &#x27; hidden&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 20.0}, {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 19.0}, {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 18.75}, {&#x27;token_id&#x27;: 458, &#x27;token&#x27;: &#x27; an&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 18.75}, {&#x27;token_id&#x27;: 537, &#x27;token&#x27;: &#x27; not&#x27;, &#x27;rank&#x27;: 7, &#x27;logit&#x27;: 18.5}), &#x27;top_after&#x27;: ({&#x27;token_id&#x27;: 279, &#x27;token&#x27;: &#x27; the&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 20.25}, {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 19.75}, {&#x27;token_id&#x27;: 304, &#x27;token&#x27;: &#x27; in&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 19.625}, {&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 19.625}, {&#x27;token_id&#x27;: 8177, &#x27;token&#x27;: &#x27; hidden&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 19.25}, {&#x27;token_id&#x27;: 25, &#x27;token&#x27;: &#x27;:&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 18.5}, {&#x27;token_id&#x27;: 1304, &#x27;token&#x27;: &#x27; __&#x27;, &#x27;rank&#x27;: 6, &#x27;logit&#x27;: 18.375}, {&#x27;token_id&#x27;: 220, &#x27;token&#x27;: &#x27; &#x27;, &#x27;rank&#x27;: 6, &#x27;logit&#x27;: 18.375}), &#x27;selected_layer&#x27;: 23, &#x27;selected_scale&#x27;: 1.2265625, &#x27;normalized_cost&#x27;: 1.2684550895562667, &#x27;trace&#x27;: {&#x27;operation&#x27;: &#x27;replace&#x27;, &#x27;target_ids&#x27;: (330,), &#x27;source_ids&#x27;: (264,), &#x27;experimental&#x27;: False, &#x27;selected_layer&#x27;: 23, &#x27;selected_positions&#x27;: (9,), &#x27;selected_scale&#x27;: 1.2265625, &#x27;normalized_cost&#x27;: 1.2684550895562667, &#x27;baseline_scores&#x27;: {&#x27;330&#x27;: 19.0, &#x27;264&#x27;: 20.75}, &#x27;after_scores&#x27;: {&#x27;330&#x27;: 19.75, &#x27;264&#x27;: 19.625}, &#x27;baseline_top_ids&#x27;: (264, 279, 8177, 304, 330, 458, 1112, 2494, 537, 1304, 220, 25, 2503, 825, 32671, 7436, 1730, 9338, 320, 4766, 12236, 716, 14696, 2326, 311, 2146, 364, 30743, 429, 508, 5435, 198), &#x27;after_top_ids&#x27;: (279, 330, 304, 264, 8177, 25, 1304, 220, 1112, 537, 2503, 2494, 458, 364, 32671, 825, 7436, 320, 1730, 9338, 716, 311, 508, 4766, 12236, 1036, 2146, 30743, 429, 389, 11, 198), &#x27;search_points&#x27;: ({&#x27;scale&#x27;: 0.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -1.75, &#x27;downstream_shift&#x27;: 0.0}, {&#x27;scale&#x27;: 1.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -0.25, &#x27;downstream_shift&#x27;: 1.5}, {&#x27;scale&#x27;: 2.0, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 1.0, &#x27;downstream_shift&#x27;: 2.75}, {&#x27;scale&#x27;: 1.5, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.5, &#x27;downstream_shift&#x27;: 2.25}, {&#x27;scale&#x27;: 1.25, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: 1.875}, {&#x27;scale&#x27;: 1.125, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.0, &#x27;downstream_shift&#x27;: 1.75}, {&#x27;scale&#x27;: 1.1875, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.0, &#x27;downstream_shift&#x27;: 1.75}, {&#x27;scale&#x27;: 1.21875, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.0, &#x27;downstream_shift&#x27;: 1.75}, {&#x27;scale&#x27;: 1.234375, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: 1.875}, {&#x27;scale&#x27;: 1.2265625, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: 1.875}), &#x27;warnings&#x27;: (), &#x27;sequence_logprob_before&#x27;: None, &#x27;sequence_logprob_after&#x27;: None, &#x27;message&#x27;: &#x27;minimum passing intervention found&#x27;, &#x27;benchmark_success&#x27;: True, &#x27;benchmark_reason&#x27;: &#x27;target overtook source&#x27;}}</pre>
+                </details>
+              </td>
+            </tr>
+            
+            <tr class="pass">
+              <td>replace top-2 with baseline lower-ranked token</td>
+              <td>replace</td>
+              <td>prompt-only</td>
+              <td>pass</td>
+              <td>yes</td>
+              <td>#6 '...' (18.8) → #2 '...' (19.6)</td>
+              <td>#2 ' the' (20.6) → #3 ' the' (19.5)</td>
+              <td>L16</td>
+              <td>0.9414</td>
+              <td>0.5081</td>
+              <td>
+      <svg viewBox="0 0 120 28" role="img" aria-label="Target rank before and after">
+        <rect x="0" y="3" width="95" height="8" rx="2" fill="#94a3b8"/>
+        <rect x="0" y="17" width="99" height="8" rx="2" fill="#16a34a"/>
+        <text x="104" y="10" font-size="7" fill="#475569">before</text>
+        <text x="104" y="24" font-size="7" fill="#475569">after</text>
+      </svg>
+    </td>
+              <td>minimum passing intervention found</td>
+            </tr>
+            <tr class="details">
+              <td colspan="12">
+                <details>
+                  <summary>Prompt, top tokens, and trace</summary>
+                  <pre>Complete with exactly one word: The secret word is</pre>
+                  <p><b>Before:</b> ' a' #1, ' the' #2, ' in' #3, ' hidden' #3, ' &quot;' #5, '...' #6, ' an' #6, ' not' #8</p>
+                  <p><b>After:</b> ' a' #1, '...' #2, ' the' #3, ' in' #4, ':' #5, ' __' #6, ' ...' #7, ' hidden' #8</p>
+                  <pre>{&#x27;case&#x27;: {&#x27;name&#x27;: &#x27;replace top-2 with baseline lower-ranked token&#x27;, &#x27;operation&#x27;: &#x27;replace&#x27;, &#x27;prompt&#x27;: &#x27;Complete with exactly one word: The secret word is&#x27;, &#x27;target&#x27;: 1112, &#x27;source&#x27;: 279, &#x27;layers&#x27;: (), &#x27;position&#x27;: -1, &#x27;top_k&#x27;: 1, &#x27;maximum_scale&#x27;: 16.0, &#x27;context_mode&#x27;: &#x27;prompt-only&#x27;}, &#x27;success&#x27;: True, &#x27;applied&#x27;: True, &#x27;target_before&#x27;: {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 18.75}, &#x27;target_after&#x27;: {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 19.625}, &#x27;source_before&#x27;: {&#x27;token_id&#x27;: 279, &#x27;token&#x27;: &#x27; the&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 20.625}, &#x27;source_after&#x27;: {&#x27;token_id&#x27;: 279, &#x27;token&#x27;: &#x27; the&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 19.5}, &#x27;top_before&#x27;: ({&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 20.75}, {&#x27;token_id&#x27;: 279, &#x27;token&#x27;: &#x27; the&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 20.625}, {&#x27;token_id&#x27;: 304, &#x27;token&#x27;: &#x27; in&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 20.0}, {&#x27;token_id&#x27;: 8177, &#x27;token&#x27;: &#x27; hidden&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 20.0}, {&#x27;token_id&#x27;: 330, &#x27;token&#x27;: &#x27; &quot;&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 19.0}, {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 18.75}, {&#x27;token_id&#x27;: 458, &#x27;token&#x27;: &#x27; an&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 18.75}, {&#x27;token_id&#x27;: 537, &#x27;token&#x27;: &#x27; not&#x27;, &#x27;rank&#x27;: 7, &#x27;logit&#x27;: 18.5}), &#x27;top_after&#x27;: ({&#x27;token_id&#x27;: 264, &#x27;token&#x27;: &#x27; a&#x27;, &#x27;rank&#x27;: 0, &#x27;logit&#x27;: 19.75}, {&#x27;token_id&#x27;: 1112, &#x27;token&#x27;: &#x27;...&#x27;, &#x27;rank&#x27;: 1, &#x27;logit&#x27;: 19.625}, {&#x27;token_id&#x27;: 279, &#x27;token&#x27;: &#x27; the&#x27;, &#x27;rank&#x27;: 2, &#x27;logit&#x27;: 19.5}, {&#x27;token_id&#x27;: 304, &#x27;token&#x27;: &#x27; in&#x27;, &#x27;rank&#x27;: 3, &#x27;logit&#x27;: 19.375}, {&#x27;token_id&#x27;: 25, &#x27;token&#x27;: &#x27;:&#x27;, &#x27;rank&#x27;: 4, &#x27;logit&#x27;: 19.25}, {&#x27;token_id&#x27;: 1304, &#x27;token&#x27;: &#x27; __&#x27;, &#x27;rank&#x27;: 5, &#x27;logit&#x27;: 19.125}, {&#x27;token_id&#x27;: 2503, &#x27;token&#x27;: &#x27; ...&#x27;, &#x27;rank&#x27;: 6, &#x27;logit&#x27;: 19.0}, {&#x27;token_id&#x27;: 8177, &#x27;token&#x27;: &#x27; hidden&#x27;, &#x27;rank&#x27;: 7, &#x27;logit&#x27;: 18.875}), &#x27;selected_layer&#x27;: 16, &#x27;selected_scale&#x27;: 0.94140625, &#x27;normalized_cost&#x27;: 0.5080994966347002, &#x27;trace&#x27;: {&#x27;operation&#x27;: &#x27;replace&#x27;, &#x27;target_ids&#x27;: (1112,), &#x27;source_ids&#x27;: (279,), &#x27;experimental&#x27;: False, &#x27;selected_layer&#x27;: 16, &#x27;selected_positions&#x27;: (9,), &#x27;selected_scale&#x27;: 0.94140625, &#x27;normalized_cost&#x27;: 0.5080994966347002, &#x27;baseline_scores&#x27;: {&#x27;1112&#x27;: 18.75, &#x27;279&#x27;: 20.625}, &#x27;after_scores&#x27;: {&#x27;1112&#x27;: 19.625, &#x27;279&#x27;: 19.5}, &#x27;baseline_top_ids&#x27;: (264, 279, 8177, 304, 330, 458, 1112, 2494, 537, 1304, 220, 25, 2503, 825, 32671, 7436, 1730, 9338, 320, 4766, 12236, 716, 14696, 2326, 311, 2146, 364, 30743, 429, 508, 5435, 198), &#x27;after_top_ids&#x27;: (264, 1112, 279, 304, 25, 1304, 2503, 32671, 8177, 330, 7436, 9338, 2146, 220, 12236, 537, 716, 458, 2494, 320, 30743, 198, 5468, 271, 1447, 825, 508, 311, 65892, 1730, 4766, 2130), &#x27;search_points&#x27;: ({&#x27;scale&#x27;: 0.0, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -1.875, &#x27;downstream_shift&#x27;: 0.0}, {&#x27;scale&#x27;: 1.0, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.25, &#x27;downstream_shift&#x27;: 2.125}, {&#x27;scale&#x27;: 0.5, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -0.875, &#x27;downstream_shift&#x27;: 1.0}, {&#x27;scale&#x27;: 0.75, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: -0.25, &#x27;downstream_shift&#x27;: 1.625}, {&#x27;scale&#x27;: 0.875, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.0, &#x27;downstream_shift&#x27;: 1.875}, {&#x27;scale&#x27;: 0.9375, &#x27;passed&#x27;: False, &#x27;target_margin&#x27;: 0.0, &#x27;downstream_shift&#x27;: 1.875}, {&#x27;scale&#x27;: 0.96875, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.25, &#x27;downstream_shift&#x27;: 2.125}, {&#x27;scale&#x27;: 0.953125, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.25, &#x27;downstream_shift&#x27;: 2.125}, {&#x27;scale&#x27;: 0.9453125, &#x27;passed&#x27;: True, &#x27;target_margin&#x27;: 0.125, &#x27;downstream_shift&#x27;: 2.0}), &#x27;warnings&#x27;: (), &#x27;sequence_logprob_before&#x27;: None, &#x27;sequence_logprob_after&#x27;: None, &#x27;message&#x27;: &#x27;minimum passing intervention found&#x27;, &#x27;benchmark_success&#x27;: True, &#x27;benchmark_reason&#x27;: &#x27;target overtook source&#x27;}}</pre>
+                </details>
+              </td>
+            </tr>
+            
+    </tbody>
+  </table>
+</body>
+</html>

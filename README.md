@@ -1,70 +1,96 @@
 # J Studio
 
-## What is this project
+J Studio is a native desktop workbench for inspecting decoder-only language-model
+J-space and applying calibrated word-level interventions. Its compact workflow is
+modeled after Cheat Engine: select a model session, scan for concepts, refine the
+result set, and queue inject, replace, or suppress operations in a visible stack.
 
-J Studio is a native desktop workbench for inspecting the internal J-space of decoder-only language models and applying calibrated word-level interventions on a local Hugging Face model running on a CUDA or ROCm GPU. It reads a fitted Jacobian lens across layers and token positions, renders the readout as an interactive layer-by-position slice, and arms inject, replace, and suppress operations that are verified against the model's own generation before they are applied. PyTorch, Transformers, and the lens backend sit behind a backend-neutral service boundary, and a deterministic demo mode and fail-closed QuickJS rules sandbox are included.
+The interface keeps that direct scanner workflow while presenting it as a modern
+graphite/violet research workbench. Advanced scan fields stay out of the way until
+requested, session and lens provenance remain visible as status pills, and Chat,
+Rules, and the interactive J-Lens use one coherent visual system.
 
-## Install
+![J Studio workbench](assets/j-studio-workbench.png)
+
+This branch contains the UI implementation, real Hugging Face/ROCm service backend,
+an explicit deterministic demo mode, project format, and fail-closed QuickJS rules
+sandbox. PyTorch, Transformers, and model execution stay behind a backend-neutral
+service boundary and out of the GUI package.
+
+## Current capabilities
+
+- Streaming First Read / pause / next-token / resume / stop workflow
+- Found-concept table with signed activation visualization
+- Inject, replace, and suppress editors with minimum-effective-strength controls
+- Ordered multi-token J-space injection and replacement with short causal probes
+- Automatic selection of the lowest generated-output-effective strength within the
+  configured maximum budget, with no alternate logit-steering fallback
+- Duration-aware residual hooks, so Next Token edits do not repeat throughout an
+  entire cached generation
+- Chat and the repository's original interactive J-Lens slice visualization
+- Model View, Layer Explorer, Influence Trace, Generation Trace, sweeps, experiments,
+  snapshots, settings, light/dark palettes, and keyboard navigation
+- Versioned, strict JSON projects; imported controls are disarmed by default
+- Rules editor and test bench using one isolated spawned QuickJS process per run
+- Real BF16 Qwen generation and residual readouts on ROCm
+- Automatic progressive J-Lens fitting with resumable Preview and quality-gated Stable stages
+- Prompt-boundary GPU scheduling so generation can run while fitting is in progress
+- Deterministic fake services for development and UI testing through `--demo`
+
+Only decoder-only models are in scope for the initial backend integration. The
+service interfaces are deliberately model-agnostic so additional architectures and
+remote workers can be added later.
+
+## Run locally
+
+Python 3.11 or newer is required.
 
 ```bash
 git clone https://github.com/heterodoxin/J-Studio.git
 cd J-Studio
-pip install -e .
+python3.11 -m pip install --user -e '.[dev]' -e './jacobian-lens[dev]'
+python3.11 -m jstudio
 ```
 
-The command above installs the desktop application and its Qt and rules-sandbox dependencies. The local model backend additionally requires a GPU build of PyTorch, Transformers, and the Jacobian lens library. Install the PyTorch build that matches your GPU.
+The default model is the locally cached `heterodoxin/qwen3-8b-apostate` checkpoint.
+Use `--model ORG/MODEL --allow-download` for another compatible Hugging Face decoder.
+Use `--demo` only when fixed deterministic test data is desired. If no compatible
+cached lens exists, J Studio fits a Preview automatically on the already loaded model,
+then refines it in the background. Preview enables inspection; interventions remain
+disarmed until Stable passes held-out quality gates and geometry calibration. Fit
+progress, cancellation, failure reasons, and resume controls are visible in the
+session bar and J-Lens tab.
 
-On NVIDIA (CUDA):
+Cached lenses are keyed to the model, revision, estimator version, residual layout,
+and target layer. An incompatible cache is not silently reused. Fitting projects
+prompt Jacobians into the model's observed residual subspace, keeps split-half-stable
+directions, selects transport shrinkage on held-out viewing cases, and uses ROCm/CUDA
+VJP batch autotuning.
+
+The J-Lens tab uses the original `jlens.vis` layer-by-position research surface,
+including spatial text, By Layer/Position readouts, full-vocabulary ranks, pinned
+rank heatmaps, and rank plots. It does not compress logits into saturated
+`+0.99`/`+1.00` confidence values. The repository renderer is themed directly for
+J Studio; exported HTML retains the same dark research surface and interactions.
+
+For interventions, Strength is a maximum search budget rather than a guaranteed
+applied dose. A value of `16` allows the bounded causal search to choose the minimum
+effective strength. Multi-token targets are transported in token order across
+decode steps. A request that produces no directional causal effect within the
+budget fails explicitly instead of silently switching intervention methods.
+
+## Verify
 
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/cu124
+QT_QPA_PLATFORM=offscreen python3.11 -m pytest -q
+python3.11 -m ruff check jstudio tests
+python3.11 -m pytest -q jacobian-lens/tests
+python3.11 -m ruff check jacobian-lens/jlens jacobian-lens/tests jacobian-lens/scripts
+python3.11 -m jstudio --demo --screenshot /tmp/j-studio.png --quit-after 1000
 ```
 
-On AMD (ROCm):
+The authoritative UI specification is
+[`docs/superpowers/specs/2026-07-07-j-studio-ui-design.md`](docs/superpowers/specs/2026-07-07-j-studio-ui-design.md).
 
-```bash
-pip install torch --index-url https://download.pytorch.org/whl/rocm6.3
-```
-
-Then install the remaining backend dependencies:
-
-```bash
-pip install transformers
-pip install git+https://github.com/anthropics/jacobian-lens.git
-```
-
-Launch the workbench:
-
-```bash
-j-studio
-```
-
-Run without a model on deterministic demo data:
-
-```bash
-j-studio --demo
-```
-
-## Why it's better
-
-The lens readout uses a dense-family Jacobian transport rather than a low-rank random sketch, so per-position token ranks reflect the fitted average Jacobian instead of amplified projection noise. Interventions are confirmed on the real generation path: an inject search returns the smallest steering strength whose short greedy probe contains the target concept while output stays coherent, and an edit that does not change generation is reported as not applied rather than silently dropped. The GUI package holds no PyTorch or Transformers imports; all model execution crosses a single service boundary, and a shared-GPU coordinator serializes fitting, readout, and generation against one loaded model.
-
-![Best readout rank by lens type](assets/readout_ranks.png)
-
-*Best readout rank on `heterodoxin/qwen3-8b-apostate` across three probe cases (log scale, lower is better): the dense lens ranks the target token far above the low-rank sketch.*
-
-## Why should I care
-
-You can see the token a model is disposed to emit at any layer and position, pin those readouts, and watch their ranks across the network, all against a local model on your own hardware. Word-level interventions let you steer generation toward a chosen concept and observe the result token by token, with a provenance badge that states which lens is active and whether its readout is trustworthy. A background auto-fit produces a usable lens for a newly loaded model with a live progress bar and time estimate, so a model with no fitted lens becomes inspectable without leaving the application.
-
-![Rank of the intermediate concept across layers](assets/readout_by_layer.png)
-
-*Reading the intermediate concept "Italy" at the boot position across layers: the dense lens surfaces it to rank 2 near layer 18, where the sketch lens never resolves it.*
-
-## Advanced
-
-The auto-fit estimator projects each per-prompt input-output Jacobian onto the subspace spanned by the model's real final-layer residuals, accumulates the correction in two independent prompt halves, and keeps only singular directions that reproduce across the split via a cross-validated singular-value shrinkage. It fits the deep band of source layers, targets the final transport layer, calibrates residual-covariance geometry for intervention cost, and reports held-out pass@10 without gating on it. J-space injection reads the target concept's token set off a contrastive readout through the lens, pulls that whole set back through the same Jacobian transport into a residual-space covector, and adds it at every generated position; the layer and strength are searched per model and per intervention, preferring the gentlest setting that surfaces the concept while keeping the response near its natural length. Streaming output strips `<think>` reasoning blocks incrementally, and the CUDA or ROCm backend loads one BF16 decoder whose residual blocks are located by trying known Hugging Face layouts in order.
-
-## Disclaimer
-
-Developed with assistance from Claude (Anthropic).
+J Studio is an independent research tool and does not imply affiliation with
+Anthropic, Neuronpedia, or the cited research authors.

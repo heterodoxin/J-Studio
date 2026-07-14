@@ -1,0 +1,911 @@
+[
+  {
+    "case": {
+      "name": "inject baseline-rank-5",
+      "operation": "inject",
+      "prompt": "Complete with exactly one word: The secret word is",
+      "target": 330,
+      "source": null,
+      "layers": [],
+      "position": -1,
+      "top_k": 1,
+      "maximum_scale": 16.0,
+      "context_mode": "prompt-only"
+    },
+    "success": true,
+    "applied": true,
+    "target_before": {
+      "token_id": 330,
+      "token": " \"",
+      "rank": 4,
+      "logit": 19.0
+    },
+    "target_after": {
+      "token_id": 330,
+      "token": " \"",
+      "rank": 0,
+      "logit": 23.5
+    },
+    "source_before": null,
+    "source_after": null,
+    "top_before": [
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 0,
+        "logit": 20.75
+      },
+      {
+        "token_id": 279,
+        "token": " the",
+        "rank": 1,
+        "logit": 20.625
+      },
+      {
+        "token_id": 304,
+        "token": " in",
+        "rank": 2,
+        "logit": 20.0
+      },
+      {
+        "token_id": 8177,
+        "token": " hidden",
+        "rank": 2,
+        "logit": 20.0
+      },
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 4,
+        "logit": 19.0
+      },
+      {
+        "token_id": 1112,
+        "token": "...",
+        "rank": 5,
+        "logit": 18.75
+      },
+      {
+        "token_id": 458,
+        "token": " an",
+        "rank": 5,
+        "logit": 18.75
+      },
+      {
+        "token_id": 537,
+        "token": " not",
+        "rank": 7,
+        "logit": 18.5
+      }
+    ],
+    "top_after": [
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 0,
+        "logit": 23.5
+      },
+      {
+        "token_id": 220,
+        "token": " ",
+        "rank": 1,
+        "logit": 23.375
+      },
+      {
+        "token_id": 279,
+        "token": " the",
+        "rank": 2,
+        "logit": 22.125
+      },
+      {
+        "token_id": 432,
+        "token": " it",
+        "rank": 3,
+        "logit": 20.75
+      },
+      {
+        "token_id": 1,
+        "token": "\"",
+        "rank": 4,
+        "logit": 19.875
+      },
+      {
+        "token_id": 429,
+        "token": " that",
+        "rank": 5,
+        "logit": 19.5
+      },
+      {
+        "token_id": 911,
+        "token": " about",
+        "rank": 5,
+        "logit": 19.5
+      },
+      {
+        "token_id": 510,
+        "token": ":\n",
+        "rank": 5,
+        "logit": 19.5
+      }
+    ],
+    "selected_layer": 33,
+    "selected_scale": 8.875,
+    "normalized_cost": 136.29601707224776,
+    "trace": {
+      "operation": "inject",
+      "target_ids": [
+        330
+      ],
+      "source_ids": [],
+      "experimental": false,
+      "selected_layer": 33,
+      "selected_positions": [
+        9
+      ],
+      "selected_scale": 8.875,
+      "normalized_cost": 136.29601707224776,
+      "baseline_scores": {
+        "330": 19.0,
+        "264": 20.75
+      },
+      "after_scores": {
+        "330": 23.5,
+        "264": 18.125
+      },
+      "baseline_top_ids": [
+        264,
+        279,
+        8177,
+        304,
+        330,
+        458,
+        1112,
+        2494,
+        537,
+        1304,
+        220,
+        25,
+        2503,
+        825,
+        32671,
+        7436,
+        1730,
+        9338,
+        320,
+        4766,
+        12236,
+        716,
+        14696,
+        2326,
+        311,
+        2146,
+        364,
+        30743,
+        429,
+        508,
+        5435,
+        198
+      ],
+      "after_top_ids": [
+        330,
+        220,
+        279,
+        432,
+        1,
+        510,
+        911,
+        429,
+        400,
+        320,
+        481,
+        1380,
+        537,
+        1124,
+        1447,
+        304,
+        3545,
+        419,
+        1112,
+        659,
+        25,
+        1128,
+        1565,
+        1052,
+        3070,
+        847,
+        264,
+        856,
+        518,
+        57960,
+        3170,
+        311
+      ],
+      "search_points": [
+        {
+          "scale": 0.0,
+          "passed": false,
+          "target_margin": -1.75,
+          "downstream_shift": 0.0
+        },
+        {
+          "scale": 1.0,
+          "passed": false,
+          "target_margin": -0.625,
+          "downstream_shift": 1.125
+        },
+        {
+          "scale": 2.0,
+          "passed": false,
+          "target_margin": 0.0,
+          "downstream_shift": 0.25
+        },
+        {
+          "scale": 4.0,
+          "passed": false,
+          "target_margin": 0.375,
+          "downstream_shift": 0.625
+        },
+        {
+          "scale": 8.0,
+          "passed": false,
+          "target_margin": 4.5,
+          "downstream_shift": 4.5
+        },
+        {
+          "scale": 16.0,
+          "passed": true,
+          "target_margin": 4.1875,
+          "downstream_shift": -6.375
+        },
+        {
+          "scale": 12.0,
+          "passed": true,
+          "target_margin": 5.5,
+          "downstream_shift": 0.0
+        },
+        {
+          "scale": 10.0,
+          "passed": true,
+          "target_margin": 5.75,
+          "downstream_shift": 3.5
+        },
+        {
+          "scale": 9.0,
+          "passed": true,
+          "target_margin": 5.375,
+          "downstream_shift": 4.375
+        },
+        {
+          "scale": 8.5,
+          "passed": false,
+          "target_margin": 5.0,
+          "downstream_shift": 4.625
+        },
+        {
+          "scale": 8.75,
+          "passed": false,
+          "target_margin": 5.125,
+          "downstream_shift": 4.5
+        },
+        {
+          "scale": 8.875,
+          "passed": true,
+          "target_margin": 5.375,
+          "downstream_shift": 4.5
+        },
+        {
+          "scale": 8.8125,
+          "passed": false,
+          "target_margin": 5.25,
+          "downstream_shift": 4.5
+        }
+      ],
+      "warnings": [],
+      "sequence_logprob_before": null,
+      "sequence_logprob_after": null,
+      "message": "minimum passing intervention found",
+      "benchmark_success": true,
+      "benchmark_reason": "target entered requested top-k"
+    }
+  },
+  {
+    "case": {
+      "name": "replace top-1 with baseline lower-ranked token",
+      "operation": "replace",
+      "prompt": "Complete with exactly one word: The secret word is",
+      "target": 330,
+      "source": 264,
+      "layers": [],
+      "position": -1,
+      "top_k": 1,
+      "maximum_scale": 16.0,
+      "context_mode": "prompt-only"
+    },
+    "success": true,
+    "applied": true,
+    "target_before": {
+      "token_id": 330,
+      "token": " \"",
+      "rank": 4,
+      "logit": 19.0
+    },
+    "target_after": {
+      "token_id": 330,
+      "token": " \"",
+      "rank": 1,
+      "logit": 19.75
+    },
+    "source_before": {
+      "token_id": 264,
+      "token": " a",
+      "rank": 0,
+      "logit": 20.75
+    },
+    "source_after": {
+      "token_id": 264,
+      "token": " a",
+      "rank": 2,
+      "logit": 19.625
+    },
+    "top_before": [
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 0,
+        "logit": 20.75
+      },
+      {
+        "token_id": 279,
+        "token": " the",
+        "rank": 1,
+        "logit": 20.625
+      },
+      {
+        "token_id": 304,
+        "token": " in",
+        "rank": 2,
+        "logit": 20.0
+      },
+      {
+        "token_id": 8177,
+        "token": " hidden",
+        "rank": 2,
+        "logit": 20.0
+      },
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 4,
+        "logit": 19.0
+      },
+      {
+        "token_id": 1112,
+        "token": "...",
+        "rank": 5,
+        "logit": 18.75
+      },
+      {
+        "token_id": 458,
+        "token": " an",
+        "rank": 5,
+        "logit": 18.75
+      },
+      {
+        "token_id": 537,
+        "token": " not",
+        "rank": 7,
+        "logit": 18.5
+      }
+    ],
+    "top_after": [
+      {
+        "token_id": 279,
+        "token": " the",
+        "rank": 0,
+        "logit": 20.25
+      },
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 1,
+        "logit": 19.75
+      },
+      {
+        "token_id": 304,
+        "token": " in",
+        "rank": 2,
+        "logit": 19.625
+      },
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 2,
+        "logit": 19.625
+      },
+      {
+        "token_id": 8177,
+        "token": " hidden",
+        "rank": 4,
+        "logit": 19.25
+      },
+      {
+        "token_id": 25,
+        "token": ":",
+        "rank": 5,
+        "logit": 18.5
+      },
+      {
+        "token_id": 1304,
+        "token": " __",
+        "rank": 6,
+        "logit": 18.375
+      },
+      {
+        "token_id": 220,
+        "token": " ",
+        "rank": 6,
+        "logit": 18.375
+      }
+    ],
+    "selected_layer": 23,
+    "selected_scale": 1.2265625,
+    "normalized_cost": 1.2684550895562667,
+    "trace": {
+      "operation": "replace",
+      "target_ids": [
+        330
+      ],
+      "source_ids": [
+        264
+      ],
+      "experimental": false,
+      "selected_layer": 23,
+      "selected_positions": [
+        9
+      ],
+      "selected_scale": 1.2265625,
+      "normalized_cost": 1.2684550895562667,
+      "baseline_scores": {
+        "330": 19.0,
+        "264": 20.75
+      },
+      "after_scores": {
+        "330": 19.75,
+        "264": 19.625
+      },
+      "baseline_top_ids": [
+        264,
+        279,
+        8177,
+        304,
+        330,
+        458,
+        1112,
+        2494,
+        537,
+        1304,
+        220,
+        25,
+        2503,
+        825,
+        32671,
+        7436,
+        1730,
+        9338,
+        320,
+        4766,
+        12236,
+        716,
+        14696,
+        2326,
+        311,
+        2146,
+        364,
+        30743,
+        429,
+        508,
+        5435,
+        198
+      ],
+      "after_top_ids": [
+        279,
+        330,
+        304,
+        264,
+        8177,
+        25,
+        1304,
+        220,
+        1112,
+        537,
+        2503,
+        2494,
+        458,
+        364,
+        32671,
+        825,
+        7436,
+        320,
+        1730,
+        9338,
+        716,
+        311,
+        508,
+        4766,
+        12236,
+        1036,
+        2146,
+        30743,
+        429,
+        389,
+        11,
+        198
+      ],
+      "search_points": [
+        {
+          "scale": 0.0,
+          "passed": false,
+          "target_margin": -1.75,
+          "downstream_shift": 0.0
+        },
+        {
+          "scale": 1.0,
+          "passed": false,
+          "target_margin": -0.25,
+          "downstream_shift": 1.5
+        },
+        {
+          "scale": 2.0,
+          "passed": true,
+          "target_margin": 1.0,
+          "downstream_shift": 2.75
+        },
+        {
+          "scale": 1.5,
+          "passed": true,
+          "target_margin": 0.5,
+          "downstream_shift": 2.25
+        },
+        {
+          "scale": 1.25,
+          "passed": true,
+          "target_margin": 0.125,
+          "downstream_shift": 1.875
+        },
+        {
+          "scale": 1.125,
+          "passed": false,
+          "target_margin": 0.0,
+          "downstream_shift": 1.75
+        },
+        {
+          "scale": 1.1875,
+          "passed": false,
+          "target_margin": 0.0,
+          "downstream_shift": 1.75
+        },
+        {
+          "scale": 1.21875,
+          "passed": false,
+          "target_margin": 0.0,
+          "downstream_shift": 1.75
+        },
+        {
+          "scale": 1.234375,
+          "passed": true,
+          "target_margin": 0.125,
+          "downstream_shift": 1.875
+        },
+        {
+          "scale": 1.2265625,
+          "passed": true,
+          "target_margin": 0.125,
+          "downstream_shift": 1.875
+        }
+      ],
+      "warnings": [],
+      "sequence_logprob_before": null,
+      "sequence_logprob_after": null,
+      "message": "minimum passing intervention found",
+      "benchmark_success": true,
+      "benchmark_reason": "target overtook source"
+    }
+  },
+  {
+    "case": {
+      "name": "replace top-2 with baseline lower-ranked token",
+      "operation": "replace",
+      "prompt": "Complete with exactly one word: The secret word is",
+      "target": 1112,
+      "source": 279,
+      "layers": [],
+      "position": -1,
+      "top_k": 1,
+      "maximum_scale": 16.0,
+      "context_mode": "prompt-only"
+    },
+    "success": true,
+    "applied": true,
+    "target_before": {
+      "token_id": 1112,
+      "token": "...",
+      "rank": 5,
+      "logit": 18.75
+    },
+    "target_after": {
+      "token_id": 1112,
+      "token": "...",
+      "rank": 1,
+      "logit": 19.625
+    },
+    "source_before": {
+      "token_id": 279,
+      "token": " the",
+      "rank": 1,
+      "logit": 20.625
+    },
+    "source_after": {
+      "token_id": 279,
+      "token": " the",
+      "rank": 2,
+      "logit": 19.5
+    },
+    "top_before": [
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 0,
+        "logit": 20.75
+      },
+      {
+        "token_id": 279,
+        "token": " the",
+        "rank": 1,
+        "logit": 20.625
+      },
+      {
+        "token_id": 304,
+        "token": " in",
+        "rank": 2,
+        "logit": 20.0
+      },
+      {
+        "token_id": 8177,
+        "token": " hidden",
+        "rank": 2,
+        "logit": 20.0
+      },
+      {
+        "token_id": 330,
+        "token": " \"",
+        "rank": 4,
+        "logit": 19.0
+      },
+      {
+        "token_id": 1112,
+        "token": "...",
+        "rank": 5,
+        "logit": 18.75
+      },
+      {
+        "token_id": 458,
+        "token": " an",
+        "rank": 5,
+        "logit": 18.75
+      },
+      {
+        "token_id": 537,
+        "token": " not",
+        "rank": 7,
+        "logit": 18.5
+      }
+    ],
+    "top_after": [
+      {
+        "token_id": 264,
+        "token": " a",
+        "rank": 0,
+        "logit": 19.75
+      },
+      {
+        "token_id": 1112,
+        "token": "...",
+        "rank": 1,
+        "logit": 19.625
+      },
+      {
+        "token_id": 279,
+        "token": " the",
+        "rank": 2,
+        "logit": 19.5
+      },
+      {
+        "token_id": 304,
+        "token": " in",
+        "rank": 3,
+        "logit": 19.375
+      },
+      {
+        "token_id": 25,
+        "token": ":",
+        "rank": 4,
+        "logit": 19.25
+      },
+      {
+        "token_id": 1304,
+        "token": " __",
+        "rank": 5,
+        "logit": 19.125
+      },
+      {
+        "token_id": 2503,
+        "token": " ...",
+        "rank": 6,
+        "logit": 19.0
+      },
+      {
+        "token_id": 8177,
+        "token": " hidden",
+        "rank": 7,
+        "logit": 18.875
+      }
+    ],
+    "selected_layer": 16,
+    "selected_scale": 0.94140625,
+    "normalized_cost": 0.5080994966347002,
+    "trace": {
+      "operation": "replace",
+      "target_ids": [
+        1112
+      ],
+      "source_ids": [
+        279
+      ],
+      "experimental": false,
+      "selected_layer": 16,
+      "selected_positions": [
+        9
+      ],
+      "selected_scale": 0.94140625,
+      "normalized_cost": 0.5080994966347002,
+      "baseline_scores": {
+        "1112": 18.75,
+        "279": 20.625
+      },
+      "after_scores": {
+        "1112": 19.625,
+        "279": 19.5
+      },
+      "baseline_top_ids": [
+        264,
+        279,
+        8177,
+        304,
+        330,
+        458,
+        1112,
+        2494,
+        537,
+        1304,
+        220,
+        25,
+        2503,
+        825,
+        32671,
+        7436,
+        1730,
+        9338,
+        320,
+        4766,
+        12236,
+        716,
+        14696,
+        2326,
+        311,
+        2146,
+        364,
+        30743,
+        429,
+        508,
+        5435,
+        198
+      ],
+      "after_top_ids": [
+        264,
+        1112,
+        279,
+        304,
+        25,
+        1304,
+        2503,
+        32671,
+        8177,
+        330,
+        7436,
+        9338,
+        2146,
+        220,
+        12236,
+        537,
+        716,
+        458,
+        2494,
+        320,
+        30743,
+        198,
+        5468,
+        271,
+        1447,
+        825,
+        508,
+        311,
+        65892,
+        1730,
+        4766,
+        2130
+      ],
+      "search_points": [
+        {
+          "scale": 0.0,
+          "passed": false,
+          "target_margin": -1.875,
+          "downstream_shift": 0.0
+        },
+        {
+          "scale": 1.0,
+          "passed": true,
+          "target_margin": 0.25,
+          "downstream_shift": 2.125
+        },
+        {
+          "scale": 0.5,
+          "passed": false,
+          "target_margin": -0.875,
+          "downstream_shift": 1.0
+        },
+        {
+          "scale": 0.75,
+          "passed": false,
+          "target_margin": -0.25,
+          "downstream_shift": 1.625
+        },
+        {
+          "scale": 0.875,
+          "passed": false,
+          "target_margin": 0.0,
+          "downstream_shift": 1.875
+        },
+        {
+          "scale": 0.9375,
+          "passed": false,
+          "target_margin": 0.0,
+          "downstream_shift": 1.875
+        },
+        {
+          "scale": 0.96875,
+          "passed": true,
+          "target_margin": 0.25,
+          "downstream_shift": 2.125
+        },
+        {
+          "scale": 0.953125,
+          "passed": true,
+          "target_margin": 0.25,
+          "downstream_shift": 2.125
+        },
+        {
+          "scale": 0.9453125,
+          "passed": true,
+          "target_margin": 0.125,
+          "downstream_shift": 2.0
+        }
+      ],
+      "warnings": [],
+      "sequence_logprob_before": null,
+      "sequence_logprob_after": null,
+      "message": "minimum passing intervention found",
+      "benchmark_success": true,
+      "benchmark_reason": "target overtook source"
+    }
+  }
+]

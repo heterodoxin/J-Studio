@@ -2,6 +2,18 @@ from jstudio.ui.lensview.web_view import JLensWebView
 from jstudio.ui.lensview.workspace import JLensWorkspace
 
 
+def test_workspace_uses_modern_research_surface_roles(qtbot, services):
+    workspace = JLensWorkspace(services)
+    qtbot.addWidget(workspace)
+
+    assert workspace.header.property("role") == "panel"
+    assert workspace.heading.property("role") == "heading"
+    assert workspace.status.property("role") == "muted"
+    assert workspace.lens_badge.property("role") == "statusPill"
+    assert workspace.fit_status.property("role") == "statusPill"
+    assert workspace.web_frame.property("role") == "data"
+
+
 def test_workspace_uses_original_slice_renderer(qtbot, services):
     workspace = JLensWorkspace(services)
     qtbot.addWidget(workspace)
@@ -75,3 +87,23 @@ def test_lens_badge_flags_sketched_readout_as_unreliable(qtbot, services):
 
     workspace.set_lens_identity(None)
     assert workspace.lens_badge.text() == "No lens"
+
+
+def test_export_button_writes_the_current_interactive_html(
+    qtbot, services, monkeypatch, tmp_path
+):
+    from PySide6.QtWidgets import QFileDialog
+
+    workspace = JLensWorkspace(services)
+    qtbot.addWidget(workspace)
+    workspace.web.last_html = "<html>slice</html>"
+    destination = tmp_path / "slice.html"
+    monkeypatch.setattr(
+        QFileDialog,
+        "getSaveFileName",
+        lambda *args, **kwargs: (str(destination), "HTML (*.html)"),
+    )
+
+    workspace.export_button.click()
+
+    assert destination.read_text(encoding="utf-8") == "<html>slice</html>"

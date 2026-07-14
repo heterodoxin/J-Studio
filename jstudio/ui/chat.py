@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 from PySide6.QtCore import QAbstractListModel, QModelIndex, Qt, Signal
 from PySide6.QtWidgets import (
+    QApplication,
     QHBoxLayout,
     QLabel,
     QListView,
@@ -67,6 +68,14 @@ class ChatTranscriptModel(QAbstractListModel):
     def message(self, row: int) -> ChatMessage:
         return self._messages[row]
 
+    def truncate(self, row: int) -> None:
+        if not 0 <= row < len(self._messages):
+            return
+        last = len(self._messages) - 1
+        self.beginRemoveRows(QModelIndex(), row, last)
+        del self._messages[row:]
+        self.endRemoveRows()
+
 
 class ChatWorkspace(QWidget):
     inspect_requested = Signal(str, int)
@@ -94,9 +103,12 @@ class ChatWorkspace(QWidget):
         self.bridge.error.connect(self._on_error)
         self.bridge.intervention.connect(self._on_intervention)
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(8, 6, 8, 6)
+        layout.setContentsMargins(14, 12, 14, 14)
+        layout.setSpacing(10)
         self.transcript_model = ChatTranscriptModel(self)
         self.transcript = QListView(self)
+        self.transcript.setObjectName("chatTranscript")
+        self.transcript.setProperty("role", "data")
         self.transcript.setModel(self.transcript_model)
         self.transcript.setWordWrap(True)
         self.transcript.setSpacing(6)
@@ -105,23 +117,32 @@ class ChatWorkspace(QWidget):
         layout.addWidget(self.transcript, 1)
         controls_row = QHBoxLayout()
         self.control_status = QLabel("Baseline", self)
+        self.control_status.setProperty("role", "statusPill")
         self.control_status.setToolTip("Click to review active interventions and rules")
         self.control_status.setCursor(Qt.CursorShape.PointingHandCursor)
         self.interventions_button = QPushButton("Interventions", self)
         self.rules_button = QPushButton("Rules", self)
+        self.interventions_button.setProperty("role", "ghost")
+        self.rules_button.setProperty("role", "ghost")
         self.interventions_button.clicked.connect(self.controls_requested)
         self.rules_button.clicked.connect(self.rules_requested)
-        controls_row.addWidget(self.control_status, 1)
+        controls_row.addWidget(self.control_status)
+        controls_row.addStretch(1)
         controls_row.addWidget(self.interventions_button)
         controls_row.addWidget(self.rules_button)
         layout.addLayout(controls_row)
         compose = QHBoxLayout()
         self.composer = QPlainTextEdit(self)
+        self.composer.setObjectName("chatComposer")
+        self.composer.setProperty("role", "data")
         self.composer.setPlaceholderText("Send a prompt to the model…")
-        self.composer.setMaximumHeight(90)
+        self.composer.setMinimumHeight(96)
+        self.composer.setMaximumHeight(132)
         buttons = QVBoxLayout()
         self.send_button = QPushButton("Send", self)
+        self.send_button.setProperty("role", "primary")
         self.stop_button = QPushButton("Stop", self)
+        self.stop_button.setProperty("role", "danger")
         self.stop_button.hide()
         self.send_button.clicked.connect(self.send)
         self.stop_button.clicked.connect(self.stop)
@@ -246,7 +267,12 @@ class ChatWorkspace(QWidget):
         self.stop_button.hide()
 
     def _on_error(self, run_id: str, message: str, detail: str) -> None:
-        self.transcript_model.append(ChatMessage("Error", message, event=True))
+        content = f"{message}\n{detail}" if detail else message
+        error = ChatMessage("Error", content, run_id=run_id, event=True)
+        if self._assistant_row is not None:
+            self.transcript_model.replace(self._assistant_row, error)
+        else:
+            self._assistant_row = self.transcript_model.append(error)
         self.active_run_id = None
         self.send_button.show()
         self.stop_button.hide()
@@ -264,19 +290,60 @@ class ChatWorkspace(QWidget):
             position = frames[-1].token_index if frames else 0
             self.inspect_requested.emit(message.run_id, position)
 
+    def edit_and_resend(self, row: int) -> None:
+        message = self.transcript_model.message(row)
+        if message.role != "You":
+            return
+        self.composer.setPlainText(message.content)
+        self.transcript_model.truncate(row)
+        self.composer.setFocus()
+
+    def regenerate_response(self, row: int) -> None:
+        if self.active_run_id is not None:
+            return
+        for user_row in range(row - 1, -1, -1):
+            if self.transcript_model.message(user_row).role == "You":
+                self.edit_and_resend(user_row)
+                self.send()
+                return
+
+    def continue_response(self, row: int) -> None:
+        message = self.transcript_model.message(row)
+        if not message.run_id:
+            return
+        self.composer.setPlainText("Continue from your previous response.")
+        self.composer.setFocus()
+
+    def add_output_to_prompt(self, row: int) -> None:
+        message = self.transcript_model.message(row)
+        if not message.run_id:
+            return
+        current = self.composer.toPlainText().strip()
+        combined = "\n\n".join(value for value in (current, message.content) if value)
+        self.composer.setPlainText(combined)
+        self.composer.setFocus()
+
     def _context_menu(self, position) -> None:
         index = self.transcript.indexAt(position)
         if not index.isValid():
             return
         message = self.transcript_model.message(index.row())
         menu = QMenu(self)
-        menu.addAction("Copy")
+        menu.addAction(
+            "Copy", lambda: QApplication.clipboard().setText(message.content)
+        )
         if message.role == "You":
-            menu.addAction("Edit and Resend")
+            menu.addAction(
+                "Edit and Resend", lambda: self.edit_and_resend(index.row())
+            )
         elif message.run_id:
-            menu.addAction("Regenerate")
-            menu.addAction("Continue")
-            menu.addAction("Compare")
-            menu.addAction("Add Output to Prompt")
+            menu.addAction(
+                "Regenerate", lambda: self.regenerate_response(index.row())
+            )
+            menu.addAction("Continue", lambda: self.continue_response(index.row()))
+            menu.addAction(
+                "Add Output to Prompt",
+                lambda: self.add_output_to_prompt(index.row()),
+            )
             menu.addAction("Inspect with J-Lens", lambda: self.inspect_message(index.row()))
         menu.popup(self.transcript.viewport().mapToGlobal(position))

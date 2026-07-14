@@ -1,6 +1,35 @@
 from jstudio.services import hf_cache
 
 
+def test_dense_lens_discovery_requires_complete_viewing_evidence(tmp_path):
+    import torch
+
+    lens = tmp_path / "lens.pt"
+    checkpoint = {
+        "metadata": {
+            "estimator": "projected-dense-jacobian-v2",
+            "quality_stage": "Stable",
+        },
+        "geometry": {0: {"calibrated": True}},
+    }
+    torch.save(checkpoint, lens)
+
+    assert hf_cache.inspect_lens_file(lens).state is hf_cache.LensState.NEEDS_FIT
+
+    checkpoint["metadata"].update(
+        {
+            "quality_gate_version": "jspace-viewing-v2",
+            "viewing_passed": "3",
+            "viewing_total": "3",
+        }
+    )
+    torch.save(checkpoint, lens)
+    inspection = hf_cache.inspect_lens_file(lens)
+
+    assert inspection.state is hf_cache.LensState.STABLE
+    assert "3/3" in inspection.detail
+
+
 def test_scan_hf_cache_finds_cached_models_without_downloads(tmp_path):
     hub = tmp_path / "hub"
     repo = hub / "models--Qwen--Qwen2.5-7B-Instruct"

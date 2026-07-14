@@ -2,6 +2,22 @@ from PySide6.QtCore import QSize
 from PySide6.QtGui import QPalette
 
 from jstudio.ui.lensview.web_view import JLensWebView
+from jstudio.ui.theme import apply_jstudio_theme
+
+
+def test_modern_theme_installs_semantic_graphite_violet_styles(qapp, window):
+    previous = qapp.styleSheet()
+    try:
+        apply_jstudio_theme(qapp)
+        stylesheet = qapp.styleSheet()
+
+        assert "#workspaceTabs" in stylesheet
+        assert 'QWidget[role="panel"]' in stylesheet
+        assert "#8b5cf6" in stylesheet
+        assert window.tabs.objectName() == "workspaceTabs"
+        assert window.session_bar.property("role") == "session"
+    finally:
+        qapp.setStyleSheet(previous)
 
 
 def test_compact_native_shell_geometry_and_splitters(qtbot, window):
@@ -11,14 +27,20 @@ def test_compact_native_shell_geometry_and_splitters(qtbot, window):
     vertical = workspace.vertical_splitter.sizes()
 
     assert window.size() == QSize(1101, 888)
-    assert abs(upper[0] / sum(upper) - 0.46) <= 0.03
-    assert workspace.upper_splitter.handleWidth() == 7
-    assert workspace.vertical_splitter.handleWidth() == 7
-    assert vertical[1] == 179
-    assert workspace.bottom_strip.height() == 33
+    assert 0.44 <= upper[0] / sum(upper) <= 0.54
+    assert workspace.upper_splitter.handleWidth() == 8
+    assert workspace.vertical_splitter.handleWidth() == 8
+    assert 179 <= vertical[1] <= 181
+    assert not workspace.bottom_strip.isVisible()
     assert window.palette().color(QPalette.ColorRole.Text) != window.palette().color(
         QPalette.ColorRole.Base
     )
+
+
+def test_session_identity_uses_compact_status_pills(window):
+    assert window.session_bar.backend_badge.property("role") == "statusPill"
+    assert window.session_bar.status.property("role") == "statusPill"
+    assert window.session_bar.lens_status.property("role") == "statusPill"
 
 
 def test_main_is_startup_tab_and_has_no_dashboard_navigation(window):
