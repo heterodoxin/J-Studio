@@ -1,3 +1,6 @@
+from PySide6.QtCore import Qt
+
+
 def test_tools_open_focused_secondary_windows(qtbot, window):
     commands = (
         "model_view",
@@ -31,3 +34,20 @@ def test_secondary_tools_have_required_research_surfaces(qtbot, window):
         "Compare",
         "Report",
     ]
+
+
+def test_trace_influence_context_action_opens_and_seeds_tool(qtbot, window):
+    menu = window.main_workspace.build_concept_context_menu("banana")
+    trace = next(action for action in menu.actions() if action.text() == "Trace Influence")
+
+    trace.trigger()
+
+    influence = window.tool_window("influence_trace")
+    assert influence is not None
+    assert influence.isVisible()
+    assert influence.seed_term.text() == "banana"
+    assert influence.graph.terms[0] == "banana"
+
+    influence.seed_term.setText("pear")
+    qtbot.mouseClick(influence.run_button, Qt.MouseButton.LeftButton)
+    assert influence.graph.terms[0] == "pear"

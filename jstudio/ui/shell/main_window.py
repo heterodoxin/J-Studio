@@ -105,6 +105,7 @@ class JStudioMainWindow(QMainWindow):
         self.main_workspace.model_view_requested.connect(
             lambda: self.open_tool("model_view")
         )
+        self.main_workspace.influence_requested.connect(self._open_influence_trace)
         self.main_workspace.jlens_requested.connect(self._inspect_run)
         self.main_workspace.chat_requested.connect(self._continue_main_in_chat)
         self.chat_workspace.controls_requested.connect(
@@ -425,7 +426,7 @@ class JStudioMainWindow(QMainWindow):
             window.run_button.clicked.connect(self._run_sweep)
         elif name == "influence_trace":
             window.run_button.clicked.connect(
-                lambda: window.graph.set_terms(self._active_terms())
+                lambda: self._run_influence_trace(window)
             )
         elif name == "snapshot_manager":
             window.capture_button.clicked.connect(
@@ -468,6 +469,20 @@ class JStudioMainWindow(QMainWindow):
             self.main_workspace.activation_model.activation(row).term
             for row in range(self.main_workspace.activation_model.rowCount())
         ]
+
+    def _run_influence_trace(self, window) -> None:
+        seed = window.seed_term.text().strip()
+        terms = ([seed] if seed else []) + [
+            term
+            for term in self._active_terms()
+            if not seed or term.casefold() != seed.casefold()
+        ]
+        window.graph.set_terms(terms)
+
+    def _open_influence_trace(self, term: str) -> None:
+        window = self.open_tool("influence_trace")
+        window.seed_term.setText(term)
+        self._run_influence_trace(window)
 
     def _run_sweep(self) -> None:
         window = self._tool_windows["jlens_sweep"]

@@ -6,6 +6,7 @@ from PySide6.QtCore import QEvent, QObject, Qt, Signal
 from PySide6.QtGui import QAction, QColor, QPainter
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QApplication,
     QCheckBox,
     QComboBox,
     QDialog,
@@ -113,6 +114,7 @@ class MainReadWorkspace(QWidget):
     rules_requested = Signal()
     run_state_changed = Signal(object)
     chat_requested = Signal(str)
+    influence_requested = Signal(str)
 
     def __init__(
         self,
@@ -706,6 +708,11 @@ class MainReadWorkspace(QWidget):
         term = self._selected_term()
         if not term:
             return
+        self.build_concept_context_menu(term).popup(
+            self.found_table.viewport().mapToGlobal(position)
+        )
+
+    def build_concept_context_menu(self, term: str) -> QMenu:
         menu = QMenu(self)
         for label, operation in (
             ("Inject selected term…", "inject"),
@@ -720,9 +727,15 @@ class MainReadWorkspace(QWidget):
         menu.addSeparator()
         menu.addAction("Model View", self.model_view_requested)
         menu.addAction("Open in J-Lens", self._request_jlens)
-        menu.addAction("Trace Influence")
-        menu.addAction("Copy Details")
-        menu.popup(self.found_table.viewport().mapToGlobal(position))
+        menu.addAction(
+            "Trace Influence",
+            lambda: self.influence_requested.emit(term),
+        )
+        menu.addAction(
+            "Copy Details",
+            lambda: QApplication.clipboard().setText(term),
+        )
+        return menu
 
     def open_intervention_editor(
         self,
