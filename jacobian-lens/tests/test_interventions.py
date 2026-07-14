@@ -432,6 +432,24 @@ def test_phrase_schedule_injects_multitoken_directions_in_order():
     assert schedule.step == 2
 
 
+def test_phrase_schedule_can_hold_a_multitoken_concept_across_positions():
+    operator = PhraseResidualOperator(
+        operation="inject",
+        source_basis=None,
+        target_directions=torch.eye(2),
+        alignment=None,
+        scale=1.0,
+    )
+    schedule = PhraseResidualSchedule(operator, ordered=False)
+    residual = torch.tensor([1.0, 1.0])
+
+    first = schedule(residual)
+    second = schedule(residual)
+
+    torch.testing.assert_close(first, second)
+    torch.testing.assert_close(first[0], first[1])
+
+
 def test_multitoken_phrase_suppress_uses_all_source_tokens(tiny_engine):
     result = tiny_engine.phrase_suppress(
         PROMPT, "ab", layers=[2], maximum_scale=16.0
@@ -511,6 +529,31 @@ def test_phrase_search_uses_first_causally_effective_strength(
     assert observed_scales == [1 / 16, 1 / 8, 1 / 4, 1 / 2, 3 / 4, 1]
     assert result.trace.search_points[-1].downstream_shift == 1.0
     assert "generation-causal-probe" in result.trace.warnings
+
+
+def test_phrase_search_can_apply_one_candidate_across_a_position_group(
+    tiny_engine, monkeypatch
+):
+    observed_positions = []
+    monkeypatch.setattr(tiny_engine, "_phrase_passes", lambda *_args: True)
+
+    def probe(operator_pairs, positions):
+        observed_positions.append(positions)
+        return operator_pairs[0][1].scale >= 1.0, 1.0
+
+    result = tiny_engine.phrase_inject(
+        PROMPT,
+        "abcd",
+        layers=[2],
+        positions=(-1,),
+        application_positions=(0, 1, 2),
+        maximum_scale=1.0,
+        effect_probe=probe,
+    )
+
+    assert result.success, result.message
+    assert result.trace.selected_positions == (0, 1, 2)
+    assert observed_positions and set(observed_positions) == {(0, 1, 2)}
 
 
 def test_phrase_interventions_do_not_use_downstream_logit_solver(

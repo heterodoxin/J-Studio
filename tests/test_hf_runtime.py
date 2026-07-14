@@ -20,6 +20,7 @@ from jstudio.services.hf_runtime import (
     RuntimeInterventionService,
     ThinkingFilter,
     _causal_token_effect,
+    _last_subsequence_positions,
     _readout_values,
     services_for_runtime,
 )
@@ -553,15 +554,63 @@ def test_causal_token_effect_requires_directional_generated_change():
 
 
 def test_causal_injection_rejects_target_only_completion():
-    baseline = (1, 2, 3, 4)
+    baseline = (1, 2, 3, 4, 5, 6)
     target = ((9,),)
 
     assert not _causal_token_effect("inject", baseline, (9,), (), target)[0]
     assert not _causal_token_effect("inject", baseline, (9, 9, 9), (), target)[0]
     assert not _causal_token_effect(
-        "inject", baseline, (1, 2, 3, 4, 9, 9, 9), (), target
+        "inject", baseline, baseline + (9, 9, 9), (), target
     )[0]
-    assert _causal_token_effect("inject", baseline, (9, 7, 8), (), target)[0]
+    assert not _causal_token_effect(
+        "inject", baseline, (9, 7, 8, 10, 11, 12), (), target
+    )[0]
+
+
+def test_causal_injection_preserves_baseline_trajectory():
+    baseline = (1, 2, 3, 4, 5, 6)
+    target = ((9,),)
+
+    assert not _causal_token_effect("inject", baseline, (9,) + baseline, (), target)[0]
+    assert not _causal_token_effect(
+        "inject", baseline, (9, 1, 2, 3, 4, 5, 7), (), target
+    )[0]
+    assert not _causal_token_effect("inject", baseline, baseline + (9,), (), target)[0]
+    assert _causal_token_effect(
+        "inject", baseline, (1, 2, 9, 3, 7, 5, 6), (), target
+    )[0]
+
+
+def test_causal_replace_and_suppress_preserve_unedited_trajectory():
+    baseline = (1, 2, 3, 4, 5, 6)
+    source = ((3,),)
+    target = ((9,),)
+
+    assert not _causal_token_effect(
+        "replace", baseline, (7, 8, 9, 10, 11, 12), source, target
+    )[0]
+    assert _causal_token_effect(
+        "replace", baseline, (1, 2, 9, 4, 5, 6), source, target
+    )[0]
+    assert not _causal_token_effect(
+        "suppress", baseline, (7, 8, 10, 11, 12), source, ()
+    )[0]
+    assert _causal_token_effect(
+        "suppress", baseline, (1, 2, 4, 5, 6), source, ()
+    )[0]
+
+
+def test_last_subsequence_positions_selects_current_user_turn():
+    full = (4, 7, 8, 5, 7, 8, 9, 6)
+
+    assert _last_subsequence_positions(full, (7, 8, 9)) == (4, 5, 6)
+
+    try:
+        _last_subsequence_positions(full, (1, 2))
+    except ValueError as exc:
+        assert "user turn" in str(exc)
+    else:
+        raise AssertionError("missing user turn was silently accepted")
 
 
 def test_causal_suppression_without_literal_baseline_requires_divergence():
@@ -580,7 +629,7 @@ def test_phrase_effect_probe_measures_generated_tokens_and_cleans_hooks():
     runtime._token_variants = lambda term: ((9,),) if term else ()
     draft = InterventionDraft(InterventionOperation.INJECT, None, "cat", 16, 0, 0)
     operator = SimpleNamespace(
-        make_transform=lambda: (lambda residual: residual)
+        make_transform=lambda **_options: (lambda residual: residual)
     )
 
     probe = runtime._make_phrase_effect_probe("formatted", draft)
@@ -632,6 +681,7 @@ def test_phrase_injection_failure_stays_unapplied_without_fallback(monkeypatch):
     runtime.calibrated = True
     runtime.coordinator = Coordinator()
     runtime._formatted_prompt = lambda prompt, history=(): f"formatted:{prompt}"
+    runtime._current_user_positions = lambda *_args: (4, 5)
     runtime._make_phrase_effect_probe = lambda *_args: (lambda *_probe: (True, 1.0))
     monkeypatch.setattr(jlens, "InterventionEngine", EngineDouble)
     draft = InterventionDraft(
@@ -700,6 +750,7 @@ def test_prepare_interventions_does_not_require_next_token_match(monkeypatch):
     runtime.calibrated = True
     runtime.coordinator = Coordinator()
     runtime._formatted_prompt = lambda prompt, history=(): f"formatted:{prompt}"
+    runtime._current_user_positions = lambda *_args: (4, 5)
     runtime._make_phrase_effect_probe = lambda *_args: (lambda *_probe: (True, 1.0))
     # A J-space replacement need not make its target the immediate next token.
     runtime._editor_targets_next_token = lambda prompt, editor, target_ids: False
@@ -746,8 +797,8 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
                 trace=SimpleNamespace(target_ids=(44, 45, 46)),
             )
 
-        def apply(self, result, **_options):
-            applied.append(result.message)
+        def apply(self, result, **options):
+            applied.append((result.message, options))
             return nullcontext()
 
     class Coordinator:
@@ -761,6 +812,7 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
     runtime.calibrated = True
     runtime.coordinator = Coordinator()
     runtime._formatted_prompt = lambda prompt, history=(): f"formatted:{prompt}"
+    runtime._current_user_positions = lambda *_args: (4, 5)
     runtime._make_phrase_effect_probe = lambda *_args: (lambda *_probe: (True, 1.0))
     runtime._editor_targets_next_token = lambda *args: (_ for _ in ()).throw(
         AssertionError("next-token verification is forbidden")
@@ -784,9 +836,20 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
     editors, results = runtime.prepare_interventions("prompt", drafts)
 
     assert [call[0] for call in calls] == ["inject", "suppress", "replace"]
+    assert calls[0][4]["application_positions"] == (4, 5)
+    assert calls[0][4]["layers"] == [2]
+    assert all(call[4]["application_positions"] == (-1,) for call in calls[1:])
+    assert all(call[4]["layers"] == [0, 1, 2] for call in calls[1:])
     assert all(result.success for result in results)
     assert len(editors) == 3
-    assert applied == ["inject ready", "suppress ready", "replace ready"]
+    assert [message for message, _options in applied] == [
+        "inject ready",
+        "suppress ready",
+        "replace ready",
+    ]
+    assert applied[0][1] == {"max_applications": 1, "ordered": False}
+    assert applied[1][1] == {"max_applications": 1}
+    assert applied[2][1] == {"max_applications": 3}
 
 
 def test_prepare_interventions_isolates_failed_phrase_rule(monkeypatch):
@@ -820,6 +883,7 @@ def test_prepare_interventions_isolates_failed_phrase_rule(monkeypatch):
     runtime.calibrated = True
     runtime.coordinator = Coordinator()
     runtime._formatted_prompt = lambda prompt, history=(): f"formatted:{prompt}"
+    runtime._current_user_positions = lambda *_args: (4, 5)
     runtime._make_phrase_effect_probe = lambda *_args: (lambda *_probe: (True, 1.0))
     monkeypatch.setattr(jlens, "InterventionEngine", EngineDouble)
     drafts = (

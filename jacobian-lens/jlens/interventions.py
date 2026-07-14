@@ -375,15 +375,19 @@ class PhraseResidualOperator:
     def apply(self, residual: torch.Tensor) -> torch.Tensor:
         return self.apply_at_step(residual, 0)
 
-    def apply_at_step(self, residual: torch.Tensor, step: int) -> torch.Tensor:
+    def apply_at_step(self, residual: torch.Tensor, step: int | None) -> torch.Tensor:
         if residual.ndim != 1:
             raise ValueError("phrase operator expects one residual vector")
-        if step < 0:
+        if step is not None and step < 0:
             raise ValueError("phrase step must be non-negative")
         value = residual.float()
         if self.operation == "inject":
             targets = self.target_directions.to(value.device, value.dtype)
-            target = targets[:, min(step, targets.shape[1] - 1)]
+            target = (
+                targets.mean(dim=1)
+                if step is None
+                else targets[:, min(step, targets.shape[1] - 1)]
+            )
             target = target / target.norm().clamp_min(1e-8)
             rms = value.square().mean().sqrt()
             edited = value + self.scale * rms * target
@@ -394,11 +398,15 @@ class PhraseResidualOperator:
             edited = value - min(self.scale, 1.0) * source_component
             if self.operation == "replace":
                 targets = self.target_directions.to(value.device, value.dtype)
-                target = targets[:, min(step, targets.shape[1] - 1)]
+                target = (
+                    targets.mean(dim=1)
+                    if step is None
+                    else targets[:, min(step, targets.shape[1] - 1)]
+                )
                 target = target / target.norm().clamp_min(1e-8)
                 magnitude = (
                     coefficients.norm()
-                    if step == 0
+                    if step in (0, None)
                     else value.square().mean().sqrt()
                 )
                 edited = edited + self.scale * magnitude * target
@@ -406,8 +414,8 @@ class PhraseResidualOperator:
             raise ValueError("phrase operator produced non-finite residuals")
         return edited.to(residual.dtype)
 
-    def make_transform(self) -> PhraseResidualSchedule:
-        return PhraseResidualSchedule(self)
+    def make_transform(self, *, ordered: bool = True) -> PhraseResidualSchedule:
+        return PhraseResidualSchedule(self, ordered=ordered)
 
 
 @dataclass
@@ -415,10 +423,13 @@ class PhraseResidualSchedule:
     """Fresh per-generation state for ordered phrase-token transport."""
 
     operator: PhraseResidualOperator
+    ordered: bool = True
     step: int = 0
 
     def __call__(self, residual: torch.Tensor) -> torch.Tensor:
-        edited = self.operator.apply_at_step(residual, self.step)
+        edited = self.operator.apply_at_step(
+            residual, self.step if self.ordered else None
+        )
         self.step += 1
         return edited
 
@@ -540,6 +551,7 @@ class InterventionEngine:
         *,
         once: bool = True,
         max_applications: int | None = None,
+        ordered: bool = True,
     ) -> ActivationEditor | ResidualTransformEditor:
         """Return a scoped hook that applies a selected edit during inference.
 
@@ -568,7 +580,7 @@ class InterventionEngine:
                     ResidualTransform(
                         layer=operator_layer,
                         positions=result.trace.selected_positions,
-                        transform=operator.make_transform(),
+                        transform=operator.make_transform(ordered=ordered),
                         max_applications=phrase_limit,
                     )
                     for operator_layer, operator in result.operators
@@ -581,7 +593,7 @@ class InterventionEngine:
                     ResidualTransform(
                         layer=layer,
                         positions=result.trace.selected_positions,
-                        transform=result.operator.make_transform(),
+                        transform=result.operator.make_transform(ordered=ordered),
                         max_applications=phrase_limit,
                     )
                 ],
@@ -605,6 +617,7 @@ class InterventionEngine:
         *,
         layers: Sequence[int] | None = None,
         positions: Sequence[int] = (-1,),
+        application_positions: Sequence[int] | None = None,
         maximum_scale: float = 16.0,
         effect_probe: Callable[
             [tuple[tuple[int, PhraseResidualOperator], ...], tuple[int, ...]],
@@ -619,6 +632,7 @@ class InterventionEngine:
             target=self.resolver.resolve(target),
             layers=layers,
             positions=positions,
+            application_positions=application_positions,
             maximum_scale=maximum_scale,
             effect_probe=effect_probe,
         )
@@ -630,6 +644,7 @@ class InterventionEngine:
         *,
         layers: Sequence[int] | None = None,
         positions: Sequence[int] = (-1,),
+        application_positions: Sequence[int] | None = None,
         maximum_scale: float = 16.0,
         effect_probe: Callable[
             [tuple[tuple[int, PhraseResidualOperator], ...], tuple[int, ...]],
@@ -644,6 +659,7 @@ class InterventionEngine:
             target=None,
             layers=layers,
             positions=positions,
+            application_positions=application_positions,
             maximum_scale=maximum_scale,
             effect_probe=effect_probe,
         )
@@ -656,6 +672,7 @@ class InterventionEngine:
         *,
         layers: Sequence[int] | None = None,
         positions: Sequence[int] = (-1,),
+        application_positions: Sequence[int] | None = None,
         maximum_scale: float = 16.0,
         effect_probe: Callable[
             [tuple[tuple[int, PhraseResidualOperator], ...], tuple[int, ...]],
@@ -670,6 +687,7 @@ class InterventionEngine:
             target=self.resolver.resolve(target),
             layers=layers,
             positions=positions,
+            application_positions=application_positions,
             maximum_scale=maximum_scale,
             effect_probe=effect_probe,
         )
@@ -780,6 +798,7 @@ class InterventionEngine:
         target: ConceptSpec | None,
         layers: Sequence[int] | None,
         positions: Sequence[int],
+        application_positions: Sequence[int] | None,
         maximum_scale: float,
         effect_probe: Callable[
             [tuple[tuple[int, PhraseResidualOperator], ...], tuple[int, ...]],
@@ -791,6 +810,8 @@ class InterventionEngine:
             raise ValueError("maximum_scale must be finite and positive")
         if not positions:
             raise ValueError("positions must not be empty")
+        if application_positions is not None and not application_positions:
+            raise ValueError("application_positions must be None or non-empty")
         if layers is None:
             start = len(self.lens.source_layers) // 3
             layers = self.lens.source_layers[start:]
@@ -814,6 +835,11 @@ class InterventionEngine:
             ladder.append(budget)
         best_failure = None
         for position in positions:
+            selected_positions = (position,)
+            if application_positions is not None:
+                selected_positions = tuple(
+                    dict.fromkeys(int(value) for value in application_positions)
+                )
             residuals, _resolved = self._phrase_residuals(prompt, layers, position)
             geometry = []
             for layer in layers:
@@ -894,7 +920,7 @@ class InterventionEngine:
                 causally_passed = True
                 if probe_safe and effect_probe is not None:
                     causally_passed, causal_shift = effect_probe(
-                        tuple(operator_pairs), (position,)
+                        tuple(operator_pairs), selected_positions
                     )
                 passed = (
                     locally_passed
@@ -925,7 +951,7 @@ class InterventionEngine:
                         or (target is not None and target.experimental)
                     ),
                     selected_layer=layers[0] if passed else None,
-                    selected_positions=(position,),
+                    selected_positions=selected_positions,
                     selected_scale=selected_scale,
                     normalized_cost=sum(costs) / len(costs),
                     baseline_scores=baseline_scores,

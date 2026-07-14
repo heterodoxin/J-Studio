@@ -22,11 +22,11 @@ service boundary and out of the GUI package.
 - Streaming First Read / pause / next-token / resume / stop workflow
 - Found-concept table with signed activation visualization
 - Inject, replace, and suppress editors with minimum-effective-strength controls
-- Ordered multi-token J-space injection and replacement with short causal probes
+- Multi-token J-space injection and replacement with generated-sequence probes
 - Automatic selection of the lowest generated-output-effective strength within the
   configured maximum budget, with no alternate logit-steering fallback
-- Duration-aware residual hooks, so Next Token edits do not repeat throughout an
-  entire cached generation
+- Context-selective default injection across the current user turn at workspace
+  layers, with localized replace/suppress and explicit duration modes
 - Chat and the repository's original interactive J-Lens slice visualization
 - Model View, Layer Explorer, Influence Trace, Generation Trace, sweeps, experiments,
   snapshots, settings, light/dark palettes, and keyboard navigation
@@ -76,8 +76,11 @@ J Studio; exported HTML retains the same dark research surface and interactions.
 For interventions, Strength is a maximum search budget rather than a guaranteed
 applied dose. A value of `16` allows the bounded causal search to choose the minimum
 effective strength. Multi-token targets are transported in token order across
-decode steps. A request that produces no directional causal effect within the
-budget fails explicitly instead of silently switching intervention methods.
+decode steps for explicit Steps/Generation durations; the default context mode holds
+their centroid concept once across the current user turn. Accepted responses must
+preserve the baseline trajectory and cannot begin with a forced target-token
+takeover. A request that produces no directional causal effect within the budget
+fails explicitly instead of silently switching intervention methods.
 
 ## Verify
 

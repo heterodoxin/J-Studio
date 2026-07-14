@@ -8,6 +8,7 @@ residual readout as vanilla and keeps model interventions disabled.
 from __future__ import annotations
 
 import logging
+import math
 import os
 import threading
 import time
@@ -81,6 +82,85 @@ def _sequence_count(tokens: tuple[int, ...], variants: tuple[tuple[int, ...], ..
     return count
 
 
+def _last_subsequence_positions(
+    tokens: tuple[int, ...], subsequence: tuple[int, ...]
+) -> tuple[int, ...]:
+    """Locate the final exact user-turn token span without a positional fallback."""
+    if not subsequence:
+        raise ValueError("current user turn produced no tokens")
+    for start in range(len(tokens) - len(subsequence), -1, -1):
+        if tokens[start : start + len(subsequence)] == subsequence:
+            return tuple(range(start, start + len(subsequence)))
+    raise ValueError("current user turn was not found in the formatted model prompt")
+
+
+def _remove_sequence_variants(
+    tokens: tuple[int, ...], variants: tuple[tuple[int, ...], ...]
+) -> tuple[int, ...]:
+    """Remove non-overlapping phrase variants, preferring the longest match."""
+    ordered = tuple(sorted((value for value in variants if value), key=len, reverse=True))
+    output = []
+    index = 0
+    while index < len(tokens):
+        matched = next(
+            (
+                variant
+                for variant in ordered
+                if tokens[index : index + len(variant)] == variant
+            ),
+            None,
+        )
+        if matched is None:
+            output.append(tokens[index])
+            index += 1
+        else:
+            index += len(matched)
+    return tuple(output)
+
+
+def _ordered_overlap_length(
+    reference: tuple[int, ...], candidate: tuple[int, ...]
+) -> int:
+    """Return longest-common-subsequence length using bounded working memory."""
+    previous = [0] * (len(candidate) + 1)
+    for reference_token in reference:
+        current = [0]
+        for index, candidate_token in enumerate(candidate, start=1):
+            if reference_token == candidate_token:
+                current.append(previous[index - 1] + 1)
+            else:
+                current.append(max(previous[index], current[-1]))
+        previous = current
+    return previous[-1]
+
+
+def _trajectory_preserved(
+    reference: tuple[int, ...], candidate: tuple[int, ...]
+) -> bool:
+    if not reference:
+        return not candidate
+    if not candidate:
+        return False
+    overlap = _ordered_overlap_length(reference, candidate)
+    return overlap / len(reference) >= 0.5 and overlap / len(candidate) >= 0.4
+
+
+def _is_edge_concatenation(
+    baseline: tuple[int, ...],
+    candidate: tuple[int, ...],
+    target_variants: tuple[tuple[int, ...], ...],
+) -> bool:
+    stripped = _remove_sequence_variants(candidate, target_variants)
+    if stripped != baseline:
+        return False
+    return any(
+        candidate[: len(variant)] == variant
+        or candidate[-len(variant) :] == variant
+        for variant in target_variants
+        if variant
+    )
+
+
 def _causal_token_effect(
     operation: str,
     baseline: tuple[int, ...],
@@ -107,19 +187,37 @@ def _causal_token_effect(
     source_reduction = source_before - source_after
     score = float(divergence + max(target_gain, 0) + max(source_reduction, 0))
     if operation == "inject":
-        target_token_ids = {
-            token_id for variant in target_variants for token_id in variant
-        }
-        contextual_tokens = sum(
-            token_id not in target_token_ids for token_id in candidate
+        preserved_candidate = _remove_sequence_variants(candidate, target_variants)
+        leading_takeover = len(baseline) >= 4 and any(
+            candidate[: len(variant)] == variant
+            for variant in target_variants
+            if variant
         )
-        return target_gain == 1 and contextual_tokens >= 2, score
+        passed = (
+            target_gain == 1
+            and _trajectory_preserved(baseline, preserved_candidate)
+            and not leading_takeover
+            and not _is_edge_concatenation(
+                baseline, candidate, target_variants
+            )
+        )
+        return passed, score
     if operation == "replace":
         source_changed = source_reduction > 0 if source_before else divergence > 0
-        return target_gain > 0 and source_changed, score
-    if operation == "suppress":
+        preserved_baseline = _remove_sequence_variants(baseline, source_variants)
+        preserved_candidate = _remove_sequence_variants(candidate, target_variants)
         return (
-            source_reduction > 0 if source_before else divergence > 0,
+            target_gain > 0
+            and source_changed
+            and _trajectory_preserved(preserved_baseline, preserved_candidate),
+            score,
+        )
+    if operation == "suppress":
+        preserved_baseline = _remove_sequence_variants(baseline, source_variants)
+        preserved_candidate = _remove_sequence_variants(candidate, source_variants)
+        return (
+            (source_reduction > 0 if source_before else divergence > 0)
+            and _trajectory_preserved(preserved_baseline, preserved_candidate),
             score,
         )
     raise ValueError(f"unsupported phrase operation {operation!r}")
@@ -609,7 +707,12 @@ class HFModelRuntime:
                     ResidualTransform(
                         layer=layer,
                         positions=positions,
-                        transform=operator.make_transform(),
+                        transform=operator.make_transform(
+                            ordered=not (
+                                draft.operation.value == "inject"
+                                and draft.duration == "next-token"
+                            )
+                        ),
                         max_applications=max_applications,
                     )
                     for layer, operator in operator_pairs
@@ -627,6 +730,18 @@ class HFModelRuntime:
 
         return probe
 
+    def _current_user_positions(
+        self, model_prompt: str, prompt: str
+    ) -> tuple[int, ...]:
+        formatted = self.tokenizer(
+            model_prompt, add_special_tokens=False
+        ).input_ids
+        user_turn = self.tokenizer(prompt, add_special_tokens=False).input_ids
+        return _last_subsequence_positions(
+            tuple(int(value) for value in formatted),
+            tuple(int(value) for value in user_turn),
+        )
+
     def prepare_interventions(self, prompt: str, drafts, *, history: tuple = ()):
         if self.lens is None or not self.calibrated:
             raise RuntimeError("a calibrated Stable lens is required for interventions")
@@ -635,24 +750,48 @@ class HFModelRuntime:
         model_prompt = self._formatted_prompt(prompt, history)
         editors = []
         results = []
-        # Cap the search below the near-unembed layers where edits destroy coherence.
-        coherent_ceiling = int(0.8 * (self.layer_count - 1))
+        # The J-space workspace is an intermediate-layer phenomenon. Late layers
+        # are increasingly motor/output-like and recreate forced first tokens.
+        workspace_floor = math.ceil(0.38 * (self.layer_count - 1))
+        workspace_ceiling = math.floor(0.75 * (self.layer_count - 1))
+        coherent_ceiling = math.floor(0.8 * (self.layer_count - 1))
+        user_positions = None
         with self.coordinator.exclusive("intervention-search"):
             engine = jlens.InterventionEngine(self.lens_model, self.lens)
             for draft in drafts:
                 try:
+                    workspace_mode = (
+                        draft.operation.value == "inject"
+                        and draft.duration == "next-token"
+                    )
+                    eligible_floor = (
+                        max(draft.layer_start, workspace_floor)
+                        if workspace_mode
+                        else draft.layer_start
+                    )
+                    eligible_ceiling = min(
+                        draft.layer_end,
+                        workspace_ceiling if workspace_mode else coherent_ceiling,
+                    )
                     layers = [
                         layer
                         for layer in self.lens.source_layers
-                        if draft.layer_start
-                        <= layer
-                        <= min(draft.layer_end, coherent_ceiling)
+                        if eligible_floor <= layer <= eligible_ceiling
                     ]
                     if not layers:
                         raise ValueError("intervention range contains no fitted layers")
+                    if workspace_mode and user_positions is None:
+                        user_positions = self._current_user_positions(
+                            model_prompt, prompt
+                        )
                     options = {
                         "layers": layers,
                         "positions": (-1,),
+                        "application_positions": (
+                            user_positions
+                            if workspace_mode and user_positions is not None
+                            else (-1,)
+                        ),
                         "maximum_scale": draft.strength,
                         "effect_probe": self._make_phrase_effect_probe(
                             model_prompt, draft
@@ -675,6 +814,17 @@ class HFModelRuntime:
                         )
                     if not result.success:
                         editor = nullcontext()
+                    elif workspace_mode:
+                        editor = engine.apply(
+                            result,
+                            max_applications=1,
+                            ordered=False,
+                        )
+                    elif draft.duration == "next-token":
+                        editor = engine.apply(
+                            result,
+                            max_applications=len(result.trace.target_ids) or 1,
+                        )
                     elif draft.duration == "generation":
                         editor = engine.apply(result, once=False)
                     elif draft.duration == "steps":
@@ -684,11 +834,6 @@ class HFModelRuntime:
                                 draft.step_count or 1,
                                 len(result.trace.target_ids) or 1,
                             ),
-                        )
-                    else:
-                        editor = engine.apply(
-                            result,
-                            max_applications=len(result.trace.target_ids) or 1,
                         )
                 except Exception as exc:
                     trace = jlens.InterventionTrace(

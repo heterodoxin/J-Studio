@@ -21,8 +21,11 @@
 - Added generated-token causal probes that choose the minimum effective strength.
 - Made intervention duration control residual-hook lifetime, eliminating repeated
   target-token collapse for default Next Token edits.
-- Rejects target-only and target-repeating generated probes so an injection must
-  produce contextual output with one gained target occurrence.
+- Rejects target-only, target-repeating, leading-target, and trajectory-derailing
+  probes; accepted edits retain ordered token anchors from the baseline response.
+- Routes default context injection through the exact current user-turn span at
+  workspace layers instead of steering the assistant's immediate output token.
+- Treats multi-token targets as one centroid concept across prompt positions.
 - Kept failed bounded searches fail-closed with no logit-steering fallback.
 
 ### Runtime
