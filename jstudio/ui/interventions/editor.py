@@ -31,6 +31,7 @@ class InterventionEditor(QDialog):
         *,
         operation: str = "inject",
         term: str = "",
+        draft: InterventionDraft | None = None,
         parent=None,
     ) -> None:
         super().__init__(parent)
@@ -140,13 +141,51 @@ class InterventionEditor(QDialog):
             if hasattr(widget, "currentTextChanged"):
                 widget.currentTextChanged.connect(self._update_preview)
 
-        self.operation.setCurrentText(operation.title())
-        op = InterventionOperation(operation.lower())
-        if op is InterventionOperation.INJECT:
-            self.target_term.setText(term)
+        if draft is None:
+            self.operation.setCurrentText(operation.title())
+            op = InterventionOperation(operation.lower())
+            if op is InterventionOperation.INJECT:
+                self.target_term.setText(term)
+            else:
+                self.source_term.setText(term)
         else:
-            self.source_term.setText(term)
+            self._load_draft(draft)
+            self.add_button.setText("Save Changes")
         self._sync_fields()
+
+    def _load_draft(self, draft: InterventionDraft) -> None:
+        self.operation.setCurrentText(draft.operation.value.title())
+        self.source_term.setText(draft.source_term or "")
+        self.target_term.setText(draft.target_term or "")
+        self.strength.setValue(draft.strength)
+        self.layer_start.setValue(draft.layer_start)
+        self.layer_end.setValue(draft.layer_end)
+        self.duration.setCurrentText(
+            {
+                "current-token": "Current Token",
+                "next-token": "Next Token",
+                "steps": "N Steps",
+                "generation": "Entire Generation",
+            }.get(draft.duration, "Next Token")
+        )
+        self.step_count.setValue(draft.step_count or 1)
+        self.match_mode.setCurrentText(
+            {
+                "exact": "Exact Term",
+                "exact-term": "Exact Term",
+                "case-insensitive": "Case-Insensitive",
+                "regular-expression": "Regular Expression",
+                "concept-id": "Concept ID",
+            }.get(draft.match_mode, "Exact Term")
+        )
+        self.trigger.setCurrentText(
+            {
+                "manual": "Manual",
+                "before-token": "Before Token",
+                "after-match": "After Match",
+                "rule": "Rule",
+            }.get(draft.trigger, "Manual")
+        )
 
     def _sync_fields(self) -> None:
         operation = InterventionOperation(self.operation.currentText().lower())

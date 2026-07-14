@@ -1,12 +1,22 @@
 """Intervention stack table and controls."""
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout, QPushButton, QTableView, QVBoxLayout, QWidget
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtWidgets import (
+    QAbstractItemView,
+    QHBoxLayout,
+    QMenu,
+    QPushButton,
+    QTableView,
+    QVBoxLayout,
+    QWidget,
+)
 
 from jstudio.ui.models import InterventionTableModel
 
 
 class InterventionStackView(QWidget):
+    action_requested = Signal(str, object)
+
     def __init__(self, model: InterventionTableModel, parent=None) -> None:
         super().__init__(parent)
         self.setProperty("role", "panel")
@@ -45,9 +55,72 @@ class InterventionStackView(QWidget):
         self.table.setModel(model)
         self.table.setAlternatingRowColors(True)
         self.table.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
+        self.table.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.table.clicked.connect(self._toggle_enabled_cell)
+        self.table.customContextMenuRequested.connect(self._show_context_menu)
         layout.addLayout(toolbar)
         layout.addWidget(self.table, 1)
+
+    def build_context_menu(self, rows: tuple[int, ...]) -> QMenu:
+        rows = tuple(
+            sorted(
+                {
+                    row
+                    for row in rows
+                    if 0 <= row < self.table.model().rowCount()
+                }
+            )
+        )
+        menu = QMenu(self)
+        records = [self.table.model().record(row) for row in rows]
+        enable_label = (
+            "Disable"
+            if records and all(row.enabled for row in records)
+            else "Enable"
+        )
+        single = len(rows) == 1
+        specifications = (
+            (
+                enable_label,
+                "disable" if enable_label == "Disable" else "enable",
+                bool(rows),
+            ),
+            ("Edit…", "edit", single),
+            ("Duplicate", "duplicate", bool(rows)),
+            ("Preview", "preview", single),
+            ("Move Up", "move-up", single and rows[0] > 0),
+            (
+                "Move Down",
+                "move-down",
+                single and rows[0] < self.table.model().rowCount() - 1,
+            ),
+            ("Remove", "remove", bool(rows)),
+        )
+        for label, command, enabled in specifications:
+            action = menu.addAction(label)
+            action.setEnabled(enabled)
+            action.triggered.connect(
+                lambda _checked=False, value=command, selected=rows: (
+                    self.action_requested.emit(value, selected)
+                )
+            )
+        return menu
+
+    def _show_context_menu(self, position) -> None:
+        index = self.table.indexAt(position)
+        if not index.isValid():
+            return
+        selected = {row.row() for row in self.table.selectionModel().selectedRows()}
+        if index.row() not in selected:
+            self.table.clearSelection()
+            self.table.selectRow(index.row())
+        rows = tuple(
+            sorted(row.row() for row in self.table.selectionModel().selectedRows())
+        )
+        self.build_context_menu(rows).popup(
+            self.table.viewport().mapToGlobal(position)
+        )
 
     def _toggle_enabled_cell(self, index) -> None:
         if not index.isValid() or index.column() != 0:

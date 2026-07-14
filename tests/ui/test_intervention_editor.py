@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt
 
-from jstudio.domain import InterventionOperation
+from jstudio.domain import InterventionDraft, InterventionEntry, InterventionOperation
 
 
 def test_replace_editor_validates_and_adds_draft(qtbot, window):
@@ -26,6 +26,40 @@ def test_intervention_editor_defaults_to_auto_max_budget(window):
     assert editor.strength.value() == maximum
     assert "maximum search budget" in editor.strength.toolTip().lower()
     assert "auto-search minimum effective scale" in editor.preview.text().lower()
+
+
+def test_context_edit_prefills_and_replaces_entry_by_stable_id(qtbot, window):
+    draft = InterventionDraft(
+        InterventionOperation.REPLACE,
+        "apple",
+        "banana",
+        0.75,
+        4,
+        9,
+        duration="steps",
+        step_count=3,
+        match_mode="case-insensitive",
+        trigger="before-token",
+    )
+    entry = InterventionEntry.from_draft(draft)
+    window.project.interventions.append(entry)
+    workspace = window.main_workspace
+    workspace.intervention_model.replace_rows(window.project.interventions)
+
+    workspace.stack_view.build_context_menu((0,)).actions()[1].trigger()
+    editor = workspace._editors[-1]
+
+    assert editor.source_term.text() == "apple"
+    assert editor.target_term.text() == "banana"
+    assert editor.strength.value() == 0.75
+    assert editor.duration.currentText() == "N Steps"
+    assert editor.step_count.value() == 3
+
+    editor.target_term.setText("pear")
+    qtbot.mouseClick(editor.add_button, Qt.MouseButton.LeftButton)
+
+    assert window.project.interventions[0].intervention_id == entry.intervention_id
+    assert window.project.interventions[0].draft.target_term == "pear"
 
 
 def test_inject_requires_target_and_focuses_error(qtbot, window):

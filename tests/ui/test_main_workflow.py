@@ -135,6 +135,96 @@ def test_clicking_intervention_checkbox_updates_project(qtbot, window):
     assert window.project.interventions[0].enabled
 
 
+def test_intervention_rows_have_complete_context_menu(window):
+    draft = InterventionDraft(
+        InterventionOperation.INJECT, None, "banana", 8.0, 1, 3
+    )
+    window.project.interventions.append(InterventionEntry.from_draft(draft))
+    workspace = window.main_workspace
+    workspace.intervention_model.replace_rows(window.project.interventions)
+
+    menu = workspace.stack_view.build_context_menu((0,))
+    labels = [action.text() for action in menu.actions() if not action.isSeparator()]
+
+    assert labels == [
+        "Enable",
+        "Edit…",
+        "Duplicate",
+        "Preview",
+        "Move Up",
+        "Move Down",
+        "Remove",
+    ]
+    move_up = next(action for action in menu.actions() if action.text() == "Move Up")
+    assert not move_up.isEnabled()
+
+
+def test_intervention_context_actions_mutate_project_in_execution_order(window):
+    first = InterventionEntry.from_draft(
+        InterventionDraft(InterventionOperation.INJECT, None, "banana", 8.0, 1, 3)
+    )
+    second = InterventionEntry.from_draft(
+        InterventionDraft(InterventionOperation.SUPPRESS, "apple", None, 4.0, 1, 3)
+    )
+    window.project.interventions.extend((first, second))
+    workspace = window.main_workspace
+    workspace.intervention_model.replace_rows(window.project.interventions)
+
+    actions = {
+        action.text(): action
+        for action in workspace.stack_view.build_context_menu((0,)).actions()
+    }
+    actions["Enable"].trigger()
+    assert window.project.interventions[0].enabled
+
+    actions["Duplicate"].trigger()
+    assert len(window.project.interventions) == 3
+    duplicate = window.project.interventions[1]
+    assert duplicate.draft == first.draft
+    assert duplicate.intervention_id != first.intervention_id
+    assert not duplicate.enabled
+
+    move = {
+        action.text(): action
+        for action in workspace.stack_view.build_context_menu((1,)).actions()
+    }
+    move["Move Down"].trigger()
+    assert window.project.interventions[-1].intervention_id == duplicate.intervention_id
+
+    remove = {
+        action.text(): action
+        for action in workspace.stack_view.build_context_menu((2,)).actions()
+    }
+    remove["Remove"].trigger()
+    assert [entry.intervention_id for entry in window.project.interventions] == [
+        first.intervention_id,
+        second.intervention_id,
+    ]
+
+
+def test_intervention_context_menu_disables_single_row_actions_for_multiselect(window):
+    for term in ("banana", "pear"):
+        window.project.interventions.append(
+            InterventionEntry.from_draft(
+                InterventionDraft(InterventionOperation.INJECT, None, term, 8.0, 1, 3)
+            )
+        )
+    workspace = window.main_workspace
+    workspace.intervention_model.replace_rows(window.project.interventions)
+
+    actions = {
+        action.text(): action
+        for action in workspace.stack_view.build_context_menu((0, 1)).actions()
+    }
+
+    assert not actions["Edit…"].isEnabled()
+    assert not actions["Preview"].isEnabled()
+    assert not actions["Move Up"].isEnabled()
+    assert not actions["Move Down"].isEnabled()
+    assert actions["Duplicate"].isEnabled()
+    assert actions["Remove"].isEnabled()
+
+
 def test_main_chat_button_switches_to_synced_chat_without_pasting_run(qtbot, window):
     workspace = window.main_workspace
     workspace.prompt.setPlainText("Inspect this prompt")

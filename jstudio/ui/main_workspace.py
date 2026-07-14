@@ -158,6 +158,7 @@ class MainReadWorkspace(QWidget):
         self.stack_view = InterventionStackView(
             self.intervention_model, self.vertical_splitter
         )
+        self.stack_view.action_requested.connect(self._handle_stack_action)
         self.arm_button = self.stack_view.arm
         self.stack_view.inject.clicked.connect(
             lambda: self.open_intervention_editor("inject", "")
@@ -723,14 +724,30 @@ class MainReadWorkspace(QWidget):
         menu.addAction("Copy Details")
         menu.popup(self.found_table.viewport().mapToGlobal(position))
 
-    def open_intervention_editor(self, operation: str, term: str) -> InterventionEditor:
+    def open_intervention_editor(
+        self,
+        operation: str,
+        term: str,
+        *,
+        draft=None,
+        replace_id: str | None = None,
+    ) -> InterventionEditor:
         if self.session is None:
             self.session_requested.emit()
             raise RuntimeError("select a session before creating an intervention")
         editor = InterventionEditor(
-            self.session, operation=operation, term=term, parent=self.window()
+            self.session,
+            operation=operation,
+            term=term,
+            draft=draft,
+            parent=self.window(),
         )
-        editor.draft_added.connect(self._add_draft)
+        if replace_id is None:
+            editor.draft_added.connect(self._add_draft)
+        else:
+            editor.draft_added.connect(
+                lambda value, entry_id=replace_id: self._replace_draft(entry_id, value)
+            )
         editor.preview_requested.connect(self._preview_draft)
         editor.finished.connect(
             lambda: self._editors.remove(editor) if editor in self._editors else None
@@ -740,6 +757,85 @@ class MainReadWorkspace(QWidget):
         editor.raise_()
         editor.activateWindow()
         return editor
+
+    def _replace_draft(self, intervention_id: str, draft) -> None:
+        from dataclasses import replace
+
+        for row, entry in enumerate(self.project.interventions):
+            if entry.intervention_id != intervention_id:
+                continue
+            self.project.interventions[row] = replace(
+                entry,
+                draft=draft,
+                enabled=False,
+                state=InterventionState.DRAFT,
+                status_detail="Draft",
+                applied_run_id=None,
+            )
+            self._refresh_intervention_stack("Intervention updated and disarmed")
+            return
+
+    def _refresh_intervention_stack(self, message: str) -> None:
+        self.project.dirty = True
+        self.intervention_model.replace_rows(self.project.interventions)
+        self._sync_session_state()
+        self.status.setText(message)
+
+    def _handle_stack_action(self, action: str, rows) -> None:
+        from dataclasses import replace
+
+        rows = tuple(
+            row for row in sorted(set(rows)) if 0 <= row < len(self.project.interventions)
+        )
+        if not rows:
+            return
+        if action in {"enable", "disable"}:
+            enabled = action == "enable"
+            selected = set(rows)
+            self.project.interventions[:] = [
+                replace(entry, enabled=enabled) if row in selected else entry
+                for row, entry in enumerate(self.project.interventions)
+            ]
+            self._refresh_intervention_stack(
+                f"{'Enabled' if enabled else 'Disabled'} {len(rows)} intervention(s)"
+            )
+        elif action == "edit" and len(rows) == 1:
+            entry = self.project.interventions[rows[0]]
+            self.open_intervention_editor(
+                entry.draft.operation.value,
+                entry.draft.source_term or entry.draft.target_term or "",
+                draft=entry.draft,
+                replace_id=entry.intervention_id,
+            )
+        elif action == "duplicate":
+            offset = 0
+            for original_row in rows:
+                entry = self.project.interventions[original_row + offset]
+                duplicate = InterventionEntry.from_draft(
+                    entry.draft, label=f"{entry.label} copy"
+                )
+                self.project.interventions.insert(original_row + offset + 1, duplicate)
+                offset += 1
+            self._refresh_intervention_stack(
+                f"Duplicated {len(rows)} intervention(s) as disarmed drafts"
+            )
+        elif action == "preview" and len(rows) == 1:
+            entry = self.project.interventions[rows[0]]
+            valid, detail = self.services.interventions.preview(
+                self.session.session_id, entry.draft
+            )
+            self.status.setText(("Compatible · " if valid else "Unavailable · ") + detail)
+        elif action in {"move-up", "move-down"} and len(rows) == 1:
+            source = rows[0]
+            destination = source - 1 if action == "move-up" else source + 1
+            if 0 <= destination < len(self.project.interventions):
+                values = self.project.interventions
+                values[source], values[destination] = values[destination], values[source]
+                self._refresh_intervention_stack("Intervention execution order updated")
+        elif action == "remove":
+            for row in reversed(rows):
+                del self.project.interventions[row]
+            self._refresh_intervention_stack(f"Removed {len(rows)} intervention(s)")
 
     def _preview_draft(self, draft) -> None:
         valid, detail = self.services.interventions.preview(self.session.session_id, draft)
