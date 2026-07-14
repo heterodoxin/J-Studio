@@ -11,6 +11,9 @@
 - Modernized Chat and Rules layout hierarchy and reduced always-visible actions.
 - Themed the native J-Lens workspace and its exported interactive HTML surface,
   including heatmaps, rank plots, pins, tooltips, and selected coordinates.
+- Added right-click intervention actions for edit, duplicate, preview, ordering,
+  enable/disable, and removal.
+- Made Trace Influence open the trace tool with the clicked concept as its seed.
 
 ### J-space interventions
 
@@ -18,6 +21,8 @@
 - Added generated-token causal probes that choose the minimum effective strength.
 - Made intervention duration control residual-hook lifetime, eliminating repeated
   target-token collapse for default Next Token edits.
+- Rejects target-only generated probes so an injection must produce contextual
+  output beyond the injected phrase.
 - Kept failed bounded searches fail-closed with no logit-steering fallback.
 
 ### Runtime
