@@ -59,6 +59,6 @@
 
 - [x] Run all app and J-lens tests plus both Ruff suites.
 - [x] Review the final diff and benchmark failures.
-- [ ] Commit and push any durable benchmark or behavior changes.
+- [x] Commit and push any durable benchmark or behavior changes.
 - [x] Leave J Studio stopped after verification to avoid sustained GPU allocation;
       launch is deferred until explicitly requested.
