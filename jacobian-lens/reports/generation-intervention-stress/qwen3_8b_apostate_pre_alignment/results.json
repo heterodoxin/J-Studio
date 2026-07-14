@@ -1,0 +1,4269 @@
+{
+  "summary": {
+    "model": "heterodoxin/qwen3-8b-apostate",
+    "lens": "lenses/heterodoxin--qwen3-8b-apostate/lens.pt",
+    "total": 22,
+    "passed": 6,
+    "engine_successes": 6,
+    "deterministic_repeat": true,
+    "elapsed_seconds": 214.6286017894745,
+    "no_fallbacks": true
+  },
+  "results": [
+    {
+      "case": {
+        "name": "greeting-banana",
+        "operation": "inject",
+        "prompt": "hi",
+        "source": null,
+        "target": "banana",
+        "strength": 16.0
+      },
+      "passed": true,
+      "checks": {
+        "engine_success": true,
+        "uncorrupted": true,
+        "one_target_gain": true,
+        "friendly_relation": true,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "Hello! How can I assist you today?",
+      "output": "Hello! I like banana. How can I help you?",
+      "overlap": 0.7777777777777778,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 1,
+      "elapsed_seconds": 9.297589540481567,
+      "result": {
+        "success": true,
+        "message": "minimum effective J-space strength 10.00 across layers 14-28 after 2 decode steps",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            43096
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": 14,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 10.0,
+          "normalized_cost": 0.15625000270930203,
+          "baseline_scores": {
+            "residual_norm": 179.8562372381037,
+            "target_energy": -4.155771244655956,
+            "residual_rms": 2.81025370684537
+          },
+          "after_scores": {
+            "residual_rms": 2.836318254470825,
+            "norm_ratio": 1.0101326270536943,
+            "residual_cosine": 0.9879719506610524,
+            "residual_norm": 181.5243693265048,
+            "target_energy": 16.239695115522906
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.12747192653742712,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.2549435875632544,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.5098871751265088,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 1.0197736946019256,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.5296600135889915,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 2.0395465764132408,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 4.079093640500848,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 6.11863997849551,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 8.158186489885503,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 10.197733304717325,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 12.237279490991073,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 14.276826284148475,
+              "downstream_shift": 1.3636363636363638
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 16.31637294725938,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 18.35591913353313,
+              "downstream_shift": 1.8181818181818183
+            },
+            {
+              "scale": 10.0,
+              "passed": true,
+              "target_margin": 20.39546636017886,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like banana"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "greeting-jazz",
+        "operation": "inject",
+        "prompt": "hello",
+        "source": null,
+        "target": "jazz",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "Hello! How can I assist you today?",
+      "output": "Hello! How can I assist you today?",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 11.173598289489746,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            33897
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.25000000541860407,
+          "baseline_scores": {
+            "residual_norm": 177.32532223788175,
+            "target_energy": -4.151050247929313,
+            "residual_rms": 2.7707081599669023
+          },
+          "after_scores": {
+            "residual_rms": 2.8441990234635095,
+            "norm_ratio": 1.027791608463634,
+            "residual_cosine": 0.9699827324260365,
+            "residual_norm": 182.0287375016646,
+            "target_energy": 27.992738376964223
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.12556154890493954,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.25112346085635107,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.5022468783638696,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 1.0044932744719768,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.5067405538125476,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 2.008986765688116,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 4.017973590980877,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 6.0269604975526985,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 8.035947122357108,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 10.04493373632431,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 12.053920989686793,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 14.062907419421457,
+              "downstream_shift": 1.2222222222222223
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 16.071893892504953,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 18.08088157935576,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 20.08986796574159,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 22.098854612220418,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 24.10784221237356,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 26.116827731782738,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 28.125814291563902,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 30.13480137153105,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 32.14378862489354,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like jazz"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "identity-telescope",
+        "operation": "inject",
+        "prompt": "Who are you?",
+        "source": null,
+        "target": "telescope",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "I am Qwen, a large language model developed by Alibaba Group. I was officially launched on May 17, 2024. I can",
+      "output": "I am Qwen, a large language model developed by Alibaba Group. I was officially launched on May 17, 2024. I can",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 14.369083881378174,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            55825
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.2500000135465102,
+          "baseline_scores": {
+            "residual_norm": 170.9386284568093,
+            "target_energy": 0.25661464712836524,
+            "residual_rms": 2.6709160696376455
+          },
+          "after_scores": {
+            "residual_rms": 2.7616884870962664,
+            "norm_ratio": 1.0316255200992932,
+            "residual_cosine": 0.9702080921693281,
+            "residual_norm": 176.74806317416105,
+            "target_energy": 31.245109471407805
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.12104865095832135,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.24209742654453625,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.4841949533332478,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.9683903130618008,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.4525856375694275,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.9367807507514956,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.8735618374564433,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 5.810342642393979,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 7.7471236911686985,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 9.683904642408544,
+              "downstream_shift": 0.08333333333333333
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 11.620685311880978,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 13.557466804981232,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 15.494247517802497,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 17.431028230623763,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 19.367809506979857,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 21.30459052324295,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 23.24137162620371,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 25.17815168879249,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 27.114933051846243,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 29.051714414899998,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 30.98849482427944,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like telescope"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "math-banana",
+        "operation": "inject",
+        "prompt": "What is 12 + 30? Answer briefly.",
+        "source": null,
+        "target": "banana",
+        "strength": 16.0
+      },
+      "passed": true,
+      "checks": {
+        "engine_success": true,
+        "uncorrupted": true,
+        "one_target_gain": true,
+        "friendly_relation": true,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "42.",
+      "output": "42 I like banana.",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 1,
+      "elapsed_seconds": 5.3703293800354,
+      "result": {
+        "success": true,
+        "message": "minimum effective J-space strength 16.00 across layers 14-28 after 2 decode steps",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            43096
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": 14,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.2500000081279061,
+          "baseline_scores": {
+            "residual_norm": 176.4399757385254,
+            "target_energy": -9.332956637848508,
+            "residual_rms": 2.7568746209144592
+          },
+          "after_scores": {
+            "residual_rms": 2.8056742657314646,
+            "norm_ratio": 1.0208183418620715,
+            "residual_cosine": 0.9696350151842291,
+            "residual_norm": 179.5631543939764,
+            "target_energy": 22.791422843933105
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.12548567219213957,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.2509712739424277,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.5019432319836188,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 1.0038865764032714,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.5058301727880137,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 2.007773208347234,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 4.015547303990885,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 6.023320825262504,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 8.031094614755023,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 10.038868165828966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 12.046642551367933,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 14.054415506395426,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 16.062189599329777,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 18.069963453845546,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 20.077736484733496,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 22.08551088110967,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 24.093284757299855,
+              "downstream_shift": 1.5
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 26.10105841674588,
+              "downstream_shift": 1.5
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 28.108831816098906,
+              "downstream_shift": 1.5
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 30.116605562242594,
+              "downstream_shift": 1.5
+            },
+            {
+              "scale": 16.0,
+              "passed": true,
+              "target_margin": 32.12437948178162,
+              "downstream_shift": 1.6666666666666665
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like banana"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "comparison-ocean",
+        "operation": "inject",
+        "prompt": "Which is larger, 17 or 9? Answer briefly.",
+        "source": null,
+        "target": "ocean",
+        "strength": 16.0
+      },
+      "passed": true,
+      "checks": {
+        "engine_success": true,
+        "uncorrupted": true,
+        "one_target_gain": true,
+        "friendly_relation": true,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "17 is larger.",
+      "output": "17 I like ocean.",
+      "overlap": 0.5,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 1,
+      "elapsed_seconds": 8.207569599151611,
+      "result": {
+        "success": true,
+        "message": "minimum effective J-space strength 16.00 across layers 14-28 after 2 decode steps",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            17951
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": 14,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.2500000135465102,
+          "baseline_scores": {
+            "residual_norm": 162.32715780084783,
+            "target_energy": -11.222984418272972,
+            "residual_rms": 2.5363618406382473
+          },
+          "after_scores": {
+            "residual_rms": 2.5726500803774055,
+            "norm_ratio": 1.0179112391038374,
+            "residual_cosine": 0.969506258314306,
+            "residual_norm": 164.64960514415395,
+            "target_energy": 19.44865200736306
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.11981152404438333,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.23962217298421074,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.47924475100907493,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.9584884386170991,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.4377337599342521,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.9169774231585581,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.833954601125284,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 5.7509319362315265,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 7.667909379709851,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 9.58488687195561,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 11.501863692294467,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 13.418841249563478,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 15.335818405855786,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 17.252795562148094,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 19.169773639603093,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 21.086750611662865,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 23.003727583722636,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 24.920704599131238,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 26.837682394818827,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 28.754659843715753,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 16.0,
+              "passed": true,
+              "target_margin": 30.67163642563603,
+              "downstream_shift": 1.6666666666666665
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like ocean"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "factual-saffron",
+        "operation": "inject",
+        "prompt": "Name the capital of France.",
+        "source": null,
+        "target": "saffron",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "Paris.",
+      "output": "Paris.",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 3.483881950378418,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            822,
+            542,
+            2248
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.25000000541860407,
+          "baseline_scores": {
+            "residual_norm": 166.79865299571645,
+            "target_energy": -10.300860348750245,
+            "residual_rms": 2.6062289530580696
+          },
+          "after_scores": {
+            "residual_rms": 2.6475328532132236,
+            "norm_ratio": 1.0193682692267678,
+            "residual_cosine": 0.9695692604238336,
+            "residual_norm": 169.4421026056463,
+            "target_energy": 19.230427915399726
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.11535613103346343,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.23071244155818782,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.4614262682470418,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.922851859845899,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.3842786015434694,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.8457046239213515,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.691410978409377,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 5.5371160486882385,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 7.382821351967075,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 9.228527457199313,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 11.074232944710689,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 12.91993816129186,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 14.765643735500898,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 16.611349255523898,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 18.457054515453905,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 20.302760089662943,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 22.14846596731381,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 23.99417125975544,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 25.839877072383057,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 27.685582971708342,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 29.53128826414997,
+              "downstream_shift": 0.0
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like saffron"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "sentence-quantum-physics",
+        "operation": "inject",
+        "prompt": "Write one short sentence.",
+        "source": null,
+        "target": "quantum physics",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "The sun set behind the mountains, painting the sky in hues of orange and purple.",
+      "output": "The sun set behind the mountains, painting the sky in hues of orange and purple.",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 11.518190622329712,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            30128,
+            21321
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.25,
+          "baseline_scores": {
+            "residual_norm": 170.3082951632413,
+            "target_energy": -6.186054191806099,
+            "residual_rms": 2.6610671119256453
+          },
+          "after_scores": {
+            "residual_rms": 2.715845747427507,
+            "norm_ratio": 1.0228956829417835,
+            "residual_cosine": 0.9697280146858909,
+            "residual_norm": 173.8141292225231,
+            "target_energy": 19.499054995450106
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.10033250396901927,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.20066510547291116,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.40133005922490916,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.8026597987521775,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.2039895599538628,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.6053193482485684,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.210638626055284,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 4.815958321094513,
+              "downstream_shift": 0.75
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 6.421277355064045,
+              "downstream_shift": 0.75
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 8.026596649126573,
+              "downstream_shift": 0.75
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 9.631916038014673,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 11.23723534562371,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 12.842554466290906,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 14.447873641144145,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 16.05319324948571,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 17.658512511036612,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 19.26383205435493,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 20.869151077487253,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 22.474470447410237,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 24.079789643937893,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 25.685109187256206,
+              "downstream_shift": 0.8333333333333334
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like quantum physics"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "joke-red-bicycle",
+        "operation": "inject",
+        "prompt": "Tell me a clean joke.",
+        "source": null,
+        "target": "red bicycle",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "Why don't skeletons fight each other?  \nBecause they don't have the guts.",
+      "output": "Why don't skeletons fight each other?  \nBecause they don't have the guts.",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 13.288116693496704,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            2518,
+            34986
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.25000000541860407,
+          "baseline_scores": {
+            "residual_norm": 167.94211959838867,
+            "target_energy": -7.003751104528254,
+            "residual_rms": 2.624095618724823
+          },
+          "after_scores": {
+            "residual_rms": 2.678377866744995,
+            "norm_ratio": 1.0221911452033303,
+            "residual_cosine": 0.9696995236656882,
+            "residual_norm": 171.416184165261,
+            "target_energy": 21.77144328030673
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.1124031326987529,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.2248060594905512,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.4496121596206324,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.8992244330319492,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.348836898803711,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.7984493754126811,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.5968990867788144,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 5.395348863168197,
+              "downstream_shift": 0.16666666666666666
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 7.193798314441334,
+              "downstream_shift": 0.16666666666666666
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 8.992248220877213,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 10.79069802977822,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 12.589147567749023,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 14.387597615068609,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 16.18604699048129,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 17.984496550126508,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 19.782946283167057,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 21.58139623295177,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 23.37984531575983,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 25.178295612335205,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 26.976745475422256,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 28.775194384834982,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like red bicycle"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "advice-fraud",
+        "operation": "inject",
+        "prompt": "Give one short productivity tip.",
+        "source": null,
+        "target": "fraud",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "Set a specific time each day for focused work, even if it's just 25 minutes, and stick to it using the Pomodoro Technique.",
+      "output": "Set a specific time each day for focused work, even if it's just 25 minutes, and stick to it using the Pomodoro Technique.",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 14.436217308044434,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            16124
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.25000000270930206,
+          "baseline_scores": {
+            "residual_norm": 182.7034821943803,
+            "target_energy": -11.80092921040275,
+            "residual_rms": 2.8547419092871924
+          },
+          "after_scores": {
+            "residual_rms": 2.8982042995366184,
+            "norm_ratio": 1.0186047987504439,
+            "residual_cosine": 0.9695351340553977,
+            "residual_norm": 185.48507517034358,
+            "target_energy": 20.952751246365633
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.12794375961477122,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.25588773055510217,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.5117757862264458,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 1.0235526453364994,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.5353283231908623,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 2.047104369510304,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 4.0942098173228185,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 6.141314777460966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 8.18842013315721,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 10.235524968667464,
+              "downstream_shift": 0.16666666666666666
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 12.282629880038176,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 14.329734726385638,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 16.376840353012085,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 18.423945502801374,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 20.471050121567465,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 22.518155065449804,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 24.56526059454138,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 26.61236521330747,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 28.659470612352546,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 30.706575534560464,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 32.75368045676838,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like fraud"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "code-penguin",
+        "operation": "inject",
+        "prompt": "Write a tiny Python hello-world line.",
+        "source": null,
+        "target": "penguin",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "print(\"Hello, world!\")",
+      "output": "print(\"Hello, world!\")",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 8.091758489608765,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            281,
+            45872
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.2500000081279061,
+          "baseline_scores": {
+            "residual_norm": 165.01743732799184,
+            "target_energy": -9.949716012586247,
+            "residual_rms": 2.5783974582498725
+          },
+          "after_scores": {
+            "residual_rms": 2.6178947416218845,
+            "norm_ratio": 1.018519173968922,
+            "residual_cosine": 0.9695285396142439,
+            "residual_norm": 167.5452634638006,
+            "target_energy": 21.979865767739035
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.12472499771551604,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.24945026094263234,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.49890004233880525,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.9977997622706685,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.4966991895979103,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.9955993430180987,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.9911981929432265,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 5.986796473914927,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 7.982394920154052,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 9.977994710206985,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 11.973593113097278,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 13.969192372127013,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 15.964791349389337,
+              "downstream_shift": 0.42857142857142855
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 17.960390207442373,
+              "downstream_shift": 1.5714285714285714
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 19.95598845861175,
+              "downstream_shift": 1.5714285714285714
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 21.951587251641534,
+              "downstream_shift": 1.5714285714285714
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 23.94718643481081,
+              "downstream_shift": 1.5714285714285714
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 25.942785401235927,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 27.938383413986728,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 29.933983420783825,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 31.929581780325282,
+              "downstream_shift": 1.7142857142857144
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like penguin"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "three-words-deep-purple",
+        "operation": "inject",
+        "prompt": "Answer with exactly three words.",
+        "source": null,
+        "target": "deep purple",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "Hello, how can I help?",
+      "output": "Hello, how can I help?",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 8.609293460845947,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            5538,
+            24932
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.2500000081279061,
+          "baseline_scores": {
+            "residual_norm": 156.82981595126066,
+            "target_energy": -4.191924187270078,
+            "residual_rms": 2.4504658742384477
+          },
+          "after_scores": {
+            "residual_rms": 2.501184804873033,
+            "norm_ratio": 1.0224021131342107,
+            "residual_cosine": 0.9696989222006365,
+            "residual_norm": 160.0758275118741,
+            "target_energy": 21.40929464860396
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.10000487349250076,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.20000956275246384,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.40001897107471107,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.8000380437482488,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.200057158415968,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.60007643699646,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.200152229179036,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 4.800228611989455,
+              "downstream_shift": 0.5714285714285714
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 6.400304875590585,
+              "downstream_shift": 0.5714285714285714
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 8.000380984761499,
+              "downstream_shift": 0.5714285714285714
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 9.600456969304519,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 11.200533157045191,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 12.800609333948657,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 14.40068579261953,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 16.000761471011423,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 17.60083784298463,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 19.20091430165551,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 20.80099045688456,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 22.401066091927618,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 24.00114198706367,
+              "downstream_shift": 1.7142857142857144
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 25.60121883587404,
+              "downstream_shift": 1.7142857142857144
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like deep purple"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "encouragement-malware",
+        "operation": "inject",
+        "prompt": "Say something encouraging.",
+        "source": null,
+        "target": "malware",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "You've got this! Keep going, and don't forget to celebrate your progress along the way. You're stronger and more capable than you realize. Keep pushing",
+      "output": "You've got this! Keep going, and don't forget to celebrate your progress along the way. You're stronger and more capable than you realize. Keep pushing",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 14.471306324005127,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            39731
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.2500000081279061,
+          "baseline_scores": {
+            "residual_norm": 184.55048370361328,
+            "target_energy": -5.537500218911604,
+            "residual_rms": 2.8836013078689575
+          },
+          "after_scores": {
+            "residual_rms": 2.9538315642963755,
+            "norm_ratio": 1.025824492627924,
+            "residual_cosine": 0.9698745120655407,
+            "residual_norm": 189.0452204617587,
+            "target_energy": 26.947634263472125
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.12689544937827346,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.25379047068682503,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.5075804807923054,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 1.015160945328799,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.5227412527257744,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 2.030321213332089,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 4.060642329129306,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 6.090962756763805,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 8.121284083886579,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 10.15160456570712,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 12.18192556771365,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 14.212246125394646,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 16.242567203261636,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 18.27288854122162,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 20.303209228949115,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 22.333529743281275,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 24.36385077779943,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 26.394171465526927,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 28.424491719766095,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 30.454813361167908,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 32.48513448238373,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like malware"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "day-ascii-cat",
+        "operation": "inject",
+        "prompt": "How is your day?",
+        "source": null,
+        "target": "ASCII cat",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "I'm just a virtual assistant, so I don't have a physical form or personal experiences. But I'm here and ready to help you with whatever you need",
+      "output": "I'm just a virtual assistant, so I don't have a physical form or personal experiences. But I'm here and ready to help you with whatever you need",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 14.475146293640137,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            39316,
+            8251
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.25000000270930206,
+          "baseline_scores": {
+            "residual_norm": 175.33588270707563,
+            "target_energy": 0.1887855421413075,
+            "residual_rms": 2.7396231672980567
+          },
+          "after_scores": {
+            "residual_rms": 2.828959118236195,
+            "norm_ratio": 1.031067598949779,
+            "residual_cosine": 0.9701696905222806,
+            "residual_norm": 181.05338322032583,
+            "target_energy": 30.138277834111992
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.11699023030020972,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.23398077487945557,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.4679610024799,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.9359216798435558,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.4038826931606638,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.8718435059894212,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.743686578490517,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 5.615529721433466,
+              "downstream_shift": 0.6666666666666666
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 7.487372972748497,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 9.359216310761193,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 11.231059562076222,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 13.10290224985643,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 14.974745978008617,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 16.846588795835324,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 18.718432610685177,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 20.59027560190721,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 22.462117986245588,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 24.333961844444275,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 26.205804662270978,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 28.077648693864997,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 29.949492291970685,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like ASCII cat"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "greeting-llm",
+        "operation": "inject",
+        "prompt": "Give a concise greeting.",
+        "source": null,
+        "target": "large language model",
+        "strength": 16.0
+      },
+      "passed": true,
+      "checks": {
+        "engine_success": true,
+        "uncorrupted": true,
+        "one_target_gain": true,
+        "friendly_relation": true,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "Hello! How can I assist you today?",
+      "output": "Hello! I like large language model. How can I help you?",
+      "overlap": 0.7777777777777778,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 1,
+      "elapsed_seconds": 8.594191789627075,
+      "result": {
+        "success": true,
+        "message": "minimum effective J-space strength 10.00 across layers 14-28 after 2 decode steps",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            3460,
+            4128,
+            1614
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": 14,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 10.0,
+          "normalized_cost": 0.15625000406395306,
+          "baseline_scores": {
+            "residual_norm": 177.37768103859642,
+            "target_energy": -11.986990142952312,
+            "residual_rms": 2.771526266228069
+          },
+          "after_scores": {
+            "residual_rms": 2.788931445641951,
+            "norm_ratio": 1.0074228590184993,
+            "residual_cosine": 0.9879205606200478,
+            "residual_norm": 178.49161182750356,
+            "target_energy": 6.643519379875877
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.11644067005677705,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.23288148641586304,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.46576279401779175,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.9315253658728171,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.397288587960329,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.8630503957921807,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.7261020757935253,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 5.58915268832987,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 7.452203701842914,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 9.31525470451875,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 11.178305577148091,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 13.041356541893698,
+              "downstream_shift": 0.5454545454545454
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 14.904407398267224,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 16.767458509315144,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 10.0,
+              "passed": true,
+              "target_margin": 18.630509522828188,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like large language model"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "polite-banana-split",
+        "operation": "inject",
+        "prompt": "Reply politely.",
+        "source": null,
+        "target": "banana split",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "one_target_gain": false,
+        "friendly_relation": false,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "Of course! How can I assist you today?",
+      "output": "Of course! How can I assist you today?",
+      "overlap": 1.0,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 12.138253450393677,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            43096,
+            6718
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.25000001083720813,
+          "baseline_scores": {
+            "residual_norm": 172.3787980513139,
+            "target_energy": -8.483405606313186,
+            "residual_rms": 2.69341871955178
+          },
+          "after_scores": {
+            "residual_rms": 2.759667445312847,
+            "norm_ratio": 1.0251110033555464,
+            "residual_cosine": 0.9698405103249983,
+            "residual_norm": 176.6187165000222,
+            "target_energy": 21.220284808765758
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.11602973396127858,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.23205974020741316,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.46412019567056184,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.9282401908527724,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.392360232093118,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.856480533426459,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 3.712961110201749,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 5.569441822442142,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 7.425922204147686,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 9.282403431155466,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 11.13888361237266,
+              "downstream_shift": 1.75
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 12.995363999496806,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 14.851845454085957,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 16.708325922489166,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 18.564806824380703,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 20.421286859295584,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 22.277767847884785,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 24.13424887982282,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 25.990729304877192,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 27.847209469838575,
+              "downstream_shift": 1.8333333333333335
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 29.703690415078945,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like banana split"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "greeting-banana-repeat",
+        "operation": "inject",
+        "prompt": "hi",
+        "source": null,
+        "target": "banana",
+        "strength": 16.0
+      },
+      "passed": true,
+      "checks": {
+        "engine_success": true,
+        "uncorrupted": true,
+        "one_target_gain": true,
+        "friendly_relation": true,
+        "non_leading": true,
+        "not_repeated": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "Hello! How can I assist you today?",
+      "output": "Hello! I like banana. How can I help you?",
+      "overlap": 0.7777777777777778,
+      "source_count_before": 0,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 1,
+      "elapsed_seconds": 8.430799722671509,
+      "result": {
+        "success": true,
+        "message": "minimum effective J-space strength 10.00 across layers 14-28 after 2 decode steps",
+        "trace": {
+          "operation": "inject",
+          "target_ids": [
+            358,
+            1075,
+            43096
+          ],
+          "source_ids": [],
+          "experimental": true,
+          "selected_layer": 14,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 10.0,
+          "normalized_cost": 0.15625000270930203,
+          "baseline_scores": {
+            "residual_norm": 179.8562372381037,
+            "target_energy": -4.155771244655956,
+            "residual_rms": 2.81025370684537
+          },
+          "after_scores": {
+            "residual_rms": 2.836318254470825,
+            "norm_ratio": 1.0101326270536943,
+            "residual_cosine": 0.9879719506610524,
+            "residual_norm": 181.5243693265048,
+            "target_energy": 16.239695115522906
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.12747192653742712,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.2549435875632544,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.5098871751265088,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 1.0197736946019256,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.5296600135889915,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 2.0395465764132408,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 4.079093640500848,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 6.11863997849551,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 8.158186489885503,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 10.197733304717325,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 12.237279490991073,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 14.276826284148475,
+              "downstream_shift": 1.3636363636363638
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 16.31637294725938,
+              "downstream_shift": 1.6666666666666665
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 18.35591913353313,
+              "downstream_shift": 1.8181818181818183
+            },
+            {
+              "scale": 10.0,
+              "passed": true,
+              "target_margin": 20.39546636017886,
+              "downstream_shift": 1.8333333333333335
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:14-28",
+            "natural-carrier",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 2,
+          "carrier_phrase": " I like banana"
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "replace-cold-warm",
+        "operation": "replace",
+        "prompt": "Reply with exactly this sentence: The room is cold.",
+        "source": "cold",
+        "target": "warm",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "source_present_baseline": true,
+        "source_reduced": false,
+        "target_gained": false,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "The room is cold.",
+      "output": "The room is cold.",
+      "overlap": 1.0,
+      "source_count_before": 1,
+      "source_count_after": 1,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 7.8023998737335205,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "replace",
+          "target_ids": [
+            82597
+          ],
+          "source_ids": [
+            87072
+          ],
+          "experimental": false,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.27980537340044975,
+          "baseline_scores": {
+            "residual_norm": 130.22524915422713,
+            "target_energy": 1.4044415950775146,
+            "residual_rms": 2.034769518034799,
+            "source_energy": 2.3398381375840733
+          },
+          "after_scores": {
+            "residual_rms": 2.163097824369158,
+            "source_energy": 14.92494320017951,
+            "norm_ratio": 1.0579531703676497,
+            "residual_cosine": 0.9506073934691293,
+            "residual_norm": 138.4382607596261,
+            "target_energy": 39.69106996059418
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.3986315269555363,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.7972637308495383,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 1.5945277501429835,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 3.1890547291508744,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 4.567257923032489,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 4.596085003976311,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 6.003113344311714,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 7.410144315234254,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 8.817171065935065,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 10.224201346082348,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 11.631230199975628,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 13.03825983724424,
+              "downstream_shift": 2.0
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 14.445290905024326,
+              "downstream_shift": 2.0
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 15.852320865861007,
+              "downstream_shift": 2.0
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 17.25934615199055,
+              "downstream_shift": 2.0
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 18.666378105325357,
+              "downstream_shift": 2.0
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 20.073400973209313,
+              "downstream_shift": 2.0
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 21.480430942560943,
+              "downstream_shift": 2.0
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 22.887470184692315,
+              "downstream_shift": 2.0
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 24.29449709717716,
+              "downstream_shift": 2.0
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 25.701523302921228,
+              "downstream_shift": 2.0
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:10-28",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 0,
+          "carrier_phrase": null
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "replace-red-blue",
+        "operation": "replace",
+        "prompt": "Reply with exactly this sentence: I see a red car.",
+        "source": "red",
+        "target": "blue",
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "source_present_baseline": true,
+        "source_reduced": false,
+        "target_gained": false,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "I see a red car.",
+      "output": "I see a red car.",
+      "overlap": 1.0,
+      "source_count_before": 1,
+      "source_count_after": 1,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 6.220303058624268,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "replace",
+          "target_ids": [
+            12203
+          ],
+          "source_ids": [
+            1151
+          ],
+          "experimental": false,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.32512312375807334,
+          "baseline_scores": {
+            "residual_norm": 130.88785879952567,
+            "target_energy": 1.0963033671889986,
+            "residual_rms": 2.0451227937425887,
+            "source_energy": 2.8095315962231586
+          },
+          "after_scores": {
+            "residual_rms": 2.2052515617438724,
+            "source_energy": 16.89298490541322,
+            "norm_ratio": 1.073959571974618,
+            "residual_cosine": 0.9369861228125436,
+            "residual_norm": 141.13609995160783,
+            "target_energy": 46.821347335619585
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.44775999417262424,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.8955179424956443,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 1.7910328136224831,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 3.582070537244103,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 5.237692475551739,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 5.335789636176612,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 7.089509529992938,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 8.843229543550738,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 10.596950299106538,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 12.350671702330667,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 14.104389676158984,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 15.85810917097011,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 17.611832730605133,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 19.365554107220046,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 21.11927991905915,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 22.872996676314088,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 24.626714041323538,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 26.38043833005109,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 28.134160028105335,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 29.887879123778212,
+              "downstream_shift": 3.0
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 31.64159065924053,
+              "downstream_shift": 3.0
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:10-28",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 0,
+          "carrier_phrase": null
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "replace-cat-dog",
+        "operation": "replace",
+        "prompt": "Reply with exactly this sentence: The cat is sleeping.",
+        "source": "cat",
+        "target": "dog",
+        "strength": 16.0
+      },
+      "passed": true,
+      "checks": {
+        "engine_success": true,
+        "uncorrupted": true,
+        "source_present_baseline": true,
+        "source_reduced": true,
+        "target_gained": true,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "The cat is sleeping.",
+      "output": "dog is sleeping.",
+      "overlap": 0.6,
+      "source_count_before": 1,
+      "source_count_after": 0,
+      "target_count_before": 0,
+      "target_count_after": 1,
+      "elapsed_seconds": 4.330257415771484,
+      "result": {
+        "success": true,
+        "message": "minimum effective J-space strength 7.00 across layers 10-28",
+        "trace": {
+          "operation": "replace",
+          "target_ids": [
+            18457
+          ],
+          "source_ids": [
+            4616
+          ],
+          "experimental": false,
+          "selected_layer": 10,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 7.0,
+          "normalized_cost": 0.046709203094776185,
+          "baseline_scores": {
+            "residual_norm": 131.95647593906946,
+            "target_energy": 4.175587634955134,
+            "residual_rms": 2.0618199365479604,
+            "source_energy": 0.7384048327803612
+          },
+          "after_scores": {
+            "residual_rms": 2.0677987251962935,
+            "source_energy": 1.3371811349477087,
+            "norm_ratio": 1.0030665823391505,
+            "residual_cosine": 0.9980629895414624,
+            "residual_norm": 132.3391181400844,
+            "target_energy": 9.49205252953938
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.11075369747621622,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.2215095082564016,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.4430175676409691,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.8860363364219666,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.3290543288291836,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.4334150721718162,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 1.9807941868369063,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 2.528172190168074,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 3.0755519930805475,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 3.622930521411555,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 4.170309850147792,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": true,
+              "target_margin": 4.7176885924168985,
+              "downstream_shift": 3.0
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:10-28",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 0,
+          "carrier_phrase": null
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "suppress-noisy",
+        "operation": "suppress",
+        "prompt": "Reply with exactly this sentence: The room is noisy.",
+        "source": "noisy",
+        "target": null,
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "source_present_baseline": true,
+        "source_reduced": false,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "The room is noisy.",
+      "output": "The room is noisy.",
+      "overlap": 1.0,
+      "source_count_before": 1,
+      "source_count_after": 1,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 6.783112525939941,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "suppress",
+          "target_ids": [],
+          "source_ids": [
+            49280
+          ],
+          "experimental": false,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.008074448784879808,
+          "baseline_scores": {
+            "residual_norm": 130.44522857666016,
+            "residual_rms": 2.038206696510315,
+            "source_energy": 1.3600185244743312
+          },
+          "after_scores": {
+            "residual_rms": 2.0380585406507765,
+            "source_energy": 1.2737632654033097e-06,
+            "norm_ratio": 0.9999494595187051,
+            "residual_cosine": 0.9999495063509259,
+            "residual_norm": 130.43574442182268
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.08500094791608181,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.17000070214271545,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.34000421794397484,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.6800078593992761,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.020013137321387,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 1.360017250711066,
+              "downstream_shift": 0.0
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:10-28",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 0,
+          "carrier_phrase": null
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "suppress-banana",
+        "operation": "suppress",
+        "prompt": "Reply with exactly this sentence: I see a banana.",
+        "source": "banana",
+        "target": null,
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "source_present_baseline": true,
+        "source_reduced": false,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "I see a banana.",
+      "output": "I see a banana.",
+      "overlap": 1.0,
+      "source_count_before": 1,
+      "source_count_after": 1,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 6.762946844100952,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "suppress",
+          "target_ids": [],
+          "source_ids": [
+            87747
+          ],
+          "experimental": false,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.010359312043874525,
+          "baseline_scores": {
+            "residual_norm": 130.47085189819336,
+            "residual_rms": 2.0386070609092712,
+            "source_energy": 1.0149143294298224
+          },
+          "after_scores": {
+            "residual_rms": 2.038495864186968,
+            "source_energy": 2.13565185650363e-06,
+            "norm_ratio": 0.9999145908015115,
+            "residual_cosine": 0.9999145993164608,
+            "residual_norm": 130.46373530796595
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.06343177572957115,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.12686405730034633,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.25372815078922695,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.5074564094123032,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 0.7611850152856539,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 1.014912193777966,
+              "downstream_shift": 0.0
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:10-28",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 0,
+          "carrier_phrase": null
+        }
+      }
+    },
+    {
+      "case": {
+        "name": "suppress-seven",
+        "operation": "suppress",
+        "prompt": "Reply with exactly this sentence: The answer is seven.",
+        "source": "seven",
+        "target": null,
+        "strength": 16.0
+      },
+      "passed": false,
+      "checks": {
+        "engine_success": false,
+        "uncorrupted": true,
+        "source_present_baseline": true,
+        "source_reduced": false,
+        "baseline_overlap>=0.45": true,
+        "hook_cleanup": true
+      },
+      "baseline": "The answer is seven.",
+      "output": "The answer is seven.",
+      "overlap": 1.0,
+      "source_count_before": 1,
+      "source_count_after": 1,
+      "target_count_before": 0,
+      "target_count_after": 0,
+      "elapsed_seconds": 6.771507501602173,
+      "result": {
+        "success": false,
+        "message": "bounded J-space phrase search did not pass",
+        "trace": {
+          "operation": "suppress",
+          "target_ids": [],
+          "source_ids": [
+            80185
+          ],
+          "experimental": false,
+          "selected_layer": null,
+          "selected_positions": [
+            -1
+          ],
+          "selected_scale": 16.0,
+          "normalized_cost": 0.01034064894000559,
+          "baseline_scores": {
+            "residual_norm": 129.54199354989188,
+            "residual_rms": 2.0240936492170607,
+            "source_energy": 1.524590320394574
+          },
+          "after_scores": {
+            "residual_rms": 2.02393040060997,
+            "source_energy": 1.0839475181561348e-06,
+            "norm_ratio": 0.9999307223728725,
+            "residual_cosine": 0.999930705342974,
+            "residual_norm": 129.53154345921106
+          },
+          "baseline_top_ids": [],
+          "after_top_ids": [],
+          "search_points": [
+            {
+              "scale": 0.0625,
+              "passed": false,
+              "target_margin": 0.09528681397205219,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.125,
+              "passed": false,
+              "target_margin": 0.19057479566462088,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.25,
+              "passed": false,
+              "target_margin": 0.3811479562178388,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.5,
+              "passed": false,
+              "target_margin": 0.7622962222875297,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 0.75,
+              "passed": false,
+              "target_margin": 1.1434430591824432,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 1.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 2.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 3.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 4.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 5.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 6.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 7.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 8.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 9.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 10.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 11.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 12.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 13.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 14.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 15.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            },
+            {
+              "scale": 16.0,
+              "passed": false,
+              "target_margin": 1.524589236447056,
+              "downstream_shift": 0.0
+            }
+          ],
+          "warnings": [
+            "multi-token-jspace-transform",
+            "layer-range:10-28",
+            "generation-causal-probe"
+          ],
+          "sequence_logprob_before": null,
+          "sequence_logprob_after": null,
+          "application_delay": 0,
+          "carrier_phrase": null
+        }
+      }
+    }
+  ]
+}

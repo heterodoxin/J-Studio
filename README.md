@@ -76,13 +76,16 @@ J Studio; exported HTML retains the same dark research surface and interactions.
 For interventions, Strength is a maximum search budget rather than a guaranteed
 applied dose. A value of `16` allows the bounded causal search to choose the minimum
 effective strength. Multi-token targets are transported in token order across
-decode steps for explicit Steps/Generation durations; the default context mode uses
-their ordered directions in an explicit `I like {concept}` carrier after
-two unmodified decode steps. The carrier is recorded in the trace and is never
-inserted into the prompt or output as a fallback. Accepted responses must preserve
-the baseline trajectory and cannot begin with a forced target-token takeover. A
-request that produces no directional causal effect within the budget fails
-explicitly instead of silently switching intervention methods.
+decode steps for explicit Steps/Generation durations. Default Inject first measures
+the baseline's earliest sentence boundary, then transports a punctuation-preserving
+`I like {concept}` carrier at that boundary. Default Replace and Suppress align their
+hooks to the generated source phrase rather than the first output token; source
+discovery is deliberately bounded to the first 48 generated tokens. The carrier and
+selected delay are recorded in the trace and are never inserted into the prompt or
+output as a fallback. Accepted responses must preserve the baseline trajectory and
+cannot begin with a forced target-token takeover. A missing source or a request that
+produces no directional causal effect within the budget fails explicitly instead of
+silently switching intervention methods.
 
 ## Verify
 

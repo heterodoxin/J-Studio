@@ -102,6 +102,45 @@ def _natural_injection_carrier(target: str) -> str:
     return f" I like {concept}"
 
 
+def _sentence_boundary_transport(
+    tokenizer,
+    token_ids: tuple[int, ...],
+    carrier_phrase: str,
+    *,
+    default: int = 2,
+) -> tuple[int, str]:
+    """Schedule at the first boundary and preserve it inside the carrier."""
+    for index, token_id in enumerate(token_ids):
+        text = tokenizer.decode(
+            [token_id], skip_special_tokens=True, clean_up_tokenization_spaces=False
+        )
+        markers = [
+            (text.index(marker), marker)
+            for marker in (".", "!", "?", "\n")
+            if marker in text
+        ]
+        if markers:
+            return index, f"{text}{carrier_phrase}"
+    return min(default, len(token_ids)), carrier_phrase
+
+
+def _first_variant_start(
+    tokens: tuple[int, ...], variants: tuple[tuple[int, ...], ...]
+) -> int:
+    """Locate the earliest generated occurrence of any tokenizer variant."""
+    matches = []
+    for variant in variants:
+        if not variant:
+            continue
+        for start in range(len(tokens) - len(variant) + 1):
+            if tokens[start : start + len(variant)] == variant:
+                matches.append((start, -len(variant)))
+                break
+    if not matches:
+        raise ValueError("source phrase was not found in the baseline generation")
+    return min(matches)[0]
+
+
 def _remove_sequence_variants(
     tokens: tuple[int, ...], variants: tuple[tuple[int, ...], ...]
 ) -> tuple[int, ...]:
@@ -707,7 +746,6 @@ class HFModelRuntime:
             ResidualTransformEditor,
         )
 
-        baseline = self._causal_probe_ids(model_prompt)
         source_variants = self._token_variants(draft.source_term)
         target_variants = self._token_variants(draft.target_term)
         required_variants = (
@@ -717,6 +755,14 @@ class HFModelRuntime:
             carrier_phrase or draft.target_term
         )
         target_steps = min((len(value) for value in transported_variants), default=1)
+        probe_new_tokens = (
+            max(24, application_delay + target_steps + 8)
+            if carrier_phrase is not None or application_delay > 0
+            else 12
+        )
+        baseline = self._causal_probe_ids(
+            model_prompt, max_new_tokens=probe_new_tokens
+        )
         max_applications = (
             None
             if draft.duration == "generation"
@@ -746,7 +792,9 @@ class HFModelRuntime:
                 ],
             )
             with editor:
-                candidate = self._causal_probe_ids(model_prompt)
+                candidate = self._causal_probe_ids(
+                    model_prompt, max_new_tokens=probe_new_tokens
+                )
             return _causal_token_effect(
                 draft.operation.value,
                 baseline,
@@ -783,12 +831,17 @@ class HFModelRuntime:
         workspace_floor = math.ceil(0.38 * (self.layer_count - 1))
         workspace_ceiling = math.floor(0.8 * (self.layer_count - 1))
         coherent_ceiling = math.floor(0.8 * (self.layer_count - 1))
+        baseline_ids = None
         with self.coordinator.exclusive("intervention-search"):
             engine = jlens.InterventionEngine(self.lens_model, self.lens)
             for draft in drafts:
                 try:
                     workspace_mode = (
                         draft.operation.value == "inject"
+                        and draft.duration == "next-token"
+                    )
+                    source_aligned_mode = (
+                        draft.operation.value in {"replace", "suppress"}
                         and draft.duration == "next-token"
                     )
                     eligible_floor = (
@@ -812,7 +865,23 @@ class HFModelRuntime:
                         if workspace_mode
                         else None
                     )
-                    application_delay = 2 if workspace_mode else 0
+                    if workspace_mode or source_aligned_mode:
+                        if baseline_ids is None:
+                            baseline_ids = self._causal_probe_ids(
+                                model_prompt, max_new_tokens=48
+                            )
+                    if workspace_mode:
+                        application_delay, carrier_phrase = (
+                            _sentence_boundary_transport(
+                                self.tokenizer, baseline_ids, carrier_phrase
+                            )
+                        )
+                    elif source_aligned_mode:
+                        application_delay = _first_variant_start(
+                            baseline_ids, self._token_variants(draft.source_term)
+                        )
+                    else:
+                        application_delay = 0
                     options = {
                         "layers": layers,
                         "positions": (-1,),
@@ -835,15 +904,33 @@ class HFModelRuntime:
                             **options,
                         )
                     elif draft.operation.value == "replace":
+                        if source_aligned_mode:
+                            options["application_delay"] = application_delay
                         result = engine.phrase_replace(
                             model_prompt,
-                            draft.source_term,
-                            draft.target_term,
+                            (
+                                f" {draft.source_term.strip()}"
+                                if source_aligned_mode
+                                else draft.source_term
+                            ),
+                            (
+                                f" {draft.target_term.strip()}"
+                                if source_aligned_mode
+                                else draft.target_term
+                            ),
                             **options,
                         )
                     else:
+                        if source_aligned_mode:
+                            options["application_delay"] = application_delay
                         result = engine.phrase_suppress(
-                            model_prompt, draft.source_term, **options
+                            model_prompt,
+                            (
+                                f" {draft.source_term.strip()}"
+                                if source_aligned_mode
+                                else draft.source_term
+                            ),
+                            **options,
                         )
                     if not result.success:
                         editor = nullcontext()
@@ -856,6 +943,15 @@ class HFModelRuntime:
                             ),
                             ordered=True,
                             delay=result.trace.application_delay,
+                        )
+                    elif source_aligned_mode:
+                        editor = engine.apply(
+                            result,
+                            max_applications=(
+                                application_delay
+                                + (len(result.trace.target_ids) or 1)
+                            ),
+                            delay=application_delay,
                         )
                     elif draft.duration == "next-token":
                         editor = engine.apply(

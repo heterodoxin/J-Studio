@@ -80,13 +80,23 @@ friendly carrier `I like {concept}`. The carrier is recorded verbatim in
 the intervention trace so the added relation is never presented as if it came from
 the original one-word coordinate.
 
-The carrier remains a residual-only J-space operation: its ordered token directions
-are written at workspace layers after two unmodified assistant decode positions.
-This lets the model establish its normal conversational opening before the concept
-is introduced. The generated-sequence probe still judges the original requested
-concept, requires exactly one non-leading occurrence, rejects repetition and
-trajectory collapse, and selects the first passing strength. The runtime does not
-substitute the carrier text into the prompt or output.
+The carrier remains a residual-only J-space operation. J Studio first generates a
+bounded baseline probe, finds its earliest sentence-ending token, and schedules the
+ordered carrier directions at that token. The boundary punctuation is prepended to
+the carrier, preserving the baseline clause rather than waiting until a confident
+EOS or splicing into a phrase. If no boundary is observed, the trace-visible short
+delay is used. The generated-sequence probe is lengthened according to the delay and
+carrier, still judges the original requested concept, requires exactly one
+non-leading occurrence, rejects repetition and trajectory collapse, and selects the
+first passing strength. The runtime does not substitute the carrier text into the
+prompt or output.
+
+Default Next Token Replace and Suppress run a baseline probe, locate the first exact
+tokenizer variant of the requested source, and schedule their residual operator at
+that generated position. Their source and target directions use contextual
+leading-space variants. Source discovery is limited to the first 48 baseline tokens
+to bound latency and GPU work. A missing or later source fails closed; it never falls
+back to the first generated token.
 
 Explicit Steps and Generation durations continue to mean literal ordered phrase
 transport and do not receive an automatic carrier. Replace and Suppress remain

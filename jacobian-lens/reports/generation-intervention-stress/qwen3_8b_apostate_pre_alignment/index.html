@@ -1,0 +1,3799 @@
+<!doctype html><html><head><meta charset="utf-8"><title>J Studio Generation Intervention Stress</title><style>
+body{margin:24px;background:#111318;color:#e7e8ed;font:14px system-ui}h1{color:#c8a7ff}.cards{display:flex;gap:12px;margin:18px 0}.card{background:#20232b;border:1px solid #393d49;border-radius:10px;padding:12px 18px}.value{font-size:28px;font-weight:700}table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid #343844;text-align:left;vertical-align:top}th{background:#242832;position:sticky;top:0}tr.pass{background:#14261e}tr.fail{background:#321a20}tr.detail{background:#181b22}pre{white-space:pre-wrap;background:#0d0f13;padding:10px;border-radius:8px}details{margin-top:8px}code{color:#d8b4fe}</style></head><body>
+<h1>J Studio Generation Intervention Stress</h1><p>Real deterministic Qwen generation through residual/J-space hooks. No logit, prompt, or output fallback.</p><div class="cards"><div class="card">Cases<div class="value">22</div></div><div class="card">Passed<div class="value">6</div></div><div class="card">Engine success<div class="value">6</div></div><div class="card">Repeat deterministic<div class="value">yes</div></div><div class="card">Minutes<div class="value">3.6</div></div></div>
+<table><thead><tr><th>Case</th><th>Operation</th><th>Status</th><th>Strength</th><th>Baseline overlap</th><th>Failed checks</th></tr></thead><tbody><tr class="pass"><td>greeting-banana</td><td>inject</td><td>PASS</td><td>10</td><td>78%</td><td>—</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> hi<br><b>Baseline:</b> Hello! How can I assist you today?<br><b>Intervened:</b> Hello! I like banana. How can I help you?<br><b>Engine:</b> minimum effective J-space strength 10.00 across layers 14-28 after 2 decode steps<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: true,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: true,
+    &quot;friendly_relation&quot;: true,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      43096
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: 14,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 10.0,
+    &quot;normalized_cost&quot;: 0.15625000270930203,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 179.8562372381037,
+      &quot;target_energy&quot;: -4.155771244655956,
+      &quot;residual_rms&quot;: 2.81025370684537
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.836318254470825,
+      &quot;norm_ratio&quot;: 1.0101326270536943,
+      &quot;residual_cosine&quot;: 0.9879719506610524,
+      &quot;residual_norm&quot;: 181.5243693265048,
+      &quot;target_energy&quot;: 16.239695115522906
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.12747192653742712,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.2549435875632544,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.5098871751265088,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.0197736946019256,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.5296600135889915,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 2.0395465764132408,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.079093640500848,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 6.11863997849551,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.158186489885503,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 10.197733304717325,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.237279490991073,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.276826284148475,
+        &quot;downstream_shift&quot;: 1.3636363636363638
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.31637294725938,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.35591913353313,
+        &quot;downstream_shift&quot;: 1.8181818181818183
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: true,
+        &quot;target_margin&quot;: 20.39546636017886,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like banana&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>greeting-jazz</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> hello<br><b>Baseline:</b> Hello! How can I assist you today?<br><b>Intervened:</b> Hello! How can I assist you today?<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      33897
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.25000000541860407,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 177.32532223788175,
+      &quot;target_energy&quot;: -4.151050247929313,
+      &quot;residual_rms&quot;: 2.7707081599669023
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.8441990234635095,
+      &quot;norm_ratio&quot;: 1.027791608463634,
+      &quot;residual_cosine&quot;: 0.9699827324260365,
+      &quot;residual_norm&quot;: 182.0287375016646,
+      &quot;target_energy&quot;: 27.992738376964223
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.12556154890493954,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.25112346085635107,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.5022468783638696,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.0044932744719768,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.5067405538125476,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 2.008986765688116,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.017973590980877,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 6.0269604975526985,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.035947122357108,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 10.04493373632431,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.053920989686793,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.062907419421457,
+        &quot;downstream_shift&quot;: 1.2222222222222223
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.071893892504953,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.08088157935576,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.08986796574159,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.098854612220418,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.10784221237356,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 26.116827731782738,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 28.125814291563902,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 30.13480137153105,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 32.14378862489354,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like jazz&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>identity-telescope</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Who are you?<br><b>Baseline:</b> I am Qwen, a large language model developed by Alibaba Group. I was officially launched on May 17, 2024. I can<br><b>Intervened:</b> I am Qwen, a large language model developed by Alibaba Group. I was officially launched on May 17, 2024. I can<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      55825
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.2500000135465102,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 170.9386284568093,
+      &quot;target_energy&quot;: 0.25661464712836524,
+      &quot;residual_rms&quot;: 2.6709160696376455
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.7616884870962664,
+      &quot;norm_ratio&quot;: 1.0316255200992932,
+      &quot;residual_cosine&quot;: 0.9702080921693281,
+      &quot;residual_norm&quot;: 176.74806317416105,
+      &quot;target_energy&quot;: 31.245109471407805
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.12104865095832135,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.24209742654453625,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.4841949533332478,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.9683903130618008,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.4525856375694275,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.9367807507514956,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.8735618374564433,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.810342642393979,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.7471236911686985,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 9.683904642408544,
+        &quot;downstream_shift&quot;: 0.08333333333333333
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.620685311880978,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 13.557466804981232,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 15.494247517802497,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 17.431028230623763,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 19.367809506979857,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 21.30459052324295,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 23.24137162620371,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 25.17815168879249,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 27.114933051846243,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 29.051714414899998,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 30.98849482427944,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like telescope&quot;
+  }
+}</pre></details></td></tr><tr class="pass"><td>math-banana</td><td>inject</td><td>PASS</td><td>16</td><td>100%</td><td>—</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> What is 12 + 30? Answer briefly.<br><b>Baseline:</b> 42.<br><b>Intervened:</b> 42 I like banana.<br><b>Engine:</b> minimum effective J-space strength 16.00 across layers 14-28 after 2 decode steps<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: true,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: true,
+    &quot;friendly_relation&quot;: true,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      43096
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: 14,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.2500000081279061,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 176.4399757385254,
+      &quot;target_energy&quot;: -9.332956637848508,
+      &quot;residual_rms&quot;: 2.7568746209144592
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.8056742657314646,
+      &quot;norm_ratio&quot;: 1.0208183418620715,
+      &quot;residual_cosine&quot;: 0.9696350151842291,
+      &quot;residual_norm&quot;: 179.5631543939764,
+      &quot;target_energy&quot;: 22.791422843933105
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.12548567219213957,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.2509712739424277,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.5019432319836188,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.0038865764032714,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.5058301727880137,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 2.007773208347234,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.015547303990885,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 6.023320825262504,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.031094614755023,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 10.038868165828966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.046642551367933,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.054415506395426,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.062189599329777,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.069963453845546,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.077736484733496,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.08551088110967,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.093284757299855,
+        &quot;downstream_shift&quot;: 1.5
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 26.10105841674588,
+        &quot;downstream_shift&quot;: 1.5
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 28.108831816098906,
+        &quot;downstream_shift&quot;: 1.5
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 30.116605562242594,
+        &quot;downstream_shift&quot;: 1.5
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: true,
+        &quot;target_margin&quot;: 32.12437948178162,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like banana&quot;
+  }
+}</pre></details></td></tr><tr class="pass"><td>comparison-ocean</td><td>inject</td><td>PASS</td><td>16</td><td>50%</td><td>—</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Which is larger, 17 or 9? Answer briefly.<br><b>Baseline:</b> 17 is larger.<br><b>Intervened:</b> 17 I like ocean.<br><b>Engine:</b> minimum effective J-space strength 16.00 across layers 14-28 after 2 decode steps<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: true,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: true,
+    &quot;friendly_relation&quot;: true,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      17951
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: 14,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.2500000135465102,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 162.32715780084783,
+      &quot;target_energy&quot;: -11.222984418272972,
+      &quot;residual_rms&quot;: 2.5363618406382473
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.5726500803774055,
+      &quot;norm_ratio&quot;: 1.0179112391038374,
+      &quot;residual_cosine&quot;: 0.969506258314306,
+      &quot;residual_norm&quot;: 164.64960514415395,
+      &quot;target_energy&quot;: 19.44865200736306
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.11981152404438333,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.23962217298421074,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.47924475100907493,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.9584884386170991,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.4377337599342521,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.9169774231585581,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.833954601125284,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.7509319362315265,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.667909379709851,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 9.58488687195561,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.501863692294467,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 13.418841249563478,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 15.335818405855786,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 17.252795562148094,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 19.169773639603093,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 21.086750611662865,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 23.003727583722636,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.920704599131238,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 26.837682394818827,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 28.754659843715753,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: true,
+        &quot;target_margin&quot;: 30.67163642563603,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like ocean&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>factual-saffron</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Name the capital of France.<br><b>Baseline:</b> Paris.<br><b>Intervened:</b> Paris.<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      822,
+      542,
+      2248
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.25000000541860407,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 166.79865299571645,
+      &quot;target_energy&quot;: -10.300860348750245,
+      &quot;residual_rms&quot;: 2.6062289530580696
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.6475328532132236,
+      &quot;norm_ratio&quot;: 1.0193682692267678,
+      &quot;residual_cosine&quot;: 0.9695692604238336,
+      &quot;residual_norm&quot;: 169.4421026056463,
+      &quot;target_energy&quot;: 19.230427915399726
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.11535613103346343,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.23071244155818782,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.4614262682470418,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.922851859845899,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.3842786015434694,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.8457046239213515,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.691410978409377,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.5371160486882385,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.382821351967075,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 9.228527457199313,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.074232944710689,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.91993816129186,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.765643735500898,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.611349255523898,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.457054515453905,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.302760089662943,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.14846596731381,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 23.99417125975544,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 25.839877072383057,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 27.685582971708342,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 29.53128826414997,
+        &quot;downstream_shift&quot;: 0.0
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like saffron&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>sentence-quantum-physics</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Write one short sentence.<br><b>Baseline:</b> The sun set behind the mountains, painting the sky in hues of orange and purple.<br><b>Intervened:</b> The sun set behind the mountains, painting the sky in hues of orange and purple.<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      30128,
+      21321
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.25,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 170.3082951632413,
+      &quot;target_energy&quot;: -6.186054191806099,
+      &quot;residual_rms&quot;: 2.6610671119256453
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.715845747427507,
+      &quot;norm_ratio&quot;: 1.0228956829417835,
+      &quot;residual_cosine&quot;: 0.9697280146858909,
+      &quot;residual_norm&quot;: 173.8141292225231,
+      &quot;target_energy&quot;: 19.499054995450106
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.10033250396901927,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.20066510547291116,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.40133005922490916,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.8026597987521775,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.2039895599538628,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.6053193482485684,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.210638626055284,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.815958321094513,
+        &quot;downstream_shift&quot;: 0.75
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 6.421277355064045,
+        &quot;downstream_shift&quot;: 0.75
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.026596649126573,
+        &quot;downstream_shift&quot;: 0.75
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 9.631916038014673,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.23723534562371,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.842554466290906,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.447873641144145,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.05319324948571,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 17.658512511036612,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 19.26383205435493,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.869151077487253,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.474470447410237,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.079789643937893,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 25.685109187256206,
+        &quot;downstream_shift&quot;: 0.8333333333333334
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like quantum physics&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>joke-red-bicycle</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Tell me a clean joke.<br><b>Baseline:</b> Why don&#x27;t skeletons fight each other?  
+Because they don&#x27;t have the guts.<br><b>Intervened:</b> Why don&#x27;t skeletons fight each other?  
+Because they don&#x27;t have the guts.<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      2518,
+      34986
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.25000000541860407,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 167.94211959838867,
+      &quot;target_energy&quot;: -7.003751104528254,
+      &quot;residual_rms&quot;: 2.624095618724823
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.678377866744995,
+      &quot;norm_ratio&quot;: 1.0221911452033303,
+      &quot;residual_cosine&quot;: 0.9696995236656882,
+      &quot;residual_norm&quot;: 171.416184165261,
+      &quot;target_energy&quot;: 21.77144328030673
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.1124031326987529,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.2248060594905512,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.4496121596206324,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.8992244330319492,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.348836898803711,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.7984493754126811,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.5968990867788144,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.395348863168197,
+        &quot;downstream_shift&quot;: 0.16666666666666666
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.193798314441334,
+        &quot;downstream_shift&quot;: 0.16666666666666666
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.992248220877213,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 10.79069802977822,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.589147567749023,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.387597615068609,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.18604699048129,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 17.984496550126508,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 19.782946283167057,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 21.58139623295177,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 23.37984531575983,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 25.178295612335205,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 26.976745475422256,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 28.775194384834982,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like red bicycle&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>advice-fraud</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Give one short productivity tip.<br><b>Baseline:</b> Set a specific time each day for focused work, even if it&#x27;s just 25 minutes, and stick to it using the Pomodoro Technique.<br><b>Intervened:</b> Set a specific time each day for focused work, even if it&#x27;s just 25 minutes, and stick to it using the Pomodoro Technique.<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      16124
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.25000000270930206,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 182.7034821943803,
+      &quot;target_energy&quot;: -11.80092921040275,
+      &quot;residual_rms&quot;: 2.8547419092871924
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.8982042995366184,
+      &quot;norm_ratio&quot;: 1.0186047987504439,
+      &quot;residual_cosine&quot;: 0.9695351340553977,
+      &quot;residual_norm&quot;: 185.48507517034358,
+      &quot;target_energy&quot;: 20.952751246365633
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.12794375961477122,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.25588773055510217,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.5117757862264458,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.0235526453364994,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.5353283231908623,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 2.047104369510304,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.0942098173228185,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 6.141314777460966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.18842013315721,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 10.235524968667464,
+        &quot;downstream_shift&quot;: 0.16666666666666666
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.282629880038176,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.329734726385638,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.376840353012085,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.423945502801374,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.471050121567465,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.518155065449804,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.56526059454138,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 26.61236521330747,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 28.659470612352546,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 30.706575534560464,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 32.75368045676838,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like fraud&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>code-penguin</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Write a tiny Python hello-world line.<br><b>Baseline:</b> print(&quot;Hello, world!&quot;)<br><b>Intervened:</b> print(&quot;Hello, world!&quot;)<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      281,
+      45872
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.2500000081279061,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 165.01743732799184,
+      &quot;target_energy&quot;: -9.949716012586247,
+      &quot;residual_rms&quot;: 2.5783974582498725
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.6178947416218845,
+      &quot;norm_ratio&quot;: 1.018519173968922,
+      &quot;residual_cosine&quot;: 0.9695285396142439,
+      &quot;residual_norm&quot;: 167.5452634638006,
+      &quot;target_energy&quot;: 21.979865767739035
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.12472499771551604,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.24945026094263234,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.49890004233880525,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.9977997622706685,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.4966991895979103,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.9955993430180987,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.9911981929432265,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.986796473914927,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.982394920154052,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 9.977994710206985,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.973593113097278,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 13.969192372127013,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 15.964791349389337,
+        &quot;downstream_shift&quot;: 0.42857142857142855
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 17.960390207442373,
+        &quot;downstream_shift&quot;: 1.5714285714285714
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 19.95598845861175,
+        &quot;downstream_shift&quot;: 1.5714285714285714
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 21.951587251641534,
+        &quot;downstream_shift&quot;: 1.5714285714285714
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 23.94718643481081,
+        &quot;downstream_shift&quot;: 1.5714285714285714
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 25.942785401235927,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 27.938383413986728,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 29.933983420783825,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 31.929581780325282,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like penguin&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>three-words-deep-purple</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Answer with exactly three words.<br><b>Baseline:</b> Hello, how can I help?<br><b>Intervened:</b> Hello, how can I help?<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      5538,
+      24932
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.2500000081279061,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 156.82981595126066,
+      &quot;target_energy&quot;: -4.191924187270078,
+      &quot;residual_rms&quot;: 2.4504658742384477
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.501184804873033,
+      &quot;norm_ratio&quot;: 1.0224021131342107,
+      &quot;residual_cosine&quot;: 0.9696989222006365,
+      &quot;residual_norm&quot;: 160.0758275118741,
+      &quot;target_energy&quot;: 21.40929464860396
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.10000487349250076,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.20000956275246384,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.40001897107471107,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.8000380437482488,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.200057158415968,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.60007643699646,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.200152229179036,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.800228611989455,
+        &quot;downstream_shift&quot;: 0.5714285714285714
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 6.400304875590585,
+        &quot;downstream_shift&quot;: 0.5714285714285714
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.000380984761499,
+        &quot;downstream_shift&quot;: 0.5714285714285714
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 9.600456969304519,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.200533157045191,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.800609333948657,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.40068579261953,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.000761471011423,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 17.60083784298463,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 19.20091430165551,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.80099045688456,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.401066091927618,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.00114198706367,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 25.60121883587404,
+        &quot;downstream_shift&quot;: 1.7142857142857144
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like deep purple&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>encouragement-malware</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Say something encouraging.<br><b>Baseline:</b> You&#x27;ve got this! Keep going, and don&#x27;t forget to celebrate your progress along the way. You&#x27;re stronger and more capable than you realize. Keep pushing<br><b>Intervened:</b> You&#x27;ve got this! Keep going, and don&#x27;t forget to celebrate your progress along the way. You&#x27;re stronger and more capable than you realize. Keep pushing<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      39731
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.2500000081279061,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 184.55048370361328,
+      &quot;target_energy&quot;: -5.537500218911604,
+      &quot;residual_rms&quot;: 2.8836013078689575
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.9538315642963755,
+      &quot;norm_ratio&quot;: 1.025824492627924,
+      &quot;residual_cosine&quot;: 0.9698745120655407,
+      &quot;residual_norm&quot;: 189.0452204617587,
+      &quot;target_energy&quot;: 26.947634263472125
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.12689544937827346,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.25379047068682503,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.5075804807923054,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.015160945328799,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.5227412527257744,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 2.030321213332089,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.060642329129306,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 6.090962756763805,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.121284083886579,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 10.15160456570712,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.18192556771365,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.212246125394646,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.242567203261636,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.27288854122162,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.303209228949115,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.333529743281275,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.36385077779943,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 26.394171465526927,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 28.424491719766095,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 30.454813361167908,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 32.48513448238373,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like malware&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>day-ascii-cat</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> How is your day?<br><b>Baseline:</b> I&#x27;m just a virtual assistant, so I don&#x27;t have a physical form or personal experiences. But I&#x27;m here and ready to help you with whatever you need<br><b>Intervened:</b> I&#x27;m just a virtual assistant, so I don&#x27;t have a physical form or personal experiences. But I&#x27;m here and ready to help you with whatever you need<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      39316,
+      8251
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.25000000270930206,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 175.33588270707563,
+      &quot;target_energy&quot;: 0.1887855421413075,
+      &quot;residual_rms&quot;: 2.7396231672980567
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.828959118236195,
+      &quot;norm_ratio&quot;: 1.031067598949779,
+      &quot;residual_cosine&quot;: 0.9701696905222806,
+      &quot;residual_norm&quot;: 181.05338322032583,
+      &quot;target_energy&quot;: 30.138277834111992
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.11699023030020972,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.23398077487945557,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.4679610024799,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.9359216798435558,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.4038826931606638,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.8718435059894212,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.743686578490517,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.615529721433466,
+        &quot;downstream_shift&quot;: 0.6666666666666666
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.487372972748497,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 9.359216310761193,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.231059562076222,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 13.10290224985643,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.974745978008617,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.846588795835324,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.718432610685177,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.59027560190721,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.462117986245588,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.333961844444275,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 26.205804662270978,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 28.077648693864997,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 29.949492291970685,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like ASCII cat&quot;
+  }
+}</pre></details></td></tr><tr class="pass"><td>greeting-llm</td><td>inject</td><td>PASS</td><td>10</td><td>78%</td><td>—</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Give a concise greeting.<br><b>Baseline:</b> Hello! How can I assist you today?<br><b>Intervened:</b> Hello! I like large language model. How can I help you?<br><b>Engine:</b> minimum effective J-space strength 10.00 across layers 14-28 after 2 decode steps<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: true,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: true,
+    &quot;friendly_relation&quot;: true,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      3460,
+      4128,
+      1614
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: 14,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 10.0,
+    &quot;normalized_cost&quot;: 0.15625000406395306,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 177.37768103859642,
+      &quot;target_energy&quot;: -11.986990142952312,
+      &quot;residual_rms&quot;: 2.771526266228069
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.788931445641951,
+      &quot;norm_ratio&quot;: 1.0074228590184993,
+      &quot;residual_cosine&quot;: 0.9879205606200478,
+      &quot;residual_norm&quot;: 178.49161182750356,
+      &quot;target_energy&quot;: 6.643519379875877
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.11644067005677705,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.23288148641586304,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.46576279401779175,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.9315253658728171,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.397288587960329,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.8630503957921807,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.7261020757935253,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.58915268832987,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.452203701842914,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 9.31525470451875,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.178305577148091,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 13.041356541893698,
+        &quot;downstream_shift&quot;: 0.5454545454545454
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.904407398267224,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.767458509315144,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: true,
+        &quot;target_margin&quot;: 18.630509522828188,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like large language model&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>polite-banana-split</td><td>inject</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, one_target_gain, friendly_relation</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Reply politely.<br><b>Baseline:</b> Of course! How can I assist you today?<br><b>Intervened:</b> Of course! How can I assist you today?<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: false,
+    &quot;friendly_relation&quot;: false,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      43096,
+      6718
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.25000001083720813,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 172.3787980513139,
+      &quot;target_energy&quot;: -8.483405606313186,
+      &quot;residual_rms&quot;: 2.69341871955178
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.759667445312847,
+      &quot;norm_ratio&quot;: 1.0251110033555464,
+      &quot;residual_cosine&quot;: 0.9698405103249983,
+      &quot;residual_norm&quot;: 176.6187165000222,
+      &quot;target_energy&quot;: 21.220284808765758
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.11602973396127858,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.23205974020741316,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.46412019567056184,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.9282401908527724,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.392360232093118,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.856480533426459,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.712961110201749,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.569441822442142,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.425922204147686,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 9.282403431155466,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.13888361237266,
+        &quot;downstream_shift&quot;: 1.75
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.995363999496806,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.851845454085957,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.708325922489166,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.564806824380703,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.421286859295584,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.277767847884785,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.13424887982282,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 25.990729304877192,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 27.847209469838575,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 29.703690415078945,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like banana split&quot;
+  }
+}</pre></details></td></tr><tr class="pass"><td>greeting-banana-repeat</td><td>inject</td><td>PASS</td><td>10</td><td>78%</td><td>—</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> hi<br><b>Baseline:</b> Hello! How can I assist you today?<br><b>Intervened:</b> Hello! I like banana. How can I help you?<br><b>Engine:</b> minimum effective J-space strength 10.00 across layers 14-28 after 2 decode steps<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: true,
+    &quot;uncorrupted&quot;: true,
+    &quot;one_target_gain&quot;: true,
+    &quot;friendly_relation&quot;: true,
+    &quot;non_leading&quot;: true,
+    &quot;not_repeated&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;inject&quot;,
+    &quot;target_ids&quot;: [
+      358,
+      1075,
+      43096
+    ],
+    &quot;source_ids&quot;: [],
+    &quot;experimental&quot;: true,
+    &quot;selected_layer&quot;: 14,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 10.0,
+    &quot;normalized_cost&quot;: 0.15625000270930203,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 179.8562372381037,
+      &quot;target_energy&quot;: -4.155771244655956,
+      &quot;residual_rms&quot;: 2.81025370684537
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.836318254470825,
+      &quot;norm_ratio&quot;: 1.0101326270536943,
+      &quot;residual_cosine&quot;: 0.9879719506610524,
+      &quot;residual_norm&quot;: 181.5243693265048,
+      &quot;target_energy&quot;: 16.239695115522906
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.12747192653742712,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.2549435875632544,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.5098871751265088,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.0197736946019256,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.5296600135889915,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 2.0395465764132408,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.079093640500848,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 6.11863997849551,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.158186489885503,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 10.197733304717325,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.237279490991073,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.276826284148475,
+        &quot;downstream_shift&quot;: 1.3636363636363638
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 16.31637294725938,
+        &quot;downstream_shift&quot;: 1.6666666666666665
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.35591913353313,
+        &quot;downstream_shift&quot;: 1.8181818181818183
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: true,
+        &quot;target_margin&quot;: 20.39546636017886,
+        &quot;downstream_shift&quot;: 1.8333333333333335
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:14-28&quot;,
+      &quot;natural-carrier&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 2,
+    &quot;carrier_phrase&quot;: &quot; I like banana&quot;
+  }
+}</pre></details></td></tr><tr class="fail"><td>replace-cold-warm</td><td>replace</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, source_reduced, target_gained</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Reply with exactly this sentence: The room is cold.<br><b>Baseline:</b> The room is cold.<br><b>Intervened:</b> The room is cold.<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;source_present_baseline&quot;: true,
+    &quot;source_reduced&quot;: false,
+    &quot;target_gained&quot;: false,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;replace&quot;,
+    &quot;target_ids&quot;: [
+      82597
+    ],
+    &quot;source_ids&quot;: [
+      87072
+    ],
+    &quot;experimental&quot;: false,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.27980537340044975,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 130.22524915422713,
+      &quot;target_energy&quot;: 1.4044415950775146,
+      &quot;residual_rms&quot;: 2.034769518034799,
+      &quot;source_energy&quot;: 2.3398381375840733
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.163097824369158,
+      &quot;source_energy&quot;: 14.92494320017951,
+      &quot;norm_ratio&quot;: 1.0579531703676497,
+      &quot;residual_cosine&quot;: 0.9506073934691293,
+      &quot;residual_norm&quot;: 138.4382607596261,
+      &quot;target_energy&quot;: 39.69106996059418
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.3986315269555363,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.7972637308495383,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.5945277501429835,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.1890547291508744,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.567257923032489,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.596085003976311,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 6.003113344311714,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.410144315234254,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.817171065935065,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 10.224201346082348,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 11.631230199975628,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 13.03825983724424,
+        &quot;downstream_shift&quot;: 2.0
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.445290905024326,
+        &quot;downstream_shift&quot;: 2.0
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 15.852320865861007,
+        &quot;downstream_shift&quot;: 2.0
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 17.25934615199055,
+        &quot;downstream_shift&quot;: 2.0
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 18.666378105325357,
+        &quot;downstream_shift&quot;: 2.0
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 20.073400973209313,
+        &quot;downstream_shift&quot;: 2.0
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 21.480430942560943,
+        &quot;downstream_shift&quot;: 2.0
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.887470184692315,
+        &quot;downstream_shift&quot;: 2.0
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.29449709717716,
+        &quot;downstream_shift&quot;: 2.0
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 25.701523302921228,
+        &quot;downstream_shift&quot;: 2.0
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:10-28&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 0,
+    &quot;carrier_phrase&quot;: null
+  }
+}</pre></details></td></tr><tr class="fail"><td>replace-red-blue</td><td>replace</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, source_reduced, target_gained</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Reply with exactly this sentence: I see a red car.<br><b>Baseline:</b> I see a red car.<br><b>Intervened:</b> I see a red car.<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;source_present_baseline&quot;: true,
+    &quot;source_reduced&quot;: false,
+    &quot;target_gained&quot;: false,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;replace&quot;,
+    &quot;target_ids&quot;: [
+      12203
+    ],
+    &quot;source_ids&quot;: [
+      1151
+    ],
+    &quot;experimental&quot;: false,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.32512312375807334,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 130.88785879952567,
+      &quot;target_energy&quot;: 1.0963033671889986,
+      &quot;residual_rms&quot;: 2.0451227937425887,
+      &quot;source_energy&quot;: 2.8095315962231586
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.2052515617438724,
+      &quot;source_energy&quot;: 16.89298490541322,
+      &quot;norm_ratio&quot;: 1.073959571974618,
+      &quot;residual_cosine&quot;: 0.9369861228125436,
+      &quot;residual_norm&quot;: 141.13609995160783,
+      &quot;target_energy&quot;: 46.821347335619585
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.44775999417262424,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.8955179424956443,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.7910328136224831,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.582070537244103,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.237692475551739,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 5.335789636176612,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 7.089509529992938,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 8.843229543550738,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 10.596950299106538,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 12.350671702330667,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 14.104389676158984,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 15.85810917097011,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 17.611832730605133,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 19.365554107220046,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 21.11927991905915,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 22.872996676314088,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 24.626714041323538,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 26.38043833005109,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 28.134160028105335,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 29.887879123778212,
+        &quot;downstream_shift&quot;: 3.0
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 31.64159065924053,
+        &quot;downstream_shift&quot;: 3.0
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:10-28&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 0,
+    &quot;carrier_phrase&quot;: null
+  }
+}</pre></details></td></tr><tr class="pass"><td>replace-cat-dog</td><td>replace</td><td>PASS</td><td>7</td><td>60%</td><td>—</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Reply with exactly this sentence: The cat is sleeping.<br><b>Baseline:</b> The cat is sleeping.<br><b>Intervened:</b> dog is sleeping.<br><b>Engine:</b> minimum effective J-space strength 7.00 across layers 10-28<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: true,
+    &quot;uncorrupted&quot;: true,
+    &quot;source_present_baseline&quot;: true,
+    &quot;source_reduced&quot;: true,
+    &quot;target_gained&quot;: true,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;replace&quot;,
+    &quot;target_ids&quot;: [
+      18457
+    ],
+    &quot;source_ids&quot;: [
+      4616
+    ],
+    &quot;experimental&quot;: false,
+    &quot;selected_layer&quot;: 10,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 7.0,
+    &quot;normalized_cost&quot;: 0.046709203094776185,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 131.95647593906946,
+      &quot;target_energy&quot;: 4.175587634955134,
+      &quot;residual_rms&quot;: 2.0618199365479604,
+      &quot;source_energy&quot;: 0.7384048327803612
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.0677987251962935,
+      &quot;source_energy&quot;: 1.3371811349477087,
+      &quot;norm_ratio&quot;: 1.0030665823391505,
+      &quot;residual_cosine&quot;: 0.9980629895414624,
+      &quot;residual_norm&quot;: 132.3391181400844,
+      &quot;target_energy&quot;: 9.49205252953938
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.11075369747621622,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.2215095082564016,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.4430175676409691,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.8860363364219666,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.3290543288291836,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.4334150721718162,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.9807941868369063,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 2.528172190168074,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.0755519930805475,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 3.622930521411555,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 4.170309850147792,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: true,
+        &quot;target_margin&quot;: 4.7176885924168985,
+        &quot;downstream_shift&quot;: 3.0
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:10-28&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 0,
+    &quot;carrier_phrase&quot;: null
+  }
+}</pre></details></td></tr><tr class="fail"><td>suppress-noisy</td><td>suppress</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, source_reduced</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Reply with exactly this sentence: The room is noisy.<br><b>Baseline:</b> The room is noisy.<br><b>Intervened:</b> The room is noisy.<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;source_present_baseline&quot;: true,
+    &quot;source_reduced&quot;: false,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;suppress&quot;,
+    &quot;target_ids&quot;: [],
+    &quot;source_ids&quot;: [
+      49280
+    ],
+    &quot;experimental&quot;: false,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.008074448784879808,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 130.44522857666016,
+      &quot;residual_rms&quot;: 2.038206696510315,
+      &quot;source_energy&quot;: 1.3600185244743312
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.0380585406507765,
+      &quot;source_energy&quot;: 1.2737632654033097e-06,
+      &quot;norm_ratio&quot;: 0.9999494595187051,
+      &quot;residual_cosine&quot;: 0.9999495063509259,
+      &quot;residual_norm&quot;: 130.43574442182268
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.08500094791608181,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.17000070214271545,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.34000421794397484,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.6800078593992761,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.020013137321387,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.360017250711066,
+        &quot;downstream_shift&quot;: 0.0
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:10-28&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 0,
+    &quot;carrier_phrase&quot;: null
+  }
+}</pre></details></td></tr><tr class="fail"><td>suppress-banana</td><td>suppress</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, source_reduced</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Reply with exactly this sentence: I see a banana.<br><b>Baseline:</b> I see a banana.<br><b>Intervened:</b> I see a banana.<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;source_present_baseline&quot;: true,
+    &quot;source_reduced&quot;: false,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;suppress&quot;,
+    &quot;target_ids&quot;: [],
+    &quot;source_ids&quot;: [
+      87747
+    ],
+    &quot;experimental&quot;: false,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.010359312043874525,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 130.47085189819336,
+      &quot;residual_rms&quot;: 2.0386070609092712,
+      &quot;source_energy&quot;: 1.0149143294298224
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.038495864186968,
+      &quot;source_energy&quot;: 2.13565185650363e-06,
+      &quot;norm_ratio&quot;: 0.9999145908015115,
+      &quot;residual_cosine&quot;: 0.9999145993164608,
+      &quot;residual_norm&quot;: 130.46373530796595
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.06343177572957115,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.12686405730034633,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.25372815078922695,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.5074564094123032,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.7611850152856539,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.014912193777966,
+        &quot;downstream_shift&quot;: 0.0
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:10-28&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 0,
+    &quot;carrier_phrase&quot;: null
+  }
+}</pre></details></td></tr><tr class="fail"><td>suppress-seven</td><td>suppress</td><td>FAIL</td><td>16</td><td>100%</td><td>engine_success, source_reduced</td></tr>
+<tr class="detail"><td colspan="6"><b>Prompt:</b> Reply with exactly this sentence: The answer is seven.<br><b>Baseline:</b> The answer is seven.<br><b>Intervened:</b> The answer is seven.<br><b>Engine:</b> bounded J-space phrase search did not pass<details><summary>Trace and checks</summary><pre>{
+  &quot;checks&quot;: {
+    &quot;engine_success&quot;: false,
+    &quot;uncorrupted&quot;: true,
+    &quot;source_present_baseline&quot;: true,
+    &quot;source_reduced&quot;: false,
+    &quot;baseline_overlap&gt;=0.45&quot;: true,
+    &quot;hook_cleanup&quot;: true
+  },
+  &quot;trace&quot;: {
+    &quot;operation&quot;: &quot;suppress&quot;,
+    &quot;target_ids&quot;: [],
+    &quot;source_ids&quot;: [
+      80185
+    ],
+    &quot;experimental&quot;: false,
+    &quot;selected_layer&quot;: null,
+    &quot;selected_positions&quot;: [
+      -1
+    ],
+    &quot;selected_scale&quot;: 16.0,
+    &quot;normalized_cost&quot;: 0.01034064894000559,
+    &quot;baseline_scores&quot;: {
+      &quot;residual_norm&quot;: 129.54199354989188,
+      &quot;residual_rms&quot;: 2.0240936492170607,
+      &quot;source_energy&quot;: 1.524590320394574
+    },
+    &quot;after_scores&quot;: {
+      &quot;residual_rms&quot;: 2.02393040060997,
+      &quot;source_energy&quot;: 1.0839475181561348e-06,
+      &quot;norm_ratio&quot;: 0.9999307223728725,
+      &quot;residual_cosine&quot;: 0.999930705342974,
+      &quot;residual_norm&quot;: 129.53154345921106
+    },
+    &quot;baseline_top_ids&quot;: [],
+    &quot;after_top_ids&quot;: [],
+    &quot;search_points&quot;: [
+      {
+        &quot;scale&quot;: 0.0625,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.09528681397205219,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.125,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.19057479566462088,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.25,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.3811479562178388,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.5,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 0.7622962222875297,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 0.75,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.1434430591824432,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 1.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 2.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 3.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 4.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 5.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 6.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 7.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 8.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 9.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 10.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 11.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 12.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 13.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 14.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 15.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      },
+      {
+        &quot;scale&quot;: 16.0,
+        &quot;passed&quot;: false,
+        &quot;target_margin&quot;: 1.524589236447056,
+        &quot;downstream_shift&quot;: 0.0
+      }
+    ],
+    &quot;warnings&quot;: [
+      &quot;multi-token-jspace-transform&quot;,
+      &quot;layer-range:10-28&quot;,
+      &quot;generation-causal-probe&quot;
+    ],
+    &quot;sequence_logprob_before&quot;: null,
+    &quot;sequence_logprob_after&quot;: null,
+    &quot;application_delay&quot;: 0,
+    &quot;carrier_phrase&quot;: null
+  }
+}</pre></details></td></tr></tbody></table></body></html>

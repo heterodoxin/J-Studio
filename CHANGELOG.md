@@ -24,7 +24,13 @@
 - Rejects target-only, target-repeating, leading-target, and trajectory-derailing
   probes; accepted edits retain ordered token anchors from the baseline response.
 - Compiles default bare-concept injection into a trace-visible friendly semantic
-  carrier and delays its residual transport until the reply has begun.
+  carrier and schedules it at the first measured sentence boundary.
+- Preserves the baseline punctuation inside the carrier, so short answers can become
+  `42. I like banana.` without increasing the strength budget.
+- Aligns default Replace and Suppress hooks to the generated source phrase and uses
+  contextual leading-space token directions instead of editing the first token.
+- Expands causal probes according to carrier length and delay so coherent replies are
+  not rejected merely because a fixed 12-token probe ended too early.
 - Keeps explicit Steps/Generation phrase transport literal and ordered.
 - Kept failed bounded searches fail-closed with no logit-steering fallback.
 

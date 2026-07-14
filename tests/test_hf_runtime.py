@@ -20,9 +20,11 @@ from jstudio.services.hf_runtime import (
     RuntimeInterventionService,
     ThinkingFilter,
     _causal_token_effect,
+    _first_variant_start,
     _last_subsequence_positions,
     _natural_injection_carrier,
     _readout_values,
+    _sentence_boundary_transport,
     services_for_runtime,
 )
 from jstudio.services.protocols import GenerationRequest
@@ -632,6 +634,36 @@ def test_natural_injection_requires_relation_not_just_target_appearance():
     )[0]
 
 
+def test_sentence_boundary_transport_preserves_punctuation_before_carrier():
+    tokenizer = SimpleNamespace(
+        decode=lambda ids, **_options: {
+            10: "I",
+            11: " am",
+            12: " Qwen",
+            13: ".\n",
+            14: " Next",
+        }[ids[0]]
+    )
+
+    assert _sentence_boundary_transport(
+        tokenizer, (10, 11, 12, 13, 14), " I like cat"
+    ) == (3, ".\n I like cat")
+    assert _sentence_boundary_transport(
+        tokenizer, (10, 11, 12), " I like cat"
+    ) == (2, " I like cat")
+
+
+def test_first_variant_start_aligns_replace_with_generated_source():
+    assert _first_variant_start((1, 2, 3, 4, 5), ((9,), (3, 4))) == 2
+
+    try:
+        _first_variant_start((1, 2, 3), ((8, 9),))
+    except ValueError as exc:
+        assert "not found" in str(exc)
+    else:
+        raise AssertionError("missing generated source was silently accepted")
+
+
 def test_causal_suppression_without_literal_baseline_requires_divergence():
     baseline = (1, 2, 3)
 
@@ -644,7 +676,13 @@ def test_phrase_effect_probe_measures_generated_tokens_and_cleans_hooks():
     layer = torch.nn.Identity()
     runtime.lens_model = SimpleNamespace(layers=[layer])
     samples = iter(((1, 2, 3), (1, 2, 3), (9, 2, 3)))
-    runtime._causal_probe_ids = lambda _prompt: next(samples)
+    limits = []
+
+    def causal_probe(_prompt, *, max_new_tokens=12):
+        limits.append(max_new_tokens)
+        return next(samples)
+
+    runtime._causal_probe_ids = causal_probe
     runtime._token_variants = lambda term: ((9,),) if term else ()
     draft = InterventionDraft(InterventionOperation.INJECT, None, "cat", 16, 0, 0)
     operator = SimpleNamespace(
@@ -658,6 +696,35 @@ def test_phrase_effect_probe_measures_generated_tokens_and_cleans_hooks():
     assert not first[0]
     assert second[0]
     assert not layer._forward_hooks
+    assert limits == [12, 12, 12]
+
+
+def test_phrase_effect_probe_extends_window_past_delayed_carrier():
+    runtime = HFModelRuntime.__new__(HFModelRuntime)
+    layer = torch.nn.Identity()
+    runtime.lens_model = SimpleNamespace(layers=[layer])
+    limits = []
+    samples = iter(((1, 2, 3), (1, 2, 7, 8, 9, 3)))
+
+    def causal_probe(_prompt, *, max_new_tokens=12):
+        limits.append(max_new_tokens)
+        return next(samples)
+
+    runtime._causal_probe_ids = causal_probe
+    runtime._token_variants = lambda term: (
+        ((7, 8, 9),) if term and term.startswith(" I like") else ((9,),) if term else ()
+    )
+    draft = InterventionDraft(InterventionOperation.INJECT, None, "cat", 16, 0, 0)
+    operator = SimpleNamespace(
+        make_transform=lambda **_options: (lambda residual: residual)
+    )
+
+    probe = runtime._make_phrase_effect_probe(
+        "formatted", draft, " I like cat", 14
+    )
+    probe(((0, operator),), (-1,))
+
+    assert limits == [25, 25]
 
 
 def test_phrase_injection_failure_stays_unapplied_without_fallback(monkeypatch):
@@ -700,7 +767,13 @@ def test_phrase_injection_failure_stays_unapplied_without_fallback(monkeypatch):
     runtime.calibrated = True
     runtime.coordinator = Coordinator()
     runtime._formatted_prompt = lambda prompt, history=(): f"formatted:{prompt}"
-    runtime._current_user_positions = lambda *_args: (4, 5)
+    runtime.tokenizer = SimpleNamespace(
+        decode=lambda ids, **_options: {1: "Hello", 2: "!", 3: " source"}.get(
+            ids[0], " token"
+        )
+    )
+    runtime._causal_probe_ids = lambda *_args, **_kwargs: (1, 2, 3, 4)
+    runtime._token_variants = lambda term: ((3,),) if term else ()
     runtime._make_phrase_effect_probe = lambda *_args: (lambda *_probe: (True, 1.0))
     monkeypatch.setattr(jlens, "InterventionEngine", EngineDouble)
     draft = InterventionDraft(
@@ -769,7 +842,13 @@ def test_prepare_interventions_does_not_require_next_token_match(monkeypatch):
     runtime.calibrated = True
     runtime.coordinator = Coordinator()
     runtime._formatted_prompt = lambda prompt, history=(): f"formatted:{prompt}"
-    runtime._current_user_positions = lambda *_args: (4, 5)
+    runtime.tokenizer = SimpleNamespace(
+        decode=lambda ids, **_options: {1: "Hello", 2: "!", 3: " source"}.get(
+            ids[0], " token"
+        )
+    )
+    runtime._causal_probe_ids = lambda *_args, **_kwargs: (1, 2, 3, 4)
+    runtime._token_variants = lambda term: ((3,),) if term else ()
     runtime._make_phrase_effect_probe = lambda *_args: (lambda *_probe: (True, 1.0))
     # A J-space replacement need not make its target the immediate next token.
     runtime._editor_targets_next_token = lambda prompt, editor, target_ids: False
@@ -799,8 +878,8 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
                 message="inject ready",
                 trace=SimpleNamespace(
                     target_ids=(42, 43, 44, 45, 46),
-                    application_delay=2,
-                    carrier_phrase=" I like ASCII cat",
+                    application_delay=1,
+                    carrier_phrase="! I like ASCII cat",
                 ),
             )
 
@@ -835,7 +914,13 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
     runtime.calibrated = True
     runtime.coordinator = Coordinator()
     runtime._formatted_prompt = lambda prompt, history=(): f"formatted:{prompt}"
-    runtime._current_user_positions = lambda *_args: (4, 5)
+    runtime.tokenizer = SimpleNamespace(
+        decode=lambda ids, **_options: {1: "Hello", 2: "!", 3: " source"}.get(
+            ids[0], " token"
+        )
+    )
+    runtime._causal_probe_ids = lambda *_args, **_kwargs: (1, 2, 3, 4)
+    runtime._token_variants = lambda term: ((3,),) if term else ()
     runtime._make_phrase_effect_probe = lambda *_args: (lambda *_probe: (True, 1.0))
     runtime._editor_targets_next_token = lambda *args: (_ for _ in ()).throw(
         AssertionError("next-token verification is forbidden")
@@ -859,12 +944,17 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
     editors, results = runtime.prepare_interventions("prompt", drafts)
 
     assert [call[0] for call in calls] == ["inject", "suppress", "replace"]
-    assert calls[0][3] == " I like ASCII cat"
+    assert calls[0][3] == "! I like ASCII cat"
     assert calls[0][4]["application_positions"] == (-1,)
-    assert calls[0][4]["application_delay"] == 2
-    assert calls[0][4]["carrier_phrase"] == " I like ASCII cat"
+    assert calls[0][4]["application_delay"] == 1
+    assert calls[0][4]["carrier_phrase"] == "! I like ASCII cat"
     assert calls[0][4]["layers"] == [2]
     assert all(call[4]["application_positions"] == (-1,) for call in calls[1:])
+    assert calls[0][4]["application_delay"] == 1
+    assert all(call[4]["application_delay"] == 2 for call in calls[1:])
+    assert calls[1][2] == " large language model"
+    assert calls[2][2] == " large language model"
+    assert calls[2][3] == " helpful research assistant"
     assert all(call[4]["layers"] == [0, 1, 2] for call in calls[1:])
     assert all(result.success for result in results)
     assert len(editors) == 3
@@ -874,12 +964,12 @@ def test_prepare_interventions_dispatches_all_operations_to_phrase_engine(monkey
         "replace ready",
     ]
     assert applied[0][1] == {
-        "max_applications": 7,
+        "max_applications": 6,
         "ordered": True,
-        "delay": 2,
+        "delay": 1,
     }
-    assert applied[1][1] == {"max_applications": 1}
-    assert applied[2][1] == {"max_applications": 3}
+    assert applied[1][1] == {"max_applications": 3, "delay": 2}
+    assert applied[2][1] == {"max_applications": 5, "delay": 2}
 
 
 def test_prepare_interventions_isolates_failed_phrase_rule(monkeypatch):
@@ -913,7 +1003,9 @@ def test_prepare_interventions_isolates_failed_phrase_rule(monkeypatch):
     runtime.calibrated = True
     runtime.coordinator = Coordinator()
     runtime._formatted_prompt = lambda prompt, history=(): f"formatted:{prompt}"
-    runtime._current_user_positions = lambda *_args: (4, 5)
+    runtime.tokenizer = SimpleNamespace(decode=lambda ids, **_options: " token")
+    runtime._causal_probe_ids = lambda *_args, **_kwargs: (1, 2, 3, 4)
+    runtime._token_variants = lambda term: ((2,),) if term else ()
     runtime._make_phrase_effect_probe = lambda *_args: (lambda *_probe: (True, 1.0))
     monkeypatch.setattr(jlens, "InterventionEngine", EngineDouble)
     drafts = (
