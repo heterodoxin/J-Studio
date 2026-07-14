@@ -558,6 +558,9 @@ def test_causal_injection_rejects_target_only_completion():
 
     assert not _causal_token_effect("inject", baseline, (9,), (), target)[0]
     assert not _causal_token_effect("inject", baseline, (9, 9, 9), (), target)[0]
+    assert not _causal_token_effect(
+        "inject", baseline, (1, 2, 3, 4, 9, 9, 9), (), target
+    )[0]
     assert _causal_token_effect("inject", baseline, (9, 7, 8), (), target)[0]
 
 

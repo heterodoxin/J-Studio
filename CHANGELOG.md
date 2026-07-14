@@ -21,8 +21,8 @@
 - Added generated-token causal probes that choose the minimum effective strength.
 - Made intervention duration control residual-hook lifetime, eliminating repeated
   target-token collapse for default Next Token edits.
-- Rejects target-only generated probes so an injection must produce contextual
-  output beyond the injected phrase.
+- Rejects target-only and target-repeating generated probes so an injection must
+  produce contextual output with one gained target occurrence.
 - Kept failed bounded searches fail-closed with no logit-steering fallback.
 
 ### Runtime

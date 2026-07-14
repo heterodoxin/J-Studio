@@ -29,10 +29,11 @@ disclaimer.
 ## Injection acceptance
 
 Minimum-effective-strength search remains J-space-only and evaluates generated token
-sequences, never logits. An inject probe passes only when the target phrase gains at
-least one occurrence and the candidate contains at least two tokens outside the
-target token set. This rejects degenerate outputs such as `banana` or repeated target
-tokens while allowing short natural continuations such as `Bananas are fruit`.
+sequences, never logits. An inject probe passes only when the target phrase gains
+exactly one occurrence and the candidate contains at least two tokens outside the
+target token set. This rejects degenerate outputs such as `banana`, target repetition
+after an otherwise normal prefix, or repeated target tokens while allowing short
+natural continuations such as `Bananas are fruit`.
 Failure to find a qualifying dose remains explicit; there is no fallback steering
 path.
 
