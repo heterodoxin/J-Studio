@@ -552,6 +552,15 @@ def test_causal_token_effect_requires_directional_generated_change():
     assert _causal_token_effect("suppress", baseline, (1, 7, 8, 4), source, ())[0]
 
 
+def test_causal_injection_rejects_target_only_completion():
+    baseline = (1, 2, 3, 4)
+    target = ((9,),)
+
+    assert not _causal_token_effect("inject", baseline, (9,), (), target)[0]
+    assert not _causal_token_effect("inject", baseline, (9, 9, 9), (), target)[0]
+    assert _causal_token_effect("inject", baseline, (9, 7, 8), (), target)[0]
+
+
 def test_causal_suppression_without_literal_baseline_requires_divergence():
     baseline = (1, 2, 3)
 

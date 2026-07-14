@@ -107,7 +107,13 @@ def _causal_token_effect(
     source_reduction = source_before - source_after
     score = float(divergence + max(target_gain, 0) + max(source_reduction, 0))
     if operation == "inject":
-        return target_gain > 0, score
+        target_token_ids = {
+            token_id for variant in target_variants for token_id in variant
+        }
+        contextual_tokens = sum(
+            token_id not in target_token_ids for token_id in candidate
+        )
+        return target_gain > 0 and contextual_tokens >= 2, score
     if operation == "replace":
         source_changed = source_reduction > 0 if source_before else divergence > 0
         return target_gain > 0 and source_changed, score
